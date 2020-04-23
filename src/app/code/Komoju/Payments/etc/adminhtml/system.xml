@@ -26,11 +26,11 @@
                         <label>Komoju merchant ID</label>
                         <config_path>payment/komoju_payments/merchant_id</config_path>
                     </field>
-                    <field id="secret_key" translate="label" type="text" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <field id="secret_key" translate="label" type="obscure" showInDefault="1" showInWebsite="1" showInStore="1">
                         <label>Secret Key from Komoju</label>
                         <config_path>payment/komoju_payments/secret_key</config_path>
                     </field>
-                    <field id="webhook_secret_token" translate="label comment" type="text" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <field id="webhook_secret_token" translate="label comment" type="obscure" showInDefault="1" showInWebsite="1" showInStore="1">
                         <label>Webhook Secret Token</label>
                         <comment>This is the secret token for the webhook</comment>
                         <config_path>payment/komoju_payments/webhook_secret_token</config_path>
