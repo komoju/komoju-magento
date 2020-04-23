@@ -7,6 +7,7 @@
                 <label>Komoju</label>
                 <comment>Allows payments by Komoju, dedicated to Japanese online and offline payment gateways.</comment>
                 <attribute type="displayIn">recommended_solutions</attribute>
+                <fieldset_css>complex komoju-section</fieldset_css>
                 <frontend_model>Magento\Paypal\Block\Adminhtml\System\Config\Fieldset\Payment</frontend_model>
                 <field id="active" translate="label" type="select" sortOrder="1" showInDefault="1" showInWebsite="1">
                     <label>Enable this Solution</label>
