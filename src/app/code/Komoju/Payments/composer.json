@@ -1,0 +1,15 @@
+
+{
+    "name": "komoju/payments",
+    "description": "Integrates with Komoju to provide payment solutions for Magento",
+    "require": {},
+    "type": "magento2-module",
+    "version": "0.0.1",
+    "license": [],
+    "autoload": {
+        "files": [ "registration.php" ],
+        "psr-4": {
+            "Komoju\\Payments\\": ""
+        }
+    }
+}

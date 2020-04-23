@@ -1,0 +1,67 @@
+<?xml version="1.0"?>
+
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
+    <system>
+        <section id="payment">
+            <group id="komoju_payments" translate="label" type="text" sortOrder="5" showInDefault="1" showInStore="1" showInWebsite="1">
+                <label>Komoju</label>
+                <comment>Allows payments by Komoju, dedicated to Japanese online and offline payment gateways.</comment>
+                <attribute type="displayIn">recommended_solutions</attribute>
+                <frontend_model>Magento\Paypal\Block\Adminhtml\System\Config\Fieldset\Payment</frontend_model>
+                <field id="active" translate="label" type="select" sortOrder="1" showInDefault="1" showInWebsite="1">
+                    <label>Enable this Solution</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <config_path>payment/komoju_payments/active</config_path>
+                </field>
+                 <field id="debug" translate="label" type="select" sortOrder="2" showInDefault="1" showInWebsite="1">
+                    <label>Enable debug mode</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <config_path>payment/komoju_payments/debug</config_path>
+                </field>
+                <group id="komoju_api_settings" translate="label" showInDefault="1" showInWebsite="1" showInStore="1" sortOrder="3">
+                    <label>API Settings</label>
+                    <frontend_model>Magento\Config\Block\System\Config\Form\Fieldset</frontend_model>
+                    <field id="merchant_id" translate="label" type="text" showInDefault="1" showInWebsite="1" showInStore="1">
+                        <label>Komoju merchant ID</label>
+                        <config_path>payment/komoju_payments/merchant_id</config_path>
+                    </field>
+                    <field id="secret_key" translate="label" type="text" showInDefault="1" showInWebsite="1" showInStore="1">
+                        <label>Secret Key from Komoju</label>
+                        <config_path>payment/komoju_payments/secret_key</config_path>
+                    </field>
+                    <field id="webhook_secret_token" translate="label comment" type="text" showInDefault="1" showInWebsite="1" showInStore="1">
+                        <label>Webhook Secret Token</label>
+                        <comment>This is the secret token for the webhook</comment>
+                        <config_path>payment/komoju_payments/webhook_secret_token</config_path>
+                    </field>
+                </group>
+                <group id="komoju_supported_methods" translate="label" showInDefault="1" showInWebsite="1" showInStore="1" sortOrder="4">
+                    <label>Payment Methods</label>
+                    <frontend_model>Magento\Config\Block\System\Config\Form\Fieldset</frontend_model>
+                    <field id="enable_credit_card_payments" translate="label" type="select" showInDefault="1" showInWebsite="1">
+                        <label>Allow credit card</label>
+                        <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                        <config_path>payment/komoju_payments/enable_credit_card_payments</config_path>
+                    </field>
+                    <field id="enable_konbini_payments" translate="label" type="select" showInDefault="1" showInWebsite="1">
+                        <label>Allow konbini</label>
+                        <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                        <config_path>payment/komoju_payments/enable_konbini_payments</config_path>
+                    </field>
+                </group>
+                <group id="komoju_checkout_page_settings" translate="label" showInDefault="1" showInWebsite="1" showInStore="1" sortOrder="5">
+                    <label>Checkout Settings</label>
+                    <frontend_model>Magento\Config\Block\System\Config\Form\Fieldset</frontend_model>
+                    <field id="title" translate="label" type="text" showInDefault="1" showInWebsite="1" showInStore="1">
+                        <label>Title</label>
+                        <config_path>payment/komoju_payments/title</config_path>
+                    </field>
+                    <field id="description" translate="label" type="text" showInDefault="1" showInWebsite="1" showInStore="1">
+                        <label>description</label>
+                        <config_path>payment/komoju_payments/description</config_path>
+                    </field>
+                </group>
+            </group>
+        </section>
+    </system>
+</config>
