@@ -55,7 +55,7 @@ class ConfigProvider implements ConfigProviderInterface {
                     'webhook_secret_token' => $this->config->getWebhookSecretToken()
                 ]
             ]
-        ]
+        ];
     }
 
 }
