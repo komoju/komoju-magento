@@ -28,4 +28,10 @@
             <argument name="configInterface" xsi:type="object">Magento\Payment\Gateway\Config\Config</argument>
         </arguments>
     </virtualType>
+
+    <type name="Komoju\Payments\Gateway\Config\Config">
+        <arguments>
+            <argument name="methodCode" xsi:type="const">Komoju\Payments\Model\Ui\ConfigProvider::CODE</argument>
+        </arguments>
+    </type>
 </config>

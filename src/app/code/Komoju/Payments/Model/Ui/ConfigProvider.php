@@ -3,8 +3,9 @@
 namespace Komoju\Payments\Model\Ui;
 
 use Magento\Checkout\Model\ConfigProviderInterface;
-use Magento\Braintree\Gateway\Config\Config;
+use Komoju\Payments\Gateway\Config\Config;
 use Magento\Framework\Session\SessionManagerInterface;
+use Magento\Framework\App\Config\ScopeConfigInterface;
 
 class ConfigProvider implements ConfigProviderInterface {
     const CODE = 'komoju_payments';
@@ -27,10 +28,12 @@ class ConfigProvider implements ConfigProviderInterface {
      */
     public function __construct(
         Config $config,
-        SessionManagerInterface $session
+        SessionManagerInterface $session,
+        ScopeConfigInterface $scopeConfig
     ) {
         $this->config = $config;
         $this->session = $session;
+        $this->scopeConfig = $scopeConfig;
     }
 
     /**
@@ -46,13 +49,11 @@ class ConfigProvider implements ConfigProviderInterface {
             'payment' => [
                 self::CODE => [
                     'isActive' => $isActive,
-                    'title' => $this->config->getTitle(),
+                    'title' => $this->config->getTitle($storeId),
                     'description' => $this->config->getDescription(),
-                    'enable_credit_card_payments' => $this->config->getEnableCreditCardPayments(),
-                    'enable_konbini_payments' => $this->config->getEnableKonbiniPayments(),
+                    'enable_credit_card_payments' => $this->config->areCreditCardPaymentsEnabled(),
+                    'enable_konbini_payments' => $this->config->areKonbiniPaymentsEnabled(),
                     'merchant_id'  => $this->config->getMerchantId(),
-                    'secret_key' => $this->config->getSecretKey(),
-                    'webhook_secret_token' => $this->config->getWebhookSecretToken()
                 ]
             ]
         ];
