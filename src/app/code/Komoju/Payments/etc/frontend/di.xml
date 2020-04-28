@@ -13,14 +13,4 @@
             </argument>
         </arguments>
     </type>
-
-    <!-- <type name="Magento\Checkout\Model\CompositeConfigProvider">
-        <arguments>
-            <argument name="configProviders" xsi:type="array">
-                <item name="stripe_payments_config_provider" xsi:type="object">StripeIntegration\Payments\Model\Ui\ConfigProvider</item>
-                <item name="stripe_payments_sepa_config_provider" xsi:type="object">StripeIntegration\Payments\Model\Ui\SepaConfigProvider</item>
-                <item name="stripe_payments_fpx_config_provider" xsi:type="object">StripeIntegration\Payments\Model\Ui\FpxConfigProvider</item>
-            </argument>
-        </arguments>
-    </type> -->
 </config>
