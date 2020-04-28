@@ -9,8 +9,7 @@
 
             <argument name="valueHandlerPool" xsi:type="object">KomojuValueHandlerPool</argument>
             <!-- To update for Komoju -->
-            <!-- <argument name="formBlockType" xsi:type="string">Komoju\Payments\Block\Form</argument>
-            <argument name="validatorPool" xsi:type="object">BraintreeValidatorPool</argument>
+            <!-- <argument name="validatorPool" xsi:type="object">BraintreeValidatorPool</argument>
             <argument name="commandPool" xsi:type="object">BraintreeCommandPool</argument> -->
         </arguments>
     </virtualType>
