@@ -8,9 +8,9 @@
             <argument name="infoBlockType" xsi:type="string">Magento\Payment\Block\ConfigurableInfo</argument>
 
             <argument name="valueHandlerPool" xsi:type="object">KomojuValueHandlerPool</argument>
+            <argument name="validatorPool" xsi:type="object">KomojuValidatorPool</argument>
             <!-- To update for Komoju -->
-            <!-- <argument name="validatorPool" xsi:type="object">BraintreeValidatorPool</argument>
-            <argument name="commandPool" xsi:type="object">BraintreeCommandPool</argument> -->
+            <!-- <argument name="commandPool" xsi:type="object">BraintreeCommandPool</argument> -->
         </arguments>
     </virtualType>
 
@@ -27,10 +27,24 @@
             <argument name="configInterface" xsi:type="object">Magento\Payment\Gateway\Config\Config</argument>
         </arguments>
     </virtualType>
+    
+    <virtualType name="KomojuCountryValidator" type="Magento\Payment\Gateway\Validator\CountryValidator">
+        <arguments>
+            <argument name="config" xsi:type="object">Magento\Braintree\Gateway\Config\Config</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="KomojuValidatorPool" type="Magento\Payment\Gateway\Validator\ValidatorPool">
+        <arguments>
+            <argument name="validators" xsi:type="array">
+                <item name="country" xsi:type="string">KomojuCountryValidator</item>
+            </argument>
+        </arguments>
+    </virtualType>
 
     <type name="Komoju\Payments\Gateway\Config\Config">
         <arguments>
             <argument name="methodCode" xsi:type="const">Komoju\Payments\Model\Ui\ConfigProvider::CODE</argument>
         </arguments>
     </type>
+
 </config>

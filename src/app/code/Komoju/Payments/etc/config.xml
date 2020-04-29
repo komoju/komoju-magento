@@ -20,6 +20,7 @@
                 <can_authorize>1</can_authorize>
                 <can_capture>1</can_capture>
                 <can_use_checkout>1</can_use_checkout>
+                <is_gateway>1</is_gateway>
                 <!-- <model>SamplePaymentGatewayFacade</model>
                 <merchant_gateway_key backend_model="Magento\Config\Model\Config\Backend\Encrypted" />
                 <order_status>pending_payment</order_status>

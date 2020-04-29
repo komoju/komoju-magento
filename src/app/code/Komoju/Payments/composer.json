@@ -2,7 +2,9 @@
 {
     "name": "komoju/payments",
     "description": "Integrates with Komoju to provide payment solutions for Magento",
-    "require": {},
+    "require": {
+        "magento/module-checkout": "*"
+    },
     "type": "magento2-module",
     "version": "0.0.1",
     "license": [],
