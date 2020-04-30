@@ -12,13 +12,39 @@ define(
             active: true,
             paymentMethod: ''
         },
-        
-        // add required logic here
+
+        getConfig: function() {
+            let code = this.getCode();
+            
+            return window.checkoutConfig.payment[code];
+        },
+
+        shouldShowCreditCardOption: function() {
+            let config = this.getConfig();
+            return config.enable_credit_card_payments;
+        },
+
+        shouldShowKonbiniOption: function() {
+            let config = this.getConfig();
+            return config.enable_konbini_payments;
+        },
+
         getEnabledPaymentTypes: function() {
-            return [
-                { key: 'credit_card', value: "Credit Card"},
-                { key: 'konbini', value: "Konbini"}
-            ]
+            let options = [];
+            
+            if (this.shouldShowCreditCardOption()) {
+                options.push({
+                    key: "credit_card", value: "Credit Card"}
+                );
+            }
+
+            if (this.shouldShowKonbiniOption()) {
+                options.push({
+                    key: "konbini", value: "Konbini"
+                });
+            }
+
+            return options;
         }
     });
 });
