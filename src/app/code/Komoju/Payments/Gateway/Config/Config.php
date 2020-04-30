@@ -52,7 +52,7 @@ class Config extends \Magento\Payment\Gateway\Config\Config {
     }
 
     public function areKonbiniPaymentsEnabled($storeId = null) {
-        return (bool) $this->getValue('enable_credit_card_payments', $storeId);
+        return (bool) $this->getValue('enable_konbini_payments', $storeId);
     }
 
     public function getMerchantId($storeId = null) {
