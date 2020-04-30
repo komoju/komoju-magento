@@ -25,7 +25,27 @@
             <!--/ko-->
         </div>
 
-        <div class="actions-toolbar">
+        <div class="fieldset">
+            <div class="field _required">
+                <label data-bind="attr: {for: getCode() + '_payment_type'}" class="label">
+                    Payment Type
+                </label>
+
+                <div class="control">
+                    <select name="payment[payment_type]"
+                            class="select"
+                            data-bind="
+                                attr: {id: getCode() + '_payment_type'},
+                                options: getEnabledPaymentTypes(),
+                                optionsValue: 'key',
+                                optionsText: 'value',
+                                value: paymentMethod">
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="actions-toolbar" style="margin-top: 40px">
             <div class="primary">
                 <button class="action primary checkout"
                         type="submit"

@@ -10,8 +10,15 @@ define(
         defaults: {
             template: "Komoju_Payments/payment/komoju_cc_form",
             active: true,
-            code: 'komoju-payments',
+            paymentMethod: ''
         },
+        
         // add required logic here
+        getEnabledPaymentTypes: function() {
+            return [
+                { key: 'credit_card', value: "Credit Card"},
+                { key: 'konbini', value: "Konbini"}
+            ]
+        }
     });
 });
