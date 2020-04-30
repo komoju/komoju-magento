@@ -13,14 +13,5 @@ define(
             code: 'komoju-payments',
         },
         // add required logic here
-
-        initialize: function () {
-            var self = this;
-
-            this._super();
-            
-            
-            console.log('hey hey hey')
-        }
     });
 });

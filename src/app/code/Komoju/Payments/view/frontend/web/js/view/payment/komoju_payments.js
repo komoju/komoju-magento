@@ -13,15 +13,5 @@ define(
         component: "Komoju_Payments/js/view/payment/method-renderer/cc-form",
     });
 
-    return Component.extend({
-
-        initialize: function () {
-            var self = this;
-
-            this._super();
-            
-            
-            console.log('hey hey hey')
-        }
-    });
+    return Component.extend({});
 });
