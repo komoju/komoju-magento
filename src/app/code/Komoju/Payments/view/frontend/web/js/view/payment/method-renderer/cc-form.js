@@ -1,8 +1,10 @@
 define(
     [
+        "jquery",
         "Magento_Checkout/js/view/payment/default"
     ],
     function (
+        $,
         Component
     ) {
     "use strict";
@@ -10,7 +12,14 @@ define(
         defaults: {
             template: "Komoju_Payments/payment/komoju_cc_form",
             active: true,
-            paymentMethod: ''
+            paymentMethod: '',
+            redirectAfterPlaceOrder: false,
+        },
+
+        afterPlaceOrder: function() {
+            $.mage.redirect(
+                `https://magento2.test/komoju/hostedpage/redirect?payment_method=${this.paymentMethod}`
+            );
         },
 
         getConfig: function() {
