@@ -10,11 +10,6 @@ use Magento\Framework\Serialize\Serializer\Json;
  */
 class Config extends \Magento\Payment\Gateway\Config\Config {
     /**
-     * @var \Magento\Framework\Serialize\Serializer\Json
-     */
-    private $serializer;
-
-    /**
      * Komoju config constructor
      *
      * @param ScopeConfigInterface $scopeConfig
@@ -25,8 +20,7 @@ class Config extends \Magento\Payment\Gateway\Config\Config {
     public function __construct(
         ScopeConfigInterface $scopeConfig,
         $methodCode = null,
-        $pathPattern = self::DEFAULT_PATH_PATTERN,
-        Json $serializer = null
+        $pathPattern = self::DEFAULT_PATH_PATTERN
     ) {
         parent::__construct($scopeConfig, $methodCode, $pathPattern);
     }
