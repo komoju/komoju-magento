@@ -13,10 +13,4 @@
             </argument>
         </arguments>
     </type>
-
-    <type name="Komoju\Payments\Controller\HostedPage\Redirect">
-        <arguments>
-            <argument name="config" xsi:type="object">Komoju\Payments\Gateway\Config\Config</argument>
-        </arguments>
-    </type>
 </config>
