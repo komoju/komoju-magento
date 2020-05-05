@@ -29,8 +29,6 @@ class Config extends \Magento\Payment\Gateway\Config\Config {
         Json $serializer = null
     ) {
         parent::__construct($scopeConfig, $methodCode, $pathPattern);
-        $this->serializer = $serializer ?: \Magento\Framework\App\ObjectManager::getInstance()
-            ->get(Json::class);
     }
 
     public function isActive($storeId = null)
