@@ -3,7 +3,6 @@
 namespace Komoju\Payments\Gateway\Config;
 
 use Magento\Framework\App\Config\ScopeConfigInterface;
-use Magento\Framework\Serialize\Serializer\Json;
 
 /**
  * Class Config
@@ -15,7 +14,6 @@ class Config extends \Magento\Payment\Gateway\Config\Config {
      * @param ScopeConfigInterface $scopeConfig
      * @param null|string $methodCode
      * @param string $pathPattern
-     * @param Json|null $serializer
      */
     public function __construct(
         ScopeConfigInterface $scopeConfig,
