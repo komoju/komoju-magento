@@ -3,7 +3,6 @@
 namespace Komoju\Payments\Controller\HostedPage;
 
 use Magento\Framework\App\ObjectManager;
-use Magento\Quote\Api\CartRepositoryInterface;
 
 class Redirect extends \Magento\Framework\App\Action\Action {
 
@@ -46,21 +45,9 @@ class Redirect extends \Magento\Framework\App\Action\Action {
     }
     
     public function execute() {
-        $orderId = $this->getOrder()->getEntityId();
-        $hostedPageParams = $this->getHostedPageParams();
-        $paymentMethod = $this->getRequest()->getParam('payment_method');
-
         $hostedPageUrl = $this->createHostedPageUrl();
 
-
         $this->logger->info('******** hostedPageUrl: ' . $hostedPageUrl);
-        // $this->logger->info('$orderId: ' . $orderId);
-        // $this->logger->info('******** payment method: ' . $paymentMethod );
-        // $this->logger->info('******** merchant ID: ' . $this->config->getMerchantId());
-        // $this->logger->info('******** secret key: ' . $this->config->getSecretKey());
-        // $this->logger->info('******** webhook secret token: ' . $this->config->getWebhookSecretToken());
-        // $this->logger->info('****** hosted page params: ' . implode(' - ', $hostedPageParams));
-
 
         $resultRedirect = $this->_resultRedirectFactory->create();
         $resultRedirect->setUrl($hostedPageUrl);
