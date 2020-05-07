@@ -54,6 +54,7 @@ class ConfigProvider implements ConfigProviderInterface {
                     'enable_credit_card_payments' => $this->config->areCreditCardPaymentsEnabled(),
                     'enable_konbini_payments' => $this->config->areKonbiniPaymentsEnabled(),
                     'merchant_id'  => $this->config->getMerchantId(),
+                    'redirect_url' => $this->config->getRedirectUrl(),
                 ]
             ]
         ];

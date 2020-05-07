@@ -18,7 +18,7 @@ define(
 
         afterPlaceOrder: function() {
             $.mage.redirect(
-                `https://magento2.test/komoju/hostedpage/redirect?payment_method=${this.paymentMethod}`
+                `${this.redirectUrl()}?payment_method=${this.paymentMethod}`
             );
         },
 
@@ -36,6 +36,11 @@ define(
         shouldShowKonbiniOption: function() {
             let config = this.getConfig();
             return config.enable_konbini_payments;
+        },
+
+        redirectUrl: function () {
+            let config = this.getConfig();
+            return config.redirect_url;
         },
 
         getEnabledPaymentTypes: function() {
