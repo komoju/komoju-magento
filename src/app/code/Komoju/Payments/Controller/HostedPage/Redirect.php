@@ -87,6 +87,7 @@ class Redirect extends \Magento\Framework\App\Action\Action {
     private function getHostedPageParams() {
         $order = $this->getOrder();
         $billingAddress = $order->getBillingAddress();
+        $cancelUrl = 'komoju/hostedpage/cancel?order_id=' . $order->getEntityId();
 
         return array(
             "transaction[amount]" => $order->getGrandTotal(),
@@ -100,8 +101,8 @@ class Redirect extends \Magento\Framework\App\Action\Action {
             // "via" => "Magento",
 
             // TODO make sure these are real values
-            "transaction[return_url]" => "https://komoju.com",
-            "transaction[cancel_url]" => "https://komoju.com",
+            "transaction[return_url]" => $this->_url->getUrl('checkout/onepage/success'),
+            "transaction[cancel_url]" => $this->_url->getUrl($cancelUrl),
             "transaction[external_order_num]" => $order->getEntityId(),
         );
     }
