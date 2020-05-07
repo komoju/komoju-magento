@@ -88,7 +88,6 @@ class Cancel extends \Magento\Framework\App\Action\Action {
         $urlForComp = 'komoju/hostedpage/cancel' . '?' . $queryString;
         $calculatedHmac = hash_hmac('sha256', $urlForComp, $secretKey);
         
-        // TODO: Find a constant time string comp
-        return $hmacParam == $calculatedHmac;
+        return hash_equals($hmacParam, $calculatedHmac);
     }
 }
