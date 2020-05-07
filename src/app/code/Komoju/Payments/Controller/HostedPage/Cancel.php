@@ -10,11 +10,6 @@ use Magento\Framework\Controller\ResultFactory;
 class Cancel extends \Magento\Framework\App\Action\Action {
 
     /**
-     * @var \Magento\Framework\Controller\Result\RedirectFactory
-     */
-    protected $_resultRedirectFactory;
-
-    /**
      * @var \Magento\Framework\Controller\ResultFactory
      */
     protected $_resultFactory;
@@ -39,14 +34,12 @@ class Cancel extends \Magento\Framework\App\Action\Action {
 
     public function __construct(
         \Magento\Framework\App\Action\Context $context,
-        \Magento\Framework\Controller\Result\RedirectFactory $resultRedirectFactory,
         \Magento\Framework\Controller\ResultFactory $resultFactory,
         \Magento\Sales\Api\OrderRepositoryInterface $orderRepository,
         \Komoju\Payments\Gateway\Config\Config $config,
         \Psr\Log\LoggerInterface $logger = null
     ) {
         $this->logger = $logger ?: ObjectManager::getInstance()->get(\Psr\Log\LoggerInterface::class);
-        $this->_resultRedirectFactory = $resultRedirectFactory;
         $this->_resultFactory = $resultFactory;
         $this->orderRepository = $orderRepository;
         $this->config = $config;
@@ -75,7 +68,7 @@ class Cancel extends \Magento\Framework\App\Action\Action {
 
         $this->logger->info('Order cancelled for order id: ' . $orderId);
 
-        $resultRedirect = $this->_resultRedirectFactory->create();
+        $resultRedirect = $this->_resultFactory->create(ResultFactory::TYPE_REDIRECT);
         $resultRedirect->setUrl($this->_url->getUrl('/'));
 
         return $resultRedirect;
