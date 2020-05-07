@@ -4,6 +4,7 @@ namespace Komoju\Payments\Controller\HostedPage;
 
 use Magento\Framework\App\ObjectManager;
 use Magento\Sales\Model\Order;
+use Magento\Framework\Exception\AuthorizationException;
 
 class Cancel extends \Magento\Framework\App\Action\Action {
 
@@ -46,6 +47,7 @@ class Cancel extends \Magento\Framework\App\Action\Action {
     }
     
     public function execute() {
+        $this->validateHmac();
 
         $orderId = $this->getRequest()->getParam('order_id');
         $order = $this->getOrder($orderId);
@@ -66,5 +68,21 @@ class Cancel extends \Magento\Framework\App\Action\Action {
 
     private function getOrder($orderId) {
         return $this->orderRepository->get($orderId);
+    }
+
+    private function validateHmac() {
+        $requestParams = $this->getRequest()->getParams();
+        $hmacParam = rtrim($requestParams['hmac'], "/");
+        unset($requestParams['hmac']);
+        $secretKey = $this->config->getSecretKey();
+
+        $queryString = http_build_query($requestParams);
+        $urlForComp = 'komoju/hostedpage/cancel' . '?' . $queryString;
+        $calculatedHmac = hash_hmac('sha256', $urlForComp, $secretKey);
+        
+        // TODO: Find a constant time string comp
+        if ($hmacParam != $calculatedHmac) {
+            throw new AuthorizationException(__('hmac header did not match'));
+        }
     }
 }

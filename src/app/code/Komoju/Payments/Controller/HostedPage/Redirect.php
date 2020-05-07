@@ -87,7 +87,7 @@ class Redirect extends \Magento\Framework\App\Action\Action {
     private function getHostedPageParams() {
         $order = $this->getOrder();
         $billingAddress = $order->getBillingAddress();
-        $cancelUrl = 'komoju/hostedpage/cancel?order_id=' . $order->getEntityId();
+        $cancelUrl = $this->createCancelUrl($order->getEntityId());
 
         return array(
             "transaction[amount]" => $order->getGrandTotal(),
@@ -105,5 +105,14 @@ class Redirect extends \Magento\Framework\App\Action\Action {
             "transaction[cancel_url]" => $this->_url->getUrl($cancelUrl),
             "transaction[external_order_num]" => $order->getEntityId(),
         );
+    }
+
+    private function createCancelUrl($orderId) {
+        $secretKey = $this->config->getSecretKey();
+
+        $cancelEndpoint = 'komoju/hostedpage/cancel?order_id=' . $orderId;
+        $hmac = hash_hmac('sha256', $cancelEndpoint, $secretKey);
+
+        return $cancelEndpoint .= '&hmac='.$hmac; 
     }
 }
