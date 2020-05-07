@@ -5,6 +5,7 @@ namespace Komoju\Payments\Controller\HostedPage;
 use Magento\Framework\App\ObjectManager;
 use Magento\Sales\Model\Order;
 use Magento\Framework\Exception\AuthorizationException;
+use Magento\Framework\Controller\ResultFactory;
 
 class Cancel extends \Magento\Framework\App\Action\Action {
 
@@ -13,6 +14,11 @@ class Cancel extends \Magento\Framework\App\Action\Action {
      */
     protected $_resultRedirectFactory;
 
+    /**
+     * @var \Magento\Framework\Controller\ResultFactory
+     */
+    protected $_resultFactory;
+    
     /**
      * @var \Magento\Sales\Api\OrderRepositoryInterface
      */
@@ -34,12 +40,14 @@ class Cancel extends \Magento\Framework\App\Action\Action {
     public function __construct(
         \Magento\Framework\App\Action\Context $context,
         \Magento\Framework\Controller\Result\RedirectFactory $resultRedirectFactory,
+        \Magento\Framework\Controller\ResultFactory $resultFactory,
         \Magento\Sales\Api\OrderRepositoryInterface $orderRepository,
         \Komoju\Payments\Gateway\Config\Config $config,
         \Psr\Log\LoggerInterface $logger = null
     ) {
         $this->logger = $logger ?: ObjectManager::getInstance()->get(\Psr\Log\LoggerInterface::class);
         $this->_resultRedirectFactory = $resultRedirectFactory;
+        $this->_resultFactory = $resultFactory;
         $this->orderRepository = $orderRepository;
         $this->config = $config;
 
@@ -47,7 +55,14 @@ class Cancel extends \Magento\Framework\App\Action\Action {
     }
     
     public function execute() {
-        $this->validateHmac();
+        if (!$this->isHmacValid()) {
+            $this->logger->info('HMAC param does not match expected value, exiting.');    
+            $result = $this->_resultFactory->create(ResultFactory::TYPE_RAW);
+            $result->setHttpResponseCode(401);
+            $result->setContents('hmac parameter is not valid');
+
+            return $result;
+        };
 
         $orderId = $this->getRequest()->getParam('order_id');
         $order = $this->getOrder($orderId);
@@ -70,7 +85,7 @@ class Cancel extends \Magento\Framework\App\Action\Action {
         return $this->orderRepository->get($orderId);
     }
 
-    private function validateHmac() {
+    private function isHmacValid() {
         $requestParams = $this->getRequest()->getParams();
         $hmacParam = rtrim($requestParams['hmac'], "/");
         unset($requestParams['hmac']);
@@ -81,8 +96,6 @@ class Cancel extends \Magento\Framework\App\Action\Action {
         $calculatedHmac = hash_hmac('sha256', $urlForComp, $secretKey);
         
         // TODO: Find a constant time string comp
-        if ($hmacParam != $calculatedHmac) {
-            throw new AuthorizationException(__('hmac header did not match'));
-        }
+        return $hmacParam == $calculatedHmac;
     }
 }
