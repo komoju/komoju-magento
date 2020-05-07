@@ -56,17 +56,22 @@ class Cancel extends \Magento\Framework\App\Action\Action {
 
             return $result;
         };
-
+        
         $orderId = $this->getRequest()->getParam('order_id');
         $order = $this->getOrder($orderId);
+        
+        if ($this->orderCanBeCancelled($order)) {    
+            $this->logger->info('Cancelling order for order id: ' . $orderId);
+    
+            $order->setState(Order::STATE_CANCELED);
+            $order->setStatus(Order::STATE_CANCELED);
+            $order->save();
+    
+            $this->logger->info('Order cancelled for order id: ' . $orderId);
+        } else {
+            $this->logger->info('Order is not in cancellable state. Redirecting without it. Order id: ' . $orderId);
+        }
 
-        $this->logger->info('Cancelling order for order id: ' . $orderId);
-
-        $order->setState(Order::STATE_CANCELED);
-        $order->setStatus(Order::STATE_CANCELED);
-        $order->save();
-
-        $this->logger->info('Order cancelled for order id: ' . $orderId);
 
         $resultRedirect = $this->_resultFactory->create(ResultFactory::TYPE_REDIRECT);
         $resultRedirect->setUrl($this->_url->getUrl('/'));
@@ -89,5 +94,9 @@ class Cancel extends \Magento\Framework\App\Action\Action {
         $calculatedHmac = hash_hmac('sha256', $urlForComp, $secretKey);
         
         return hash_equals($hmacParam, $calculatedHmac);
+    }
+
+    private function orderCanBeCancelled($order) {
+        return ($order->getState() == Order::STATE_CANCELED || $order->getState() == STATE_PENDING_PAYMENT);
     }
 }
