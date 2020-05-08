@@ -3,6 +3,7 @@
 namespace Komoju\Payments\Controller\HostedPage;
 
 use Magento\Framework\App\ObjectManager;
+use Komoju\Payments\Controller\HostedPage\Cancel;
 
 class Redirect extends \Magento\Framework\App\Action\Action {
 
@@ -113,6 +114,6 @@ class Redirect extends \Magento\Framework\App\Action\Action {
         $cancelEndpoint = 'komoju/hostedpage/cancel?order_id=' . $orderId;
         $hmac = hash_hmac('sha256', $cancelEndpoint, $secretKey);
 
-        return $cancelEndpoint .= '&hmac='.$hmac; 
+        return $cancelEndpoint .= '&' . Cancel::HMAC_PARAM_KEY .'='.$hmac;
     }
 }

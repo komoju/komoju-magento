@@ -9,6 +9,8 @@ use Magento\Framework\Controller\ResultFactory;
 
 class Cancel extends \Magento\Framework\App\Action\Action {
 
+    const HMAC_PARAM_KEY = 'hmac';
+
     /**
      * @var \Magento\Framework\Controller\ResultFactory
      */
@@ -86,7 +88,7 @@ class Cancel extends \Magento\Framework\App\Action\Action {
     private function isHmacValid() {
         $requestParams = $this->getRequest()->getParams();
         $hmacParam = rtrim($requestParams['hmac'], "/");
-        unset($requestParams['hmac']);
+        unset($requestParams[self::HMAC_PARAM_KEY]);
         $secretKey = $this->config->getSecretKey();
 
         $queryString = http_build_query($requestParams);
