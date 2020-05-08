@@ -99,6 +99,6 @@ class Cancel extends \Magento\Framework\App\Action\Action {
     }
 
     private function orderCanBeCancelled($order) {
-        return ($order->getState() == Order::STATE_CANCELED || $order->getState() == STATE_PENDING_PAYMENT);
+        return ($order->getState() == Order::STATE_CANCELED || $order->getState() == Order::STATE_NEW);
     }
 }
