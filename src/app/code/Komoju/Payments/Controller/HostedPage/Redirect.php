@@ -126,5 +126,6 @@ class Redirect extends \Magento\Framework\App\Action\Action {
 
         $order->setState(ORDER::STATE_PENDING_PAYMENT);
         $order->setStatus(ORDER::STATE_PENDING_PAYMENT);
+        $order->save();
     }
 }
