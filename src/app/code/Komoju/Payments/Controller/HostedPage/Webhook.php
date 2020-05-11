@@ -90,10 +90,34 @@ class Webhook extends \Magento\Framework\App\Action\Action implements HttpPostAc
             $order->setStatus(Order::STATE_PROCESSING);
             // $order->addStatusHistoryComment('Order complete!');
             $order->save();
+        } elseif($webhookEvent->eventType() == 'payment.authorized') {
+            // TODO: save a status change comment
+        } elseif($webhookEvent->eventType() == 'payment.expired') {
+            $order->setState(Order::STATE_CANCELED);
+            $order->setStatus('Payment expired');
+            $order->save();
+        } elseif($webhookEvent->eventType() == 'payment.cancelled') {
+            $order->setState(Order::STATE_CANCELED);
+            $order->setStatus(Order::STATE_CANCELED);
+            $order->save();
+        } elseif($webhookEvent->eventType() == 'payment.failed') {
+            $order->setState(Order::STATE_CANCELED);
+            $order->setStatus('Payment failed');
+            $order->save();
+        } elseif($webhookEvent->eventType() == 'payment.refunded') {
+            // TODO: Implement once I figure out how Magento handles refunds
+        } else {
+            // unknown payment type, return a 500
+            $result = $this->_resultFactory->create(ResultFactory::TYPE_JSON);
+            $result->setHttpResponseCode(400);
+            $result->setData(['message' => 'Unknown event type: ' . $webhookEvent->eventType()]);
+            return $result;
         }
         
         $result = $this->_resultFactory->create(ResultFactory::TYPE_JSON);
         $result->setHttpResponseCode(200);
+        $result->setData('');
+        return $result;
     }
 
     /**
