@@ -3,6 +3,8 @@
 namespace Komoju\Payments\Controller\HostedPage;
 
 use Magento\Framework\App\ObjectManager;
+use Magento\Sales\Model\Order;
+
 use Komoju\Payments\Controller\HostedPage\Cancel;
 
 class Redirect extends \Magento\Framework\App\Action\Action {
@@ -48,7 +50,9 @@ class Redirect extends \Magento\Framework\App\Action\Action {
     public function execute() {
         $hostedPageUrl = $this->createHostedPageUrl();
 
-        $this->logger->info('******** hostedPageUrl: ' . $hostedPageUrl);
+        $this->markOrderAsPendingPayment();
+
+        $this->logger->info('redirecting user to hosted page at: ' . $hostedPageUrl);
 
         $resultRedirect = $this->_resultRedirectFactory->create();
         $resultRedirect->setUrl($hostedPageUrl);
@@ -115,5 +119,12 @@ class Redirect extends \Magento\Framework\App\Action\Action {
         $hmac = hash_hmac('sha256', $cancelEndpoint, $secretKey);
 
         return $cancelEndpoint .= '&' . Cancel::HMAC_PARAM_KEY .'='.$hmac;
+    }
+
+    private function markOrderAsPendingPayment() {
+        $order = $this->getOrder();
+
+        $order->setState(ORDER::STATE_PENDING_PAYMENT);
+        $order->setStatus(ORDER::STATE_PENDING_PAYMENT);
     }
 }
