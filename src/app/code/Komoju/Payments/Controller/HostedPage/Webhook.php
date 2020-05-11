@@ -86,8 +86,8 @@ class Webhook extends \Magento\Framework\App\Action\Action implements HttpPostAc
         // update order according to the type (mark as complete, authorized, failed, etc)
 
         if($webhookEvent->eventType() == 'payment.captured') {
-            $order->setState(Order::STATE_COMPLETE);
-            $order->setStatus(Order::STATE_COMPLETE);
+            $order->setState(Order::STATE_PROCESSING);
+            $order->setStatus(Order::STATE_PROCESSING);
             // $order->addStatusHistoryComment('Order complete!');
             $order->save();
         }
