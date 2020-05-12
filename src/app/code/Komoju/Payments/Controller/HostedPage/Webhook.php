@@ -88,17 +88,20 @@ class Webhook extends \Magento\Framework\App\Action\Action implements HttpPostAc
         if($webhookEvent->eventType() == 'payment.captured') {
             $order->setState(Order::STATE_PROCESSING);
             $order->setStatus(Order::STATE_PROCESSING);
-            // $order->addStatusHistoryComment('Order complete!');
+            $order->addStatusHistoryComment('Payment successfully received');
             $order->save();
         } elseif($webhookEvent->eventType() == 'payment.authorized') {
-            // TODO: save a status change comment
+            $order->addStatusHistoryComment('Received payment authorization for type: ' . $webhookEvent->paymentType() . 'Payment deadline is: ' . $webhookEvent->paymentDeadline());
+            $order->save();
         } elseif($webhookEvent->eventType() == 'payment.expired') {
             $order->setState(Order::STATE_CANCELED);
             $order->setStatus('Payment expired');
+            $order->addStatusHistoryComment('Payment was not received before expiry time');
             $order->save();
         } elseif($webhookEvent->eventType() == 'payment.cancelled') {
             $order->setState(Order::STATE_CANCELED);
             $order->setStatus(Order::STATE_CANCELED);
+            $order->addStatusHistoryComment('Received cancellation notice from Komoju');
             $order->save();
         } elseif($webhookEvent->eventType() == 'payment.failed') {
             $order->setState(Order::STATE_CANCELED);
@@ -107,7 +110,7 @@ class Webhook extends \Magento\Framework\App\Action\Action implements HttpPostAc
         } elseif($webhookEvent->eventType() == 'payment.refunded') {
             // TODO: Implement once I figure out how Magento handles refunds
         } else {
-            // unknown payment type, return a 500
+            // unknown payment type, return a 400
             $result = $this->_resultFactory->create(ResultFactory::TYPE_JSON);
             $result->setHttpResponseCode(400);
             $result->setData(['message' => 'Unknown event type: ' . $webhookEvent->eventType()]);

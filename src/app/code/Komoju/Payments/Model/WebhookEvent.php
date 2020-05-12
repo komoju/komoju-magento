@@ -95,6 +95,13 @@ class WebhookEvent {
     }
 
     /**
+     * A getter to retrieve the payment type from the webhook event
+     */
+    public function paymentType() {
+        return $this->additionalInformation()['type'];
+    }
+
+    /**
      * A getter to retrieve the tax from the webhook event
      * @return int
      */
@@ -117,5 +124,13 @@ class WebhookEvent {
      */
     public function amountRefunded() {
         return $this->data()['amount_refunded'];
+    }
+
+    /**
+     * A getter to retrieve the payment deadline from the webhook event
+     * @return string
+     */
+    public function paymentDeadline() {
+        return $this->data()['payment_deadline'];
     }
 }
