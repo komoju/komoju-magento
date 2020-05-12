@@ -1,0 +1,17 @@
+{
+    "komoju_external_payment": {
+        "column": {
+            "external_payment_id": true,
+            "sales_order_id": true,
+            "entity_id": true
+        },
+        "index": {
+            "KOMOJU_EXTERNAL_PAYMENT_SALES_ORDER_ID": true,
+            "KOMOJU_EXTERNAL_PAYMENT_EXTERNAL_PAYMENT_ID": true
+        },
+        "constraint": {
+            "PRIMARY": true,
+            "KOMOJU_EXTERNAL_PAYMENT_SALES_ORDER_ID_SALES_ORDER_ENTITY_ID": true
+        }
+    }
+}
