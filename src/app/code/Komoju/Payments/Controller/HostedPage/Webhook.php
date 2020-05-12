@@ -12,6 +12,7 @@ use Magento\Framework\App\RequestInterface;
 use Magento\Framework\App\Request\InvalidRequestException;
 
 use Komoju\Payments\Model\WebhookEvent;
+use Komoju\Payments\Plugin\WebhookEventProcessor;
 
 /**
  * API endpoint to receive Webhook notifications from Komoju. To make the
@@ -85,37 +86,7 @@ class Webhook extends \Magento\Framework\App\Action\Action implements HttpPostAc
         $order = $this->getOrder($orderId);
         // update order according to the type (mark as complete, authorized, failed, etc)
 
-        if($webhookEvent->eventType() == 'payment.captured') {
-            $order->setState(Order::STATE_PROCESSING);
-            $order->setStatus(Order::STATE_PROCESSING);
-            $order->addStatusHistoryComment('Payment successfully received');
-            $order->save();
-        } elseif($webhookEvent->eventType() == 'payment.authorized') {
-            $order->addStatusHistoryComment('Received payment authorization for type: ' . $webhookEvent->paymentType() . 'Payment deadline is: ' . $webhookEvent->paymentDeadline());
-            $order->save();
-        } elseif($webhookEvent->eventType() == 'payment.expired') {
-            $order->setState(Order::STATE_CANCELED);
-            $order->setStatus('Payment expired');
-            $order->addStatusHistoryComment('Payment was not received before expiry time');
-            $order->save();
-        } elseif($webhookEvent->eventType() == 'payment.cancelled') {
-            $order->setState(Order::STATE_CANCELED);
-            $order->setStatus(Order::STATE_CANCELED);
-            $order->addStatusHistoryComment('Received cancellation notice from Komoju');
-            $order->save();
-        } elseif($webhookEvent->eventType() == 'payment.failed') {
-            $order->setState(Order::STATE_CANCELED);
-            $order->setStatus('Payment failed');
-            $order->save();
-        } elseif($webhookEvent->eventType() == 'payment.refunded') {
-            // TODO: Implement once I figure out how Magento handles refunds
-        } else {
-            // unknown payment type, return a 400
-            $result = $this->_resultFactory->create(ResultFactory::TYPE_JSON);
-            $result->setHttpResponseCode(400);
-            $result->setData(['message' => 'Unknown event type: ' . $webhookEvent->eventType()]);
-            return $result;
-        }
+        WebhookEventProcessor::processEvent($webhookEvent, $order);
         
         $result = $this->_resultFactory->create(ResultFactory::TYPE_JSON);
         $result->setHttpResponseCode(200);
