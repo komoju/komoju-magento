@@ -31,15 +31,19 @@ class Redirect extends \Magento\Framework\App\Action\Action {
 
     private $order = false;
 
+    private $externalPayment;
+
 
     public function __construct(
         \Magento\Framework\App\Action\Context $context,
         \Magento\Framework\Controller\Result\RedirectFactory $resultRedirectFactory,
+        \Komoju\Payments\Model\ExternalPaymentFactory $externalPaymentFactory,
         \Magento\Checkout\Model\Session $checkoutSession,
         \Komoju\Payments\Gateway\Config\Config $config,
         \Psr\Log\LoggerInterface $logger = null
     ) {
         $this->logger = $logger ?: ObjectManager::getInstance()->get(\Psr\Log\LoggerInterface::class);
+        $this->externalPayment = $externalPaymentFactory->create();
         $this->_resultRedirectFactory = $resultRedirectFactory;
         $this->_checkoutSession = $checkoutSession;
         $this->config = $config;
@@ -93,6 +97,7 @@ class Redirect extends \Magento\Framework\App\Action\Action {
         $order = $this->getOrder();
         $billingAddress = $order->getBillingAddress();
         $cancelUrl = $this->createCancelUrl($order->getEntityId());
+        $externalOrderNum = $this->createExternalPayment($order);
 
         return array(
             "transaction[amount]" => $order->getGrandTotal(),
@@ -103,12 +108,10 @@ class Redirect extends \Magento\Framework\App\Action\Action {
             "transaction[customer][phone]" => $billingAddress->getTelephone(),
             "transaction[tax]" => $order->getTaxAmount(),
             "timestamp" => time(),
-            // "via" => "Magento",
-
-            // TODO make sure these are real values
             "transaction[return_url]" => $this->_url->getUrl('checkout/onepage/success'),
             "transaction[cancel_url]" => $this->_url->getUrl($cancelUrl),
-            "transaction[external_order_num]" => $order->getEntityId(),
+            "transaction[external_order_num]" => $externalOrderNum,
+            // "via" => "Magento",
         );
     }
 
@@ -127,5 +130,9 @@ class Redirect extends \Magento\Framework\App\Action\Action {
         $order->setState(ORDER::STATE_PENDING_PAYMENT);
         $order->setStatus(ORDER::STATE_PENDING_PAYMENT);
         $order->save();
+    }
+
+    private function createExternalPayment($order) {
+        return $this->externalPayment->createExternalPayment($order)->getExternalPaymentId();
     }
 }

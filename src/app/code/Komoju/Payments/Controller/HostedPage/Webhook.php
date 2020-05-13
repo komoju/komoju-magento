@@ -43,6 +43,8 @@ class Webhook extends \Magento\Framework\App\Action\Action implements HttpPostAc
      */
     private $config;
 
+    private $externalPayment;
+
     private $order = false;
 
 
@@ -50,12 +52,14 @@ class Webhook extends \Magento\Framework\App\Action\Action implements HttpPostAc
         \Magento\Framework\App\Action\Context $context,
         \Magento\Framework\Controller\ResultFactory $resultFactory,
         \Magento\Sales\Api\OrderRepositoryInterface $orderRepository,
+        \Komoju\Payments\Model\ExternalPaymentFactory $externalPaymentFactory,
         \Komoju\Payments\Gateway\Config\Config $config,
         \Psr\Log\LoggerInterface $logger = null
     ) {
         $this->logger = $logger ?: ObjectManager::getInstance()->get(\Psr\Log\LoggerInterface::class);
         $this->_resultFactory = $resultFactory;
         $this->orderRepository = $orderRepository;
+        $this->externalPayment = $externalPaymentFactory->create();
         $this->config = $config;
 
         return parent::__construct($context);
@@ -82,9 +86,8 @@ class Webhook extends \Magento\Framework\App\Action\Action implements HttpPostAc
         
         $this->logger->info('event type: ' . $webhookEvent->eventType());
 
-        $orderId = $webhookEvent->externalOrderNum();
-        $order = $this->getOrder($orderId);
-        // update order according to the type (mark as complete, authorized, failed, etc)
+        $externalOrderNum = $webhookEvent->externalOrderNum();
+        $order = $this->getOrder($externalOrderNum);
 
         WebhookEventProcessor::processEvent($webhookEvent, $order);
         
@@ -113,7 +116,9 @@ class Webhook extends \Magento\Framework\App\Action\Action implements HttpPostAc
         return true;
     }
 
-    private function getOrder($orderId) {
+    private function getOrder($externalOrderNum) {
+        $orderId = $this->externalPayment->getOrderIdForExternalOrderNum($externalOrderNum);
+
         return $this->orderRepository->get($orderId);
     }
 
