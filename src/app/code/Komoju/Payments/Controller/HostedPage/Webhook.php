@@ -89,7 +89,8 @@ class Webhook extends \Magento\Framework\App\Action\Action implements HttpPostAc
         $externalOrderNum = $webhookEvent->externalOrderNum();
         $order = $this->getOrder($externalOrderNum);
 
-        WebhookEventProcessor::processEvent($webhookEvent, $order);
+        $webhookEventProcessor = new WebhookEventProcessor($webhookEvent, $order);
+        $webhookEventProcessor->processEvent();
         
         $result = $this->_resultFactory->create(ResultFactory::TYPE_JSON);
         $result->setHttpResponseCode(200);
