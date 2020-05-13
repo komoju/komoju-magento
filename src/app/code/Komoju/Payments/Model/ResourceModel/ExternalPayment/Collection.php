@@ -1,6 +1,8 @@
 <?php
 namespace Komoju\Payments\Model\ResourceModel\ExternalPayment;
 
+use Magento\Framework\Exception\NoSuchEntityException;
+
 class Collection extends \Magento\Framework\Model\ResourceModel\Db\Collection\AbstractCollection
 {
 	/**
@@ -16,6 +18,10 @@ class Collection extends \Magento\Framework\Model\ResourceModel\Db\Collection\Ab
     public function getRecordForExternalOrderNum($externalOrderNum) {
         $collection = $this
             ->addFieldToFilter('external_payment_id', ['eq' => $externalOrderNum]);
+
+        if ($collection->getSize() < 1) {
+            throw new NoSuchEntityException();
+        }
 
         return $collection->getFirstItem();
     }

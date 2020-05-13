@@ -84,10 +84,17 @@ class Webhook extends \Magento\Framework\App\Action\Action implements HttpPostAc
         $this->logger->info('event type: ' . $webhookEvent->eventType());
 
         $externalOrderNum = $webhookEvent->externalOrderNum();
-        $order = $this->getOrder($externalOrderNum);
+        try {
+            $order = $this->getOrder($externalOrderNum);
+            
+            $webhookEventProcessor = new WebhookEventProcessor($webhookEvent, $order);
+            $webhookEventProcessor->processEvent();
+        } catch (NoSuchEntityException $exception) {
+            // if we can't find a matching komoju_external_payment then we're
+            // assuming that the order belongs to another system
+            $this->logger->info('No matching records found for external_order_num: ' . $externalOrderNum . '. Ignoring event');
+        }
 
-        $webhookEventProcessor = new WebhookEventProcessor($webhookEvent, $order);
-        $webhookEventProcessor->processEvent();
         
         $result = $this->_resultFactory->create(ResultFactory::TYPE_JSON);
         $result->setHttpResponseCode(200);
@@ -123,7 +130,6 @@ class Webhook extends \Magento\Framework\App\Action\Action implements HttpPostAc
     }
 
     private function isHmacValid() {
-        // get hmac from headers
         $hmacHeader = $this->getRequest()->getHeader('x-komoju-signature');
         $webhookSecretToken = $this->config->getWebhookSecretToken();
         $reqBody = $this->getRequest()->getContent();
