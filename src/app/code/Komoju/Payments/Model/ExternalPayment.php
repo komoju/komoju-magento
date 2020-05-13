@@ -1,5 +1,6 @@
 <?php
 namespace Komoju\Payments\Model;
+
 class ExternalPayment extends \Magento\Framework\Model\AbstractModel
 {
 	protected function _construct()
@@ -16,9 +17,5 @@ class ExternalPayment extends \Magento\Framework\Model\AbstractModel
         $this->save();
 
         return $this;
-    }
-
-    public function getOrderIdForExternalOrderNum($externalOrderNum) {
-        return $this->load($externalOrderNum, 'external_payment_id')->getSalesOrderId();
     }
 }

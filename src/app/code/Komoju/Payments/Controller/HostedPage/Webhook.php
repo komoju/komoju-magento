@@ -5,6 +5,7 @@ namespace Komoju\Payments\Controller\HostedPage;
 use Magento\Framework\App\ObjectManager;
 use Magento\Sales\Model\Order;
 use Magento\Framework\Exception\AuthorizationException;
+use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\Controller\ResultFactory;
 use Magento\Framework\App\Action\HttpPostActionInterface;
 use Magento\Framework\App\CsrfAwareActionInterface;
@@ -77,12 +78,8 @@ class Webhook extends \Magento\Framework\App\Action\Action implements HttpPostAc
 
         $this->logger->info('HMAC Valid, processing event');
 
-        
-        // grab body
         $requestBody = $this->getRequest()->getContent();
-        // convert to assoc array
         $webhookEvent = new WebhookEvent($requestBody);
-        // grab type
         
         $this->logger->info('event type: ' . $webhookEvent->eventType());
 
@@ -118,7 +115,9 @@ class Webhook extends \Magento\Framework\App\Action\Action implements HttpPostAc
     }
 
     private function getOrder($externalOrderNum) {
-        $orderId = $this->externalPayment->getOrderIdForExternalOrderNum($externalOrderNum);
+        $this->logger->info('$externalOrderNum:' . $externalOrderNum);
+        $payment = $this->externalPayment->getCollection()->getRecordForExternalOrderNum($externalOrderNum);
+        $orderId = $payment->getSalesOrderId();
 
         return $this->orderRepository->get($orderId);
     }
