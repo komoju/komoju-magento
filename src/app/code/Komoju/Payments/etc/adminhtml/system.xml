@@ -41,12 +41,12 @@
                     <label>Payment Methods</label>
                     <frontend_model>Magento\Config\Block\System\Config\Form\Fieldset</frontend_model>
                     <field id="enable_credit_card_payments" translate="label" type="select" showInDefault="1" showInWebsite="1">
-                        <label>Allow credit card</label>
+                        <label>Allow credit card payments</label>
                         <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                         <config_path>payment/komoju_payments/enable_credit_card_payments</config_path>
                     </field>
                     <field id="enable_konbini_payments" translate="label" type="select" showInDefault="1" showInWebsite="1">
-                        <label>Allow konbini</label>
+                        <label>Allow konbini payments</label>
                         <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                         <config_path>payment/komoju_payments/enable_konbini_payments</config_path>
                     </field>
