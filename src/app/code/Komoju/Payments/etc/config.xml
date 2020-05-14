@@ -10,7 +10,6 @@
                 <order_status>pending_payment</order_status>
                 <currency>JPY</currency>
                 <title>Komoju</title>
-                <description>Make your payment through Komoju: offline and online Japanese payments like Konbini, credit cards, WebMoney, ...</description>
                 <enable_credit_card_payments>1</enable_credit_card_payments>
                 <enable_konbini_payments>1</enable_konbini_payments>
                 <merchant_id />

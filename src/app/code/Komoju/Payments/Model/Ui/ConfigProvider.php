@@ -50,7 +50,6 @@ class ConfigProvider implements ConfigProviderInterface {
                 self::CODE => [
                     'isActive' => $isActive,
                     'title' => $this->config->getTitle($storeId),
-                    'description' => $this->config->getDescription(),
                     'enable_credit_card_payments' => $this->config->areCreditCardPaymentsEnabled(),
                     'enable_konbini_payments' => $this->config->areKonbiniPaymentsEnabled(),
                     'merchant_id'  => $this->config->getMerchantId(),

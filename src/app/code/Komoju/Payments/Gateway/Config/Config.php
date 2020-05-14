@@ -35,10 +35,6 @@ class Config extends \Magento\Payment\Gateway\Config\Config {
 
     public function getTitle($storeId = null) {
         return $this->getValue('title', $storeId);
-    }  
-    
-    public function getDescription($storeId = null) {
-        return $this->getValue('description', $storeId);
     }
 
     public function areCreditCardPaymentsEnabled($storeId = null) {

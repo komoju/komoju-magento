@@ -59,10 +59,6 @@
                         <label>Title</label>
                         <config_path>payment/komoju_payments/title</config_path>
                     </field>
-                    <field id="description" translate="label" type="text" showInDefault="1" showInWebsite="1" showInStore="1">
-                        <label>description</label>
-                        <config_path>payment/komoju_payments/description</config_path>
-                    </field>
                 </group>
             </group>
         </section>
