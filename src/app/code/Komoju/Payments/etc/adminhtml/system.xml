@@ -3,7 +3,7 @@
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
     <system>
         <section id="payment">
-            <group id="komoju_payments" translate="label" type="text" sortOrder="5" showInDefault="1" showInStore="1" showInWebsite="1">
+            <group id="komoju_payments" translate="label comment" type="text" sortOrder="5" showInDefault="1" showInStore="1" showInWebsite="1">
                 <label>Komoju</label>
                 <comment>Allows payments by Komoju, dedicated to Japanese online and offline payment gateways.</comment>
                 <attribute type="displayIn">recommended_solutions</attribute>
@@ -31,9 +31,8 @@
                         <config_path>payment/komoju_payments/secret_key</config_path>
                         <backend_model>Magento\Config\Model\Config\Backend\Encrypted</backend_model>
                     </field>
-                    <field id="webhook_secret_token" translate="label comment" type="obscure" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <field id="webhook_secret_token" translate="label" type="obscure" showInDefault="1" showInWebsite="1" showInStore="1">
                         <label>Webhook Secret Token</label>
-                        <comment>This is the secret token for the webhook</comment>
                         <config_path>payment/komoju_payments/webhook_secret_token</config_path>
                         <backend_model>Magento\Config\Model\Config\Backend\Encrypted</backend_model>
                     </field>
