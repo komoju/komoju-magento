@@ -55,8 +55,8 @@ define(
             
             for (let option in availablePaymentMethods) {
                 options.push({
-                    key: option,
-                    value: availablePaymentMethods[option]
+                    value: option,
+                    displayText: availablePaymentMethods[option]
                 });
             }
 
