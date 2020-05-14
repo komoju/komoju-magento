@@ -1,0 +1,17 @@
+"Credit Card","クレジットカード"
+Konbini,コンビニ
+"Payment Type","払いの種類"
+"Place Order","注文する"
+Komoju,Komoju
+"Allows payments by Komoju, dedicated to Japanese online and offline payment gateways.","日本のオンラインおよびオフライン決済ゲートウェイに特化した、Komojuによる決済を可能にします。"
+"Enable this Solution","このソリューションを有効にする"
+"Enable debug mode","デバッグモードを有効にする"
+"API Settings","API設定"
+"Komoju merchant ID","Komoju 商人ID"
+"Secret Key from Komoju","Komojuの秘密鍵"
+"Webhook Secret Token","Webhookシークレットトークン"
+"Payment Methods","お支払い方法"
+"Allow credit card payments","クレジットカード決済を許可する"
+"Allow konbini payments","コンビニ支払いを許可する"
+"Checkout Settings","チェックアウト設定"
+Title,題名
