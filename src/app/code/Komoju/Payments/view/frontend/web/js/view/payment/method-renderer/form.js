@@ -1,11 +1,13 @@
 define(
     [
         "jquery",
-        "Magento_Checkout/js/view/payment/default"
+        "Magento_Checkout/js/view/payment/default",
+        "Magento_Checkout/js/model/full-screen-loader",
     ],
     function (
         $,
-        Component
+        Component,
+        fullScreenLoader,
     ) {
     "use strict";
     return Component.extend({
@@ -17,6 +19,7 @@ define(
         },
 
         afterPlaceOrder: function() {
+            fullScreenLoader.startLoader();
             $.mage.redirect(
                 `${this.redirectUrl()}?payment_method=${this.paymentMethod}`
             );
