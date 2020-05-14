@@ -10,7 +10,7 @@ define(
     "useStrict";
     rendererList.push({
         type: "komoju_payments",
-        component: "Komoju_Payments/js/view/payment/method-renderer/cc-form",
+        component: "Komoju_Payments/js/view/payment/method-renderer/form",
     });
 
     return Component.extend({});

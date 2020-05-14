@@ -10,7 +10,7 @@ define(
     "use strict";
     return Component.extend({
         defaults: {
-            template: "Komoju_Payments/payment/komoju_cc_form",
+            template: "Komoju_Payments/payment/form",
             active: true,
             paymentMethod: '',
             redirectAfterPlaceOrder: false,
