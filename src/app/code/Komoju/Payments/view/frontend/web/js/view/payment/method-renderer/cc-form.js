@@ -28,6 +28,11 @@ define(
             return window.checkoutConfig.payment[code];
         },
 
+        getAvailablePaymentMethods: function() {
+            let config = this.getConfig();
+            return config.available_payment_methods;
+        },
+
         shouldShowCreditCardOption: function() {
             let config = this.getConfig();
             return config.enable_credit_card_payments;
@@ -45,16 +50,13 @@ define(
 
         getEnabledPaymentTypes: function() {
             let options = [];
-            
-            if (this.shouldShowCreditCardOption()) {
-                options.push({
-                    key: "credit_card", value: "Credit Card"}
-                );
-            }
 
-            if (this.shouldShowKonbiniOption()) {
+            const availablePaymentMethods = this.getAvailablePaymentMethods();
+            
+            for (let option in availablePaymentMethods) {
                 options.push({
-                    key: "konbini", value: "Konbini"
+                    key: option,
+                    value: availablePaymentMethods[option]
                 });
             }
 

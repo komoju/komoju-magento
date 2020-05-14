@@ -50,13 +50,25 @@ class ConfigProvider implements ConfigProviderInterface {
                 self::CODE => [
                     'isActive' => $isActive,
                     'title' => $this->config->getTitle($storeId),
-                    'enable_credit_card_payments' => $this->config->areCreditCardPaymentsEnabled(),
-                    'enable_konbini_payments' => $this->config->areKonbiniPaymentsEnabled(),
+                    'available_payment_methods' => $this->createPaymentMethodOptions(),
                     'merchant_id'  => $this->config->getMerchantId(),
                     'redirect_url' => $this->config->getRedirectUrl(),
                 ]
             ]
         ];
+    }
+
+    private function createPaymentMethodOptions() {
+        $paymentMethodOptions = [];
+        if ($this->config->areCreditCardPaymentsEnabled()) {
+            $paymentMethodOptions['credit_card'] = __('Credit Card');
+        }
+
+        if ($this->config->areKonbiniPaymentsEnabled()) {
+            $paymentMethodOptions['konbini'] = __('Konbini');
+        }
+
+        return $paymentMethodOptions;
     }
 
 }
