@@ -2,10 +2,12 @@
 
 namespace Komoju\Payments\Model\Ui;
 
+use Magento\Framework\App\ObjectManager;
 use Magento\Checkout\Model\ConfigProviderInterface;
-use Komoju\Payments\Gateway\Config\Config;
 use Magento\Framework\Session\SessionManagerInterface;
 use Magento\Framework\App\Config\ScopeConfigInterface;
+
+use Komoju\Payments\Gateway\Config\Config;
 
 class ConfigProvider implements ConfigProviderInterface {
     const CODE = 'komoju_payments';
@@ -21,6 +23,11 @@ class ConfigProvider implements ConfigProviderInterface {
     private $session;
 
     /**
+     * @var Psr\Log\LoggerInterface
+     */
+    private $logger;
+
+    /**
      * Constructor
      *
      * @param Config $config
@@ -29,11 +36,13 @@ class ConfigProvider implements ConfigProviderInterface {
     public function __construct(
         Config $config,
         SessionManagerInterface $session,
-        ScopeConfigInterface $scopeConfig
+        ScopeConfigInterface $scopeConfig,
+        \Psr\Log\LoggerInterface $logger = null
     ) {
         $this->config = $config;
         $this->session = $session;
         $this->scopeConfig = $scopeConfig;
+        $this->logger = $logger ?: ObjectManager::getInstance()->get(\Psr\Log\LoggerInterface::class);
     }
 
     /**
@@ -43,7 +52,7 @@ class ConfigProvider implements ConfigProviderInterface {
      */
     public function getConfig() {
         $storeId = $this->session->getStoreId();
-        $isActive = $this->config->isActive($storeId);
+        $isActive = $this->shouldEnableKomojuPayments();
 
         return [
             'payment' => [
@@ -71,4 +80,8 @@ class ConfigProvider implements ConfigProviderInterface {
         return $paymentMethodOptions;
     }
 
+    private function shouldEnableKomojuPayments() {
+        $storeId = $this->session->getStoreId();
+        return $this->config->isActive($storeId);
+    }
 }
