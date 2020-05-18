@@ -9,8 +9,9 @@
                 <attribute type="displayIn">recommended_solutions</attribute>
                 <fieldset_css>complex komoju-section</fieldset_css>
                 <frontend_model>Magento\Paypal\Block\Adminhtml\System\Config\Fieldset\Payment</frontend_model>
-                <field id="active" translate="label" type="select" sortOrder="1" showInDefault="1" showInWebsite="1">
+                <field id="active" translate="label comment" type="select" sortOrder="1" showInDefault="1" showInWebsite="1">
                     <label>Enable this Solution</label>
+                    <comment>This plugin can only work if the store's base currency is one of: JPY</comment>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                     <config_path>payment/komoju_payments/active</config_path>
                 </field>

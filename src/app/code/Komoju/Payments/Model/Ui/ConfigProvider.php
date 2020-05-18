@@ -11,6 +11,8 @@ use Komoju\Payments\Gateway\Config\Config;
 
 class ConfigProvider implements ConfigProviderInterface {
     const CODE = 'komoju_payments';
+    
+    // when this array updates make sure to update the comment at system.xml:14
     const ALLOWABLE_CURRENCY_CODES = ['JPY'];
 
         /**
