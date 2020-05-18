@@ -34,4 +34,11 @@
         </arguments>
     </type>
 
+    <type name="Komoju\Payments\Observer\PaymentMethodAvailable">
+        <arguments>
+            <argument name="methodCode" xsi:type="const">Komoju\Payments\Model\Ui\ConfigProvider::CODE</argument>
+            <argument name="allowableCurrencyCodes" xsi:type="const">Komoju\Payments\Model\Ui\ConfigProvider::ALLOWABLE_CURRENCY_CODES</argument>
+        </arguments>
+    </type>
+
 </config>
