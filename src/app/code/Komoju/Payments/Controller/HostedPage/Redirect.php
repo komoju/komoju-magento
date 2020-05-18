@@ -40,6 +40,7 @@ class Redirect extends \Magento\Framework\App\Action\Action {
         \Komoju\Payments\Model\ExternalPaymentFactory $externalPaymentFactory,
         \Magento\Checkout\Model\Session $checkoutSession,
         \Komoju\Payments\Gateway\Config\Config $config,
+        \Magento\Store\Model\StoreManagerInterface $storeManager,
         \Psr\Log\LoggerInterface $logger = null
     ) {
         $this->logger = $logger ?: ObjectManager::getInstance()->get(\Psr\Log\LoggerInterface::class);
@@ -47,6 +48,7 @@ class Redirect extends \Magento\Framework\App\Action\Action {
         $this->_resultRedirectFactory = $resultRedirectFactory;
         $this->_checkoutSession = $checkoutSession;
         $this->config = $config;
+        $this->storeManager = $storeManager;
 
         return parent::__construct($context);
     }
@@ -98,10 +100,11 @@ class Redirect extends \Magento\Framework\App\Action\Action {
         $billingAddress = $order->getBillingAddress();
         $cancelUrl = $this->createCancelUrl($order->getEntityId());
         $externalOrderNum = $this->createExternalPayment($order);
+        $currencyCode = $this->storeManager->getStore()->getBaseCurrencyCode();
 
         return array(
             "transaction[amount]" => $order->getGrandTotal(),
-            "transaction[currency]" => $order->getOrderCurrencyCode(),
+            "transaction[currency]" => $currencyCode,
             "transaction[customer][email]" => $billingAddress->getEmail(),
             "transaction[customer][given_name]" => $billingAddress->getFirstname(),
             "transaction[customer][family_name]" => $billingAddress->getLastname(),
