@@ -60,7 +60,20 @@ class WebhookEventProcessor {
 
             $this->order->save();
         } elseif($this->webhookEvent->eventType() == 'payment.refunded') {
-            // TODO: Implement once I figure out how Magento handles refunds
+            $this->order->setState(Order::STATE_COMPLETE);
+            $this->order->setStatus(Order::STATE_COMPLETE);
+
+            $grandTotal = $this->order->getBaseGrandTotal();
+            $refundedAmount = $this->webhookEvent->amountRefunded();
+
+            if ($grandTotal == $refundedAmount) {
+                $statusHistoryComment = $this->prependExternalOrderNum('Full amount for order refunded. Amount: ' . $refundedAmount);
+            } else {
+                $statusHistoryComment = $this->prependExternalOrderNum('Partial amount for order refunded. Amount: ' . $refundedAmount );
+            }
+
+            $this->order->addStatusHistoryComment($statusHistoryComment);
+            $this->order->save();
         } else {
             throw new UnknownEventException('Unknown event type: ' . $this->webhookEvent->eventType());
         }
