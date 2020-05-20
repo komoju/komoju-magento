@@ -24,10 +24,13 @@ class WebhookEventProcessor {
      */
     public function processEvent() {
         if($this->webhookEvent->eventType() == 'payment.captured') {
+            $paymentAmount = $this->webhookEvent->amount();
+            $currentTotalPaid = $this->order->getTotalPaid();
+            $this->order->setTotalPaid($paymentAmount + $currentTotalPaid);
             $this->order->setState(Order::STATE_PROCESSING);
             $this->order->setStatus(Order::STATE_PROCESSING);
             
-            $statusHistoryComment = $this->prependExternalOrderNum('Payment successfully received');
+            $statusHistoryComment = $this->prependExternalOrderNum('Payment successfully received in the amount of: ' . $paymentAmount . ' ' . $this->webhookEvent->currency());
             $this->order->addStatusHistoryComment($statusHistoryComment);
 
             $this->order->save();
