@@ -10,10 +10,25 @@ class WebhookEventProcessor {
 
     private $webhookEvent;
     private $order;
+    private $creditmemoFactory;
+    private $creditmemoService;
+    private $komojuRefundFactory;
+    private $logger;
 
-    public function __construct($webhookEvent, $order) {
-        $this->webhookEvent = $webhookEvent;
-        $this->order = $order;
+    public function __construct(
+        \Magento\Sales\Model\Order\CreditmemoFactory $creditmemoFactory,
+        \Magento\Sales\Model\Service\CreditmemoService $creditmemoService,
+        \Komoju\Payments\Model\RefundFactory $komojuRefundFactory,
+        \Psr\Log\LoggerInterface $logger,
+        \Komoju\Payments\Model\WebhookEvent $webhookEvent,
+        \Magento\Sales\Model\Order $order
+        ) {
+            $this->creditmemoFactory = $creditmemoFactory;
+            $this->creditmemoService = $creditmemoService;
+            $this->komojuRefundFactory = $komojuRefundFactory;
+            $this->logger = $logger;
+            $this->webhookEvent = $webhookEvent;
+            $this->order = $order;
     }
 
     /**
@@ -63,19 +78,79 @@ class WebhookEventProcessor {
 
             $this->order->save();
         } elseif($this->webhookEvent->eventType() == 'payment.refunded') {
+            $refundedAmount = $this->webhookEvent->amountRefunded();
+            $refundCurrency = $this->webhookEvent->currency();
+            
+            $statusHistoryComment = $this->prependExternalOrderNum('Order has been fully refunded.');
+            
+            // $baseTotalNotRefunded = $invoice->getBaseGrandTotal() - $invoice->getBaseTotalRefunded();
+            // $baseToOrderRate = $order->getBaseToOrderRate();
+            // $creditmemo->setBaseSubtotal($baseTotalNotRefunded);
+            // $creditmemo->setSubtotal($baseTotalNotRefunded * $baseToOrderRate);
+            // $creditmemo->setBaseGrandTotal($refundAmount);
+            // $creditmemo->setGrandTotal($refundAmount * $baseToOrderRate);
+            
             $this->order->setState(Order::STATE_COMPLETE);
             $this->order->setStatus(Order::STATE_COMPLETE);
-
+            $this->order->addStatusHistoryComment($statusHistoryComment);
+            $this->order->save();
+        } elseif($this->webhookEvent->eventType() == 'payment.refund.created') {
             $grandTotal = $this->order->getBaseGrandTotal();
-            $refundedAmount = $this->webhookEvent->amountRefunded();
+            $totalAmountRefunded = $this->webhookEvent->amountRefunded();
+            $refundCurrency = $this->webhookEvent->currency();
 
-            if ($grandTotal == $refundedAmount) {
-                $statusHistoryComment = $this->prependExternalOrderNum('Full amount for order refunded. Amount: ' . $refundedAmount);
-            } else {
-                $statusHistoryComment = $this->prependExternalOrderNum('Partial amount for order refunded. Amount: ' . $refundedAmount );
+            $this->order->setTotalRefunded($totalAmountRefunded);
+
+            // for each refund in the event check if it has an existing credit memo
+            // if it does then ignore it (assuming it was processed in another event)
+            // for each refund that DOESN'T have a record, create one.
+
+            $refunds = $this->webhookEvent->getRefunds();
+            $refundsToProcess = [];
+            
+            foreach ($refunds as $refund) {
+                $refundId = $refund['id'];
+                $komojuRefundCollection = $this->komojuRefundFactory->create()->getCollection();
+                $refundRecord = $komojuRefundCollection->getRecordForRefundId($refundId, $this->logger);
+
+                if (!$refundRecord) {
+                    array_push($refundsToProcess, $refund);
+                }
             }
 
-            $this->order->addStatusHistoryComment($statusHistoryComment);
+            foreach($refundsToProcess as $refund) {
+                $refundId = $refund['id'];
+                $refundedAmount = $refund['amount'];
+                $statusHistoryComment = $this->prependExternalOrderNum('Refund for order created. Amount: ' . $refundedAmount . ' ' . $refundCurrency );
+
+                $creditmemo = $this->creditmemoFactory->createByOrder($this->order);
+                $creditmemo->setSubtotal($refundedAmount);
+                $creditmemo->addComment($statusHistoryComment);
+                $this->creditmemoService->refund($creditmemo, true);
+
+                $creditmemoId = $creditmemo->getEntityId();
+                $komojuRefund = $this->komojuRefundFactory->create();
+                $komojuRefund->addData([
+                    'refund_id' => $refundId,
+                    'sales_creditmemo_id' => $creditmemoId,
+                ]);
+                $komojuRefund->save();
+
+                $this->order->addStatusHistoryComment($statusHistoryComment);
+            }
+            
+            // $baseTotalNotRefunded = $invoice->getBaseGrandTotal() - $invoice->getBaseTotalRefunded();
+            // $baseToOrderRate = $order->getBaseToOrderRate();
+            // $creditmemo->setBaseSubtotal($baseTotalNotRefunded);
+            // $creditmemo->setSubtotal($baseTotalNotRefunded * $baseToOrderRate);
+            // $creditmemo->setBaseGrandTotal($refundAmount);
+            // $creditmemo->setGrandTotal($refundAmount * $baseToOrderRate);
+
+            // $creditmemo = $this->creditmemoFactory->createByOrder($this->order);
+            // $creditmemo->setSubtotal($refundedAmount);
+            // $creditmemo->addComment($statusHistoryComment);
+            // $this->creditmemoService->refund($creditmemo, true);
+
             $this->order->save();
         } else {
             throw new UnknownEventException('Unknown event type: ' . $this->webhookEvent->eventType());

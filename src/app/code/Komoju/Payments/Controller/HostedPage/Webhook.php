@@ -46,21 +46,33 @@ class Webhook extends \Magento\Framework\App\Action\Action implements HttpPostAc
 
     private $externalPayment;
 
+    private $komojuRefundFactory;
+
     private $order = false;
+
+    private $creditmemoFactory;
+
+    private $creditmemoService;
 
 
     public function __construct(
         \Magento\Framework\App\Action\Context $context,
         \Magento\Framework\Controller\ResultFactory $resultFactory,
         \Magento\Sales\Api\OrderRepositoryInterface $orderRepository,
+        \Magento\Sales\Model\Order\CreditmemoFactory $creditmemoFactory,
+        \Magento\Sales\Model\Service\CreditmemoService $creditmemoService,
         \Komoju\Payments\Model\ExternalPaymentFactory $externalPaymentFactory,
+        \Komoju\Payments\Model\RefundFactory $komojuRefundFactory,
         \Komoju\Payments\Gateway\Config\Config $config,
         \Psr\Log\LoggerInterface $logger = null
     ) {
         $this->logger = $logger ?: ObjectManager::getInstance()->get(\Psr\Log\LoggerInterface::class);
         $this->_resultFactory = $resultFactory;
         $this->orderRepository = $orderRepository;
+        $this->creditmemoFactory = $creditmemoFactory;
+        $this->creditmemoService = $creditmemoService;
         $this->externalPayment = $externalPaymentFactory->create();
+        $this->komojuRefundFactory = $komojuRefundFactory;
         $this->config = $config;
 
         return parent::__construct($context);
@@ -87,7 +99,14 @@ class Webhook extends \Magento\Framework\App\Action\Action implements HttpPostAc
         try {
             $order = $this->getOrder($externalOrderNum);
             
-            $webhookEventProcessor = new WebhookEventProcessor($webhookEvent, $order);
+            $webhookEventProcessor = new WebhookEventProcessor(
+                $this->creditmemoFactory,
+                $this->creditmemoService,
+                $this->komojuRefundFactory,
+                $this->logger,
+                $webhookEvent,
+                $order
+            );
             $webhookEventProcessor->processEvent();
         } catch (NoSuchEntityException $exception) {
             // if we can't find a matching komoju_external_payment then we're
