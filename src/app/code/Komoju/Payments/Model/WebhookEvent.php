@@ -118,12 +118,20 @@ class WebhookEvent {
     }
 
     /**
-     * A get to retrieve the amount refunded from the webhook event. This will
+     * A getter to retrieve the amount refunded from the webhook event. This will
      * only be sent on payment.refunded events
      * @return int
      */
     public function amountRefunded() {
         return $this->data()['amount_refunded'];
+    }
+
+    /**
+     * A getter to retrieve the refunds
+     * @return array
+     */
+    public function getRefunds() {
+        return $this->data()['refunds'];
     }
 
     /**
