@@ -24,4 +24,24 @@
             <column name="external_payment_id"/>
         </index>
     </table>
+
+    <table name="komoju_refund" resource="default" engine="innodb" comment="Refund mapper for Komoju refunds to credit memos">
+        <!-- table column config  -->
+        <column xsi:type="int" name="entity_id" padding="10" unsigned="true" nullable="false" identity="true" comment="Komoju Refund mapper ID"/>
+        <column xsi:type="varchar" name="refund_id" length="32" nullable="false" comment="Komoju Refund ID"/>
+        <column xsi:type="int" name="sales_creditmemo_id"  padding="10" unsigned="true" nullable="false" identity="false" comment="Sales Credit Memo ID"/>
+
+        <!-- Setting constraints, primary and foreign keys  -->
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="entity_id"/>
+        </constraint>
+        <constraint xsi:type="foreign" referenceId="KOMOJU_REFUND_SALES_CREDITMEMO_ID_SALES_CREDITMEMO_ENTITY_ID"
+                    table="komoju_refund" column="sales_creditmemo_id" referenceTable="sales_creditmemo"
+                    referenceColumn="entity_id" onDelete="CASCADE"/>
+        
+        <!-- Setting up indexes -->
+        <index referenceId="KOMOJU_REFUND_REFUND_ID" indexType="btree">
+            <column name="refund_id"/>
+        </index>
+    </table>
 </schema>

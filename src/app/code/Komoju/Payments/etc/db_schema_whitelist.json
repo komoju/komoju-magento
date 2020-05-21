@@ -13,5 +13,20 @@
             "PRIMARY": true,
             "KOMOJU_EXTERNAL_PAYMENT_SALES_ORDER_ID_SALES_ORDER_ENTITY_ID": true
         }
+    },
+    "komoju_refund": {
+        "column": {
+            "entity_id": true,
+            "sales_creditmemo_id": true,
+            "refund_id": true
+        },
+        "index": {
+            "KOMOJU_REFUND_ENTITY_ID": true,
+            "KOMOJU_REFUND_REFUND_ID": true
+        },
+        "constraint": {
+            "PRIMARY": true,
+            "KOMOJU_REFUND_SALES_CREDITMEMO_ID_SALES_CREDITMEMO_ENTITY_ID": true
+        }
     }
 }
