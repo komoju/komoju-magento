@@ -56,7 +56,7 @@ class WebhookEventProcessor {
             $this->order->save();
         } elseif($this->webhookEvent->eventType() == 'payment.expired') {
             $this->order->setState(Order::STATE_CANCELED);
-            $this->order->setStatus('Payment expired');
+            $this->order->setStatus(Order::STATE_CANCELED);
 
             $statusHistoryComment = $this->prependExternalOrderNum('Payment was not received before expiry time');
             $this->order->addStatusHistoryComment($statusHistoryComment);
@@ -71,7 +71,7 @@ class WebhookEventProcessor {
             $this->order->save();
         } elseif($this->webhookEvent->eventType() == 'payment.failed') {
             $this->order->setState(Order::STATE_CANCELED);
-            $this->order->setStatus('Payment failed');
+            $this->order->setStatus(Order::STATE_CANCELED);
 
             $statusHistoryComment = $this->prependExternalOrderNum('Payment failed');
             $this->order->addStatusHistoryComment($statusHistoryComment);
@@ -83,13 +83,6 @@ class WebhookEventProcessor {
             
             $statusHistoryComment = $this->prependExternalOrderNum('Order has been fully refunded.');
             
-            // $baseTotalNotRefunded = $invoice->getBaseGrandTotal() - $invoice->getBaseTotalRefunded();
-            // $baseToOrderRate = $order->getBaseToOrderRate();
-            // $creditmemo->setBaseSubtotal($baseTotalNotRefunded);
-            // $creditmemo->setSubtotal($baseTotalNotRefunded * $baseToOrderRate);
-            // $creditmemo->setBaseGrandTotal($refundAmount);
-            // $creditmemo->setGrandTotal($refundAmount * $baseToOrderRate);
-            
             $this->order->setState(Order::STATE_COMPLETE);
             $this->order->setStatus(Order::STATE_COMPLETE);
             $this->order->addStatusHistoryComment($statusHistoryComment);
@@ -100,10 +93,6 @@ class WebhookEventProcessor {
             $refundCurrency = $this->webhookEvent->currency();
 
             $this->order->setTotalRefunded($totalAmountRefunded);
-
-            // for each refund in the event check if it has an existing credit memo
-            // if it does then ignore it (assuming it was processed in another event)
-            // for each refund that DOESN'T have a record, create one.
 
             $refunds = $this->webhookEvent->getRefunds();
             $refundsToProcess = [];
@@ -145,11 +134,6 @@ class WebhookEventProcessor {
             // $creditmemo->setSubtotal($baseTotalNotRefunded * $baseToOrderRate);
             // $creditmemo->setBaseGrandTotal($refundAmount);
             // $creditmemo->setGrandTotal($refundAmount * $baseToOrderRate);
-
-            // $creditmemo = $this->creditmemoFactory->createByOrder($this->order);
-            // $creditmemo->setSubtotal($refundedAmount);
-            // $creditmemo->addComment($statusHistoryComment);
-            // $this->creditmemoService->refund($creditmemo, true);
 
             $this->order->save();
         } else {
