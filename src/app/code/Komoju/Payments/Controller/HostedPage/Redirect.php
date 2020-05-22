@@ -7,6 +7,12 @@ use Magento\Sales\Model\Order;
 
 use Komoju\Payments\Controller\HostedPage\Cancel;
 
+/**
+ * The Redirect endpoint is responsible for creating the Hosted Page URL
+ * and redirecting the customers to it to capture payment. This endpoint is
+ * called from the checkout page js, after the order details have been captured and
+ * saved by Magento.
+ */
 class Redirect extends \Magento\Framework\App\Action\Action {
 
     /**
@@ -29,8 +35,14 @@ class Redirect extends \Magento\Framework\App\Action\Action {
      */
     private $config;
 
+    /**
+     * @var \Magento\Sales\Model\Order|false
+     */
     private $order = false;
 
+    /**
+     * @var \Komoju\Payments\Model\ExternalPayment
+     */
     private $externalPayment;
 
 
@@ -66,6 +78,11 @@ class Redirect extends \Magento\Framework\App\Action\Action {
         return $resultRedirect;
     }
 
+    /**
+     * Constructs the Hosted Page URL as per the docs:
+     * https://docs.komoju.com/en/hosted_page/overview/#creating_a_payment.
+     * @return string The Hosted Page Url
+     */
     private function createHostedPageUrl() {
         $hostedPageParams = $this->getHostedPageParams();
         $paymentMethod = $this->getRequest()->getParam('payment_method');
@@ -87,6 +104,15 @@ class Redirect extends \Magento\Framework\App\Action\Action {
 		return 'https://komoju.com/'.$komojuEndpoint.$paymentMethod.'/new'. '?' . $queryString;
     }
 
+    /**
+     * gets the last order made from the checkoutSession. The checkoutSession
+     * is constructed from the request so this is scoped to the request that
+     * was sent to this endpoint, and not the last order made in the entire app.
+     * I'm not sure what the difference between the last order and last "real"
+     * order is, but this seems to be the commonly accepted way to access this
+     * data.
+     * @return \Magento\Sales\Model\Order
+     */
     private function getOrder() {
 
         if (!$this->order) {
@@ -95,6 +121,11 @@ class Redirect extends \Magento\Framework\App\Action\Action {
         return $this->order;
     }
 
+    /**
+     * Creates the necessary parameters to pass to the hosted page API to get
+     * capture payment from the customer
+     * @return array
+     */
     private function getHostedPageParams() {
         $order = $this->getOrder();
         $billingAddress = $order->getBillingAddress();
@@ -118,6 +149,13 @@ class Redirect extends \Magento\Framework\App\Action\Action {
         );
     }
 
+    /**
+     * Creates the cancel url for the cancel endpoint in this plugin. Because we
+     * don't want to leave an order in limbo if the user clicks the cancel link
+     * we have a specific endpoint that takes the order id and HMAC token and marks
+     * the order as cancelled in the system
+     * @return string 
+     */
     private function createCancelUrl($orderId) {
         $secretKey = $this->config->getSecretKey();
 
@@ -127,6 +165,13 @@ class Redirect extends \Magento\Framework\App\Action\Action {
         return $cancelEndpoint .= '&' . Cancel::HMAC_PARAM_KEY .'='.$hmac;
     }
 
+    /**
+     * Marks the order as pending in the database. Because at this point
+     * the customer has submitted the order and it's been saved in the system
+     * but have not paid for it the order is being marked as awaiting payment so
+     * the Magento admins have a better understanding of where the order is at
+     * @return void
+     */
     private function markOrderAsPendingPayment() {
         $order = $this->getOrder();
 
@@ -135,6 +180,20 @@ class Redirect extends \Magento\Framework\App\Action\Action {
         $order->save();
     }
 
+    /**
+     * Because the webhook sends events for changes to transactions it's
+     * possible (but not supported) to have multiple storefronts connected to the
+     * same Komoju account. Because the webhook events use the external_order_num
+     * to indicate which order the event relates to there could be naming collisions
+     * for multiple systems (A good example of this would be multiple systems that
+     * both an incrementing id field. In that case both systems would have a order
+     * with ID 1, and there's no way to know which order the event relates to). To
+     * deal with this possibility we're constructing an id unique to each instance
+     * of the plugin and tying it to the order. When a webhook event is send this
+     * unique id is then mapped back to the relevant order
+     * @var \Magento\Sales\Model\Order $order
+     * @return \Komoju\Payments\Model\ExternalPayment
+     */
     private function createExternalPayment($order) {
         return $this->externalPayment->createExternalPayment($order)->getExternalPaymentId();
     }

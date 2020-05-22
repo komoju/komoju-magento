@@ -44,14 +44,29 @@ class Webhook extends \Magento\Framework\App\Action\Action implements HttpPostAc
      */
     private $config;
 
+    /**
+     * @var \Komoju\Payments\Model\ExternalPayment
+     */
     private $externalPayment;
 
+    /**
+     * @var \Komoju\Payments\Model\RefundFactory
+     */
     private $komojuRefundFactory;
 
+    /**
+     * @var \Magento\Sales\Model\Order|false
+     */
     private $order = false;
 
+    /**
+     * @var \Magento\Sales\Model\Order\CreditmemoFactory
+     */
     private $creditmemoFactory;
 
+    /**
+     * @var \Magento\Sales\Model\Service\CreditmemoService
+     */
     private $creditmemoService;
 
 
@@ -122,24 +137,35 @@ class Webhook extends \Magento\Framework\App\Action\Action implements HttpPostAc
     }
 
     /**
-     * Required to implement by the CsrfAwareActionInterface. Since all requests
-     * are valid there's no need for any validation exception handling, so
-     * returning null just uses Magento's defaults.
+     * Required to be implemented by the CsrfAwareActionInterface. Since request
+     * validation is being handled by the X-Komoju-Signature HMAC we will never
+     * throw a CSRF validation exception. Returning null defaults to using
+     * Magento's internal exception creation, which doesn't matter since it 
+     * will never be executed.
      */
     public function createCsrfValidationException(RequestInterface $request): ?InvalidRequestException {
         return null;
     }
 
     /**
-     * By default all non-AJAX post requests do CSRF checking. Because this
-     * endpoint is only receiving JSON requests there is no CSRF token, so 
-     * returning true here to mark all requests as CSRF valid. If this is not
-     * set then Magento will fail on all requests from Komoju
+     * Required to be implemented by the CsrfAwareActionInterface. By default
+     * all non-AJAX post requests do CSRF checking. Because the webhook requests
+     * are being validated with the HMAC header, and this is not a form, we can't
+     * validate with CSRF tokens. To prevent this from throwing an error we need
+     * to explicitly return true to overwrite the check.
      */
     public function validateForCsrf(RequestInterface $request): ?bool {
         return true;
     }
 
+    /**
+     * Finds the order that maps to the external_order_num sent in the webhook
+     * If it can't find a matching Order then we're assuming that the order belongs
+     * to a separate system and ignoring any events sent for it.
+     * @var string $externalOrderNum
+     * @return Magento\Sales\Model\Order
+     * @throws Magento\Framework\Exception\NoSuchEntityException
+     */
     private function getOrder($externalOrderNum) {
         $this->logger->info('$externalOrderNum:' . $externalOrderNum);
         $payment = $this->externalPayment->getCollection()->getRecordForExternalOrderNum($externalOrderNum);
@@ -148,6 +174,13 @@ class Webhook extends \Magento\Framework\App\Action\Action implements HttpPostAc
         return $this->orderRepository->get($orderId);
     }
 
+    /**
+     * Checks the HMAC header to ensure that the request has come from
+     * Komoju and has not been modified along the way. hash_equals is a 
+     * consistent time string comparison method, so we're safe from timing
+     * attacks.
+     * @return bool
+     */
     private function isHmacValid() {
         $hmacHeader = $this->getRequest()->getHeader('x-komoju-signature');
         $webhookSecretToken = $this->config->getWebhookSecretToken();

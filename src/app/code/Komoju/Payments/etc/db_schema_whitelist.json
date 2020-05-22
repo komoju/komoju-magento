@@ -21,7 +21,6 @@
             "refund_id": true
         },
         "index": {
-            "KOMOJU_REFUND_ENTITY_ID": true,
             "KOMOJU_REFUND_REFUND_ID": true
         },
         "constraint": {
