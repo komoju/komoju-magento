@@ -45,12 +45,12 @@ class WebhookEventProcessor {
             $this->order->setState(Order::STATE_PROCESSING);
             $this->order->setStatus(Order::STATE_PROCESSING);
             
-            $statusHistoryComment = $this->prependExternalOrderNum('Payment successfully received in the amount of: ' . $paymentAmount . ' ' . $this->webhookEvent->currency());
+            $statusHistoryComment = $this->prependExternalOrderNum(__('Payment successfully received in the amount of: %1 %2', $paymentAmount, $this->webhookEvent->currency()));
             $this->order->addStatusHistoryComment($statusHistoryComment);
 
             $this->order->save();
         } elseif($this->webhookEvent->eventType() == 'payment.authorized') {
-            $statusHistoryComment = $this->prependExternalOrderNum('Received payment authorization for type: ' . $this->webhookEvent->paymentType() . 'Payment deadline is: ' . $this->webhookEvent->paymentDeadline());
+            $statusHistoryComment = $this->prependExternalOrderNum(__('Received payment authorization for type: %1. Payment deadline is: %2', $this->webhookEvent->paymentType(), $this->webhookEvent->paymentDeadline()));
             $this->order->addStatusHistoryComment($statusHistoryComment);
 
             $this->order->save();
@@ -58,7 +58,7 @@ class WebhookEventProcessor {
             $this->order->setState(Order::STATE_CANCELED);
             $this->order->setStatus(Order::STATE_CANCELED);
 
-            $statusHistoryComment = $this->prependExternalOrderNum('Payment was not received before expiry time');
+            $statusHistoryComment = $this->prependExternalOrderNum(__('Payment was not received before expiry time'));
             $this->order->addStatusHistoryComment($statusHistoryComment);
 
             $this->order->save();
@@ -66,14 +66,14 @@ class WebhookEventProcessor {
             $this->order->setState(Order::STATE_CANCELED);
             $this->order->setStatus(Order::STATE_CANCELED);
             
-            $statusHistoryComment = $this->prependExternalOrderNum('Received cancellation notice from Komoju');
+            $statusHistoryComment = $this->prependExternalOrderNum(__('Received cancellation notice from Komoju'));
             $this->order->addStatusHistoryComment($statusHistoryComment);
             $this->order->save();
         } elseif($this->webhookEvent->eventType() == 'payment.failed') {
             $this->order->setState(Order::STATE_CANCELED);
             $this->order->setStatus(Order::STATE_CANCELED);
 
-            $statusHistoryComment = $this->prependExternalOrderNum('Payment failed');
+            $statusHistoryComment = $this->prependExternalOrderNum(__('Payment failed'));
             $this->order->addStatusHistoryComment($statusHistoryComment);
 
             $this->order->save();
@@ -81,7 +81,7 @@ class WebhookEventProcessor {
             $refundedAmount = $this->webhookEvent->amountRefunded();
             $refundCurrency = $this->webhookEvent->currency();
             
-            $statusHistoryComment = $this->prependExternalOrderNum('Order has been fully refunded.');
+            $statusHistoryComment = $this->prependExternalOrderNum(__('Order has been fully refunded.'));
             
             $this->order->setState(Order::STATE_COMPLETE);
             $this->order->setStatus(Order::STATE_COMPLETE);
@@ -110,7 +110,7 @@ class WebhookEventProcessor {
             foreach($refundsToProcess as $refund) {
                 $refundId = $refund['id'];
                 $refundedAmount = $refund['amount'];
-                $statusHistoryComment = $this->prependExternalOrderNum('Refund for order created. Amount: ' . $refundedAmount . ' ' . $refundCurrency );
+                $statusHistoryComment = $this->prependExternalOrderNum(__('Refund for order created. Amount: %1 %2', $refundedAmount, $refundCurrency ));
 
                 $creditmemo = $this->creditmemoFactory->createByOrder($this->order);
                 $creditmemo->setSubtotal($refundedAmount);
@@ -137,7 +137,7 @@ class WebhookEventProcessor {
 
             $this->order->save();
         } else {
-            throw new UnknownEventException('Unknown event type: ' . $this->webhookEvent->eventType());
+            throw new UnknownEventException(__('Unknown event type: %1', $this->webhookEvent->eventType()));
         }
     }
 
@@ -150,6 +150,6 @@ class WebhookEventProcessor {
      * @return string
      */
     private function prependExternalOrderNum($str) {
-        return 'External Order ID: ' . $this->webhookEvent->externalOrderNum() . ' ' . $str;
+        return __('Komoju External Order ID: %1 %2', $this->webhookEvent->externalOrderNum(), $str);
     } 
 }
