@@ -2,6 +2,8 @@
 
 namespace Komoju\Payments\Model;
 
+use Komoju\Payments\Exception\InvalidJsonException;
+
 /**
  * An encapsulation around the data from Webhook events. This allows us to
  * change the structure of the webhook request data without having to change it
@@ -14,14 +16,17 @@ class WebhookEvent {
     /**
 	 * Constructor
 	 * @param string $requestBody the body of the webhook request
+     * @throws Komoju\Payments\Exception\InvalidJsonException If the requestBody does
+     * not contain valid JSON then the InvalidJsonException and a response of 400
+     * is returned to the Komoju.
 	 */
     public function __construct($requestBody) {
         $this->requestJson = json_decode($requestBody, true);
 
         if (! empty( json_last_error() )) {
-            $errorMsg = "Komoju IPN Request JSON Decoding Failure. Error: " . json_last_error_msg();
-            // wp_die( $errorMsg, "Komoju IPN", array( 'response' => 400 ) );
-
+            $errorMsg = (__("Komoju Payments JSON Decoding Failure. Error: %1", json_last_error_msg()));
+            
+            throw new Komoju\Payments\Exception\InvalidJsonException($errorMsg);
         }
     }
 
