@@ -61,8 +61,8 @@ bin/clinotty bin/magento setup:install \
   --admin-user=john.smith \
   --admin-password=password123 \
   --language=en_US \
-  --currency=USD \
-  --timezone=America/New_York \
+  --currency=JPY \
+  --timezone=Asia/Tokyo \
   --amqp-host=rabbitmq \
   --amqp-port=5672 \
   --amqp-user=guest \
