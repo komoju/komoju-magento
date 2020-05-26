@@ -6,7 +6,6 @@
             "entity_id": true
         },
         "index": {
-            "KOMOJU_EXTERNAL_PAYMENT_SALES_ORDER_ID": true,
             "KOMOJU_EXTERNAL_PAYMENT_EXTERNAL_PAYMENT_ID": true
         },
         "constraint": {
