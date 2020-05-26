@@ -1,7 +1,10 @@
 <?php
 namespace Komoju\Payments\Model\ResourceModel;
 
-
+/**
+ * The ExternalPayment class is a programmatic wrapper around direct database
+ * access for the komoju_external_payment table
+ */
 class ExternalPayment extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
 {
 	

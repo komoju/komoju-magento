@@ -8,13 +8,45 @@ use Komoju\Payments\Exception\UnknownEventException;
 
 class WebhookEventProcessor {
 
+    /**
+     * @var
+     */
     private $webhookEvent;
+
+    /**
+     * @var
+     */
     private $order;
+
+    /**
+     * @var \Magento\Sales\Model\Order\CreditmemoFactory
+     */
     private $creditmemoFactory;
+
+    /**
+     * @var \Magento\Sales\Model\Service\CreditmemoService
+     */
     private $creditmemoService;
+
+    /**
+     * @var
+     */
     private $komojuRefundFactory;
+
+    /**
+     * @var \Psr\Log\LoggerInterface
+     */
     private $logger;
 
+    /**
+     * Class constructor
+     * @param \Magento\Sales\Model\Order\CreditmemoFactory $creditmemoFactory
+     * @param \Magento\Sales\Model\Service\CreditmemoService $creditmemoService,
+     * @param \Komoju\Payments\Model\RefundFactory $komojuRefundFactory
+     * @param \Psr\Log\LoggerInterface $logger,
+     * @param \Komoju\Payments\Model\WebhookEvent $webhookEvent,
+     * @param \Magento\Sales\Model\Order $order
+    */
     public function __construct(
         \Magento\Sales\Model\Order\CreditmemoFactory $creditmemoFactory,
         \Magento\Sales\Model\Service\CreditmemoService $creditmemoService,

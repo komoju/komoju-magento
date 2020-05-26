@@ -7,7 +7,8 @@ use Komoju\Payments\Exception\InvalidJsonException;
 /**
  * An encapsulation around the data from Webhook events. This allows us to
  * change the structure of the webhook request data without having to change it
- * throughout the code.
+ * throughout the code. This has no corresponding database table, it is just an 
+ * in memory object created during processing.
  */
 class WebhookEvent {
 
