@@ -14,7 +14,7 @@ class WebhookEventProcessor {
     private $webhookEvent;
 
     /**
-     * @var
+     * @var \Magento\Sales\Model\Order
      */
     private $order;
 
@@ -29,7 +29,7 @@ class WebhookEventProcessor {
     private $creditmemoService;
 
     /**
-     * @var
+     * @var \Komoju\Payments\Model\RefundFactory $komojuRefundFactory
      */
     private $komojuRefundFactory;
 
