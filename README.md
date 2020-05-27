@@ -56,3 +56,7 @@ In the module config section in Komoju, enter the webhook secret you just create
 ## Contact Us
 
 If you have any questions or concerns you can contact our support team at  support@degica.com.
+
+## Development
+
+To get started working on this module, check out the [dev setup guide](./docs/dev_setup.md)
