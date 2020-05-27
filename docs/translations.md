@@ -12,7 +12,7 @@ Any PHP string that is wrapped in a Phrase function (__(), double underscore) wi
 
 ### Frontend (KnockoutJs)
 
-The Magento frontend uses [KnockoutJs]() to create data bindings and use JS to insert values into the generated HTML. KnockoutJS uses HTML comments to insert data, and any ko comment with the i18n property set will be picked up when generating the language dictionary. An example in the code can be found [here](https://github.com/komoju/komoju-magento/blob/2087840774341cdd6aad441c4bebbe82b5133aa5/src/app/code/Komoju/Payments/view/frontend/web/template/payment/form.html#L31)
+The Magento frontend uses [KnockoutJs](https://knockoutjs.com/) to create data bindings and use JS to insert values into the generated HTML. KnockoutJS uses HTML comments to insert data, and any ko comment with the i18n property set will be picked up when generating the language dictionary. An example in the code can be found [here](https://github.com/komoju/komoju-magento/blob/2087840774341cdd6aad441c4bebbe82b5133aa5/src/app/code/Komoju/Payments/view/frontend/web/template/payment/form.html#L31)
 
 ## Generating the language dictionary
 
