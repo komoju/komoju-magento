@@ -17,7 +17,6 @@ Komoju,Komoju
 "Allows payments by Komoju, dedicated to Japanese online and offline payment gateways.","日本のオンラインおよびオフライン決済ゲートウェイに特化した、Komojuによる決済を可能にします。"
 "Enable this Solution","このソリューションを有効にする"
 "This plugin can only work if the store's base currency is one of: JPY","このプラグインは、ストアの基本通貨が次のいずれかである場合にのみ機能します: JPY"
-"Enable debug mode","デバッグモードを有効にする"
 "API Settings","API設定"
 "Komoju merchant ID","Komoju 商人ID"
 "Secret Key from Komoju","Komojuの秘密鍵"

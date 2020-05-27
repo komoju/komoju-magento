@@ -15,11 +15,6 @@
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                     <config_path>payment/komoju_payments/active</config_path>
                 </field>
-                 <field id="debug" translate="label" type="select" sortOrder="2" showInDefault="1" showInWebsite="1">
-                    <label>Enable debug mode</label>
-                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
-                    <config_path>payment/komoju_payments/debug</config_path>
-                </field>
                 <group id="komoju_api_settings" translate="label" showInDefault="1" showInWebsite="1" showInStore="1" sortOrder="3">
                     <label>API Settings</label>
                     <frontend_model>Magento\Config\Block\System\Config\Form\Fieldset</frontend_model>
