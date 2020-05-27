@@ -1,5 +1,7 @@
 "Credit Card","Credit Card"
 Konbini,Konbini
+"Komoju Payments JSON Decoding Failure. Error: %1","Komoju Payments JSON Decoding Failure. Error: %1"
+"Store currency code: %1 is not in the list of allowable currency codes for Komoju","Store currency code: %1 is not in the list of allowable currency codes for Komoju"
 "Payment successfully received in the amount of: %1 %2","Payment successfully received in the amount of: %1 %2"
 "Received payment authorization for type: %1. Payment deadline is: %2","Received payment authorization for type: %1. Payment deadline is: %2"
 "Payment was not received before expiry time","Payment was not received before expiry time"
