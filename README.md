@@ -49,7 +49,6 @@ To ensure that the WooCommerce plugin works correctly you will need to set up a 
 - payment.cancelled
 - payment.refunded
 - payment.refund.created
-- payment.failed
 
 In the module config section in Komoju, enter the webhook secret you just created into the "Webhook Secret Token" field.
 
