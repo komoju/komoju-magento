@@ -1,0 +1,2 @@
+#!/bin/bash
+bin/cli vendor/bin/phpcs --standard=Magento2 --ignore=vendor app/code/Komoju/ 
