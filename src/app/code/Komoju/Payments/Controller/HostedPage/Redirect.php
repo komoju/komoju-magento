@@ -46,7 +46,6 @@ class Redirect extends \Magento\Framework\App\Action\Action
      */
     private $externalPayment;
 
-
     public function __construct(
         \Magento\Framework\App\Action\Context $context,
         \Magento\Framework\Controller\Result\RedirectFactory $resultRedirectFactory,

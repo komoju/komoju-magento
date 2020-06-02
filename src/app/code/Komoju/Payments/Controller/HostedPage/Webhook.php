@@ -70,7 +70,6 @@ class Webhook extends \Magento\Framework\App\Action\Action implements HttpPostAc
      */
     private $creditmemoService;
 
-
     public function __construct(
         \Magento\Framework\App\Action\Context $context,
         \Magento\Framework\Controller\ResultFactory $resultFactory,
@@ -128,9 +127,9 @@ class Webhook extends \Magento\Framework\App\Action\Action implements HttpPostAc
         } catch (NoSuchEntityException $exception) {
             // if we can't find a matching komoju_external_payment then we're
             // assuming that the order belongs to another system
-            $this->logger->info('No matching records found for external_order_num: ' . $externalOrderNum . '. Ignoring event');
+            $message = 'No matching records found for external_order_num: ' . $externalOrderNum . '. Ignoring event';
+            $this->logger->info($message);
         }
-
         
         $result = $this->_resultFactory->create(ResultFactory::TYPE_JSON);
         $result->setHttpResponseCode(200);

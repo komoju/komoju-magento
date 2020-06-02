@@ -19,7 +19,7 @@ class ExternalPayment extends \Magento\Framework\Model\AbstractModel
 {
     protected function _construct()
     {
-        $this->_init('Komoju\Payments\Model\ResourceModel\ExternalPayment');
+        $this->_init(\Komoju\Payments\Model\ResourceModel\ExternalPayment::class);
     }
     
     /**

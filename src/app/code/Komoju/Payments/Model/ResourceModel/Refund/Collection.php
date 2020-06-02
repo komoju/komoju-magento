@@ -16,7 +16,7 @@ class Collection extends \Magento\Framework\Model\ResourceModel\Db\Collection\Ab
      */
     protected function _construct()
     {
-        $this->_init('Komoju\Payments\Model\Refund', 'Komoju\Payments\Model\ResourceModel\Refund');
+        $this->_init(\Komoju\Payments\Model\Refund::class, Komoju\Payments\Model\ResourceModel\Refund::class);
     }
 
     /**

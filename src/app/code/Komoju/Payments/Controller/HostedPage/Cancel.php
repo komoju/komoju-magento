@@ -48,7 +48,6 @@ class Cancel extends \Magento\Framework\App\Action\Action
      */
     private $order = false;
 
-
     public function __construct(
         \Magento\Framework\App\Action\Context $context,
         \Magento\Framework\Controller\ResultFactory $resultFactory,
@@ -89,7 +88,6 @@ class Cancel extends \Magento\Framework\App\Action\Action
         } else {
             $this->logger->info('Order is not in cancellable state. Redirecting without it. Order id: ' . $orderId);
         }
-
 
         $resultRedirect = $this->_resultFactory->create(ResultFactory::TYPE_REDIRECT);
         $resultRedirect->setUrl($this->_url->getUrl('/'));

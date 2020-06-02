@@ -16,7 +16,10 @@ class Collection extends \Magento\Framework\Model\ResourceModel\Db\Collection\Ab
      */
     protected function _construct()
     {
-        $this->_init('Komoju\Payments\Model\ExternalPayment', 'Komoju\Payments\Model\ResourceModel\ExternalPayment');
+        $this->_init(
+            \Komoju\Payments\Model\ExternalPayment::class,
+            \Komoju\Payments\Model\ResourceModel\ExternalPayment::class
+        );
     }
 
     /**
