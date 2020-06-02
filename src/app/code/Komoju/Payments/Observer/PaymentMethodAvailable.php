@@ -7,11 +7,11 @@ use Magento\Framework\App\ObjectManager;
 /**
  * The PaymentMethodAvailable observer is a class that gets executed when the
  * payment_method_is_active event is fired (this is configured in the events.xml
- * file). It is responsible for determining whether the magento store is in an 
+ * file). It is responsible for determining whether the magento store is in an
  * acceptable state to display the payment method at checkout. If the store does
  * not meet the requirements then Komoju is not displayed as a possible option. This
  * works in conjunction with the is_active setting in the admin configuration, for
- * the Komoju payment method to be available it needs to be enabled and meet the 
+ * the Komoju payment method to be available it needs to be enabled and meet the
  * requirements in this class.
  */
 class PaymentMethodAvailable implements ObserverInterface
@@ -54,15 +54,15 @@ class PaymentMethodAvailable implements ObserverInterface
      */
     public function execute(\Magento\Framework\Event\Observer $observer)
     {
-        if($observer->getEvent()->getMethodInstance()->getCode()==$this->methodCode){
+        if ($observer->getEvent()->getMethodInstance()->getCode()==$this->methodCode) {
             $checkResult = $observer->getEvent()->getResult();
 
             $baseCurrencyCode = $this->storeManager->getStore()->getBaseCurrencyCode();
             if (in_array($baseCurrencyCode, $this->allowableCurrencyCodes)) {
-                $checkResult->setData('is_available', true); 
+                $checkResult->setData('is_available', true);
             } else {
                 $this->logger->info(__('Store currency code: %1 is not in the list of allowable currency codes for Komoju', $baseCurrencyCode));
-                $checkResult->setData('is_available', false); 
+                $checkResult->setData('is_available', false);
             }
         }
     }

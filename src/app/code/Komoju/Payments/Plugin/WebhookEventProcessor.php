@@ -6,7 +6,8 @@ use Magento\Sales\Model\Order;
 use Komoju\Payments\Model\WebhookEvent;
 use Komoju\Payments\Exception\UnknownEventException;
 
-class WebhookEventProcessor {
+class WebhookEventProcessor
+{
 
     /**
      * @var
@@ -46,7 +47,7 @@ class WebhookEventProcessor {
      * @param \Psr\Log\LoggerInterface $logger,
      * @param \Komoju\Payments\Model\WebhookEvent $webhookEvent,
      * @param \Magento\Sales\Model\Order $order
-    */
+     */
     public function __construct(
         \Magento\Sales\Model\Order\CreditmemoFactory $creditmemoFactory,
         \Magento\Sales\Model\Service\CreditmemoService $creditmemoService,
@@ -54,7 +55,7 @@ class WebhookEventProcessor {
         \Psr\Log\LoggerInterface $logger,
         \Komoju\Payments\Model\WebhookEvent $webhookEvent,
         \Magento\Sales\Model\Order $order
-        ) {
+    ) {
             $this->creditmemoFactory = $creditmemoFactory;
             $this->creditmemoService = $creditmemoService;
             $this->komojuRefundFactory = $komojuRefundFactory;
@@ -69,8 +70,9 @@ class WebhookEventProcessor {
      * @param Komoju\Payments\Model\WebhookEvent $webhookEvent
      * @param Magento\Sales\Model\Order $order
      */
-    public function processEvent() {
-        if($this->webhookEvent->eventType() == 'payment.captured') {
+    public function processEvent()
+    {
+        if ($this->webhookEvent->eventType() == 'payment.captured') {
             $paymentAmount = $this->webhookEvent->amount();
             $currentTotalPaid = $this->order->getTotalPaid();
             $this->order->setTotalPaid($paymentAmount + $currentTotalPaid);
@@ -81,12 +83,12 @@ class WebhookEventProcessor {
             $this->order->addStatusHistoryComment($statusHistoryComment);
 
             $this->order->save();
-        } elseif($this->webhookEvent->eventType() == 'payment.authorized') {
+        } elseif ($this->webhookEvent->eventType() == 'payment.authorized') {
             $statusHistoryComment = $this->prependExternalOrderNum(__('Received payment authorization for type: %1. Payment deadline is: %2', $this->webhookEvent->paymentType(), $this->webhookEvent->paymentDeadline()));
             $this->order->addStatusHistoryComment($statusHistoryComment);
 
             $this->order->save();
-        } elseif($this->webhookEvent->eventType() == 'payment.expired') {
+        } elseif ($this->webhookEvent->eventType() == 'payment.expired') {
             $this->order->setState(Order::STATE_CANCELED);
             $this->order->setStatus(Order::STATE_CANCELED);
 
@@ -94,14 +96,14 @@ class WebhookEventProcessor {
             $this->order->addStatusHistoryComment($statusHistoryComment);
 
             $this->order->save();
-        } elseif($this->webhookEvent->eventType() == 'payment.cancelled') {
+        } elseif ($this->webhookEvent->eventType() == 'payment.cancelled') {
             $this->order->setState(Order::STATE_CANCELED);
             $this->order->setStatus(Order::STATE_CANCELED);
             
             $statusHistoryComment = $this->prependExternalOrderNum(__('Received cancellation notice from Komoju'));
             $this->order->addStatusHistoryComment($statusHistoryComment);
             $this->order->save();
-        } elseif($this->webhookEvent->eventType() == 'payment.refunded') {
+        } elseif ($this->webhookEvent->eventType() == 'payment.refunded') {
             $refundedAmount = $this->webhookEvent->amountRefunded();
             $refundCurrency = $this->webhookEvent->currency();
             
@@ -111,7 +113,7 @@ class WebhookEventProcessor {
             $this->order->setStatus(Order::STATE_COMPLETE);
             $this->order->addStatusHistoryComment($statusHistoryComment);
             $this->order->save();
-        } elseif($this->webhookEvent->eventType() == 'payment.refund.created') {
+        } elseif ($this->webhookEvent->eventType() == 'payment.refund.created') {
             $grandTotal = $this->order->getBaseGrandTotal();
             $totalAmountRefunded = $this->webhookEvent->amountRefunded();
             $refundCurrency = $this->webhookEvent->currency();
@@ -131,10 +133,10 @@ class WebhookEventProcessor {
                 }
             }
 
-            foreach($refundsToProcess as $refund) {
+            foreach ($refundsToProcess as $refund) {
                 $refundId = $refund['id'];
                 $refundedAmount = $refund['amount'];
-                $statusHistoryComment = $this->prependExternalOrderNum(__('Refund for order created. Amount: %1 %2', $refundedAmount, $refundCurrency ));
+                $statusHistoryComment = $this->prependExternalOrderNum(__('Refund for order created. Amount: %1 %2', $refundedAmount, $refundCurrency));
 
                 $creditmemo = $this->creditmemoFactory->createByOrder($this->order);
                 $creditmemo->setSubtotal($refundedAmount);
@@ -173,7 +175,8 @@ class WebhookEventProcessor {
      * @param string $str
      * @return string
      */
-    private function prependExternalOrderNum($str) {
+    private function prependExternalOrderNum($str)
+    {
         return __('Komoju External Order ID: %1 %2', $this->webhookEvent->externalOrderNum(), $str);
-    } 
+    }
 }

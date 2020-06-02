@@ -9,14 +9,14 @@ use Magento\Framework\Exception\NoSuchEntityException;
  */
 class Collection extends \Magento\Framework\Model\ResourceModel\Db\Collection\AbstractCollection
 {
-	/**
-	 * Defines the resource models the collection is matched to
-	 *
-	 * @return void
-	 */
-	protected function _construct()
-	{
-		$this->_init('Komoju\Payments\Model\Refund', 'Komoju\Payments\Model\ResourceModel\Refund');
+    /**
+     * Defines the resource models the collection is matched to
+     *
+     * @return void
+     */
+    protected function _construct()
+    {
+        $this->_init('Komoju\Payments\Model\Refund', 'Komoju\Payments\Model\ResourceModel\Refund');
     }
 
     /**
@@ -25,7 +25,8 @@ class Collection extends \Magento\Framework\Model\ResourceModel\Db\Collection\Ab
      * @param string $refundId
      * @return Komoju\Payments\Model\Refund|null
      */
-    public function getRecordForRefundId($refundId) {
+    public function getRecordForRefundId($refundId)
+    {
         $collection = $this
             ->addFieldToFilter('refund_id', ['eq' => $refundId]);
 

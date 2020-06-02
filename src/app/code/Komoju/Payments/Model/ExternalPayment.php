@@ -5,7 +5,7 @@ namespace Komoju\Payments\Model;
  * The ExternalPayment model is the programmatic access for the external_payment
  * data. The ExternalPayment data serves as a connection between the unique ID
  * passed to Komoju as the external_order_num and the core sales order in Magento.
- * 
+ *
  * Because it's possible multiple systems can use the same Komoju account just
  * using the order id as the external_order_num could cause some conflicts, since
  * it's just a incrementing number (which is a very common pattern for databases).
@@ -17,9 +17,9 @@ namespace Komoju\Payments\Model;
  */
 class ExternalPayment extends \Magento\Framework\Model\AbstractModel
 {
-	protected function _construct()
-	{
-		$this->_init('Komoju\Payments\Model\ResourceModel\ExternalPayment');
+    protected function _construct()
+    {
+        $this->_init('Komoju\Payments\Model\ResourceModel\ExternalPayment');
     }
     
     /**
@@ -29,11 +29,12 @@ class ExternalPayment extends \Magento\Framework\Model\AbstractModel
      * @param Magento\Sales\Model\Order $order
      * @return Komoju\Payments\Model\ExternalPayment
      */
-    public function createExternalPayment($order) {
+    public function createExternalPayment($order)
+    {
         $orderId = $order->getEntityId();
         $externalPaymentId = uniqid($orderId . '-');
 
-        $data = array('sales_order_id' => $orderId, 'external_payment_id' => $externalPaymentId);
+        $data = ['sales_order_id' => $orderId, 'external_payment_id' => $externalPaymentId];
         $this->setData($data);
         $this->save();
 

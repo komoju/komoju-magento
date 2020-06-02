@@ -3,7 +3,7 @@ namespace Komoju\Payments\Model;
 
 /**
  * The Refund model is for programmatic access to the komoju_refund data.
- * 
+ *
  * The Refund model exists because payment.refund.created events that come
  * from Komoju list all the refunds that occurred for a transaction and don't
  * provide a way to determine which refund was the cause of the event to fire.
@@ -14,8 +14,8 @@ namespace Komoju\Payments\Model;
  */
 class Refund extends \Magento\Framework\Model\AbstractModel
 {
-	protected function _construct()
-	{
-		$this->_init('Komoju\Payments\Model\ResourceModel\Refund');
+    protected function _construct()
+    {
+        $this->_init('Komoju\Payments\Model\ResourceModel\Refund');
     }
 }

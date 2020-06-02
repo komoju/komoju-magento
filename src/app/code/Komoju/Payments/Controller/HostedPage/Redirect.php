@@ -13,7 +13,8 @@ use Komoju\Payments\Controller\HostedPage\Cancel;
  * called from the checkout page js, after the order details have been captured and
  * saved by Magento.
  */
-class Redirect extends \Magento\Framework\App\Action\Action {
+class Redirect extends \Magento\Framework\App\Action\Action
+{
 
     /**
      * @var \Magento\Framework\Controller\Result\RedirectFactory
@@ -65,7 +66,8 @@ class Redirect extends \Magento\Framework\App\Action\Action {
         return parent::__construct($context);
     }
     
-    public function execute() {
+    public function execute()
+    {
         $hostedPageUrl = $this->createHostedPageUrl();
 
         $this->markOrderAsPendingPayment();
@@ -83,25 +85,26 @@ class Redirect extends \Magento\Framework\App\Action\Action {
      * https://docs.komoju.com/en/hosted_page/overview/#creating_a_payment.
      * @return string The Hosted Page Url
      */
-    private function createHostedPageUrl() {
+    private function createHostedPageUrl()
+    {
         $hostedPageParams = $this->getHostedPageParams();
         $paymentMethod = $this->getRequest()->getParam('payment_method');
         $merchantId = $this->config->getMerchantId();
         $secretKey = $this->config->getSecretKey();
         $komojuEndpoint = '/ja/api/'.$merchantId. '/transactions/';
 
-        $qsParams = array();
-		foreach ($hostedPageParams as $key => $val) {
-			$qsParams[] = urlencode($key) . '=' . urlencode($val);
-		}
-		sort($qsParams);
-		$queryString = implode('&', $qsParams);
+        $qsParams = [];
+        foreach ($hostedPageParams as $key => $val) {
+            $qsParams[] = urlencode($key) . '=' . urlencode($val);
+        }
+        sort($qsParams);
+        $queryString = implode('&', $qsParams);
 
-		$url = $komojuEndpoint.$paymentMethod.'/new'. '?' .$queryString;
-		$hmac = hash_hmac('sha256', $url, $secretKey);
-		$queryString .= '&hmac='.$hmac;
+        $url = $komojuEndpoint.$paymentMethod.'/new'. '?' .$queryString;
+        $hmac = hash_hmac('sha256', $url, $secretKey);
+        $queryString .= '&hmac='.$hmac;
 
-		return 'https://komoju.com/'.$komojuEndpoint.$paymentMethod.'/new'. '?' . $queryString;
+        return 'https://komoju.com/'.$komojuEndpoint.$paymentMethod.'/new'. '?' . $queryString;
     }
 
     /**
@@ -113,7 +116,8 @@ class Redirect extends \Magento\Framework\App\Action\Action {
      * data.
      * @return \Magento\Sales\Model\Order
      */
-    private function getOrder() {
+    private function getOrder()
+    {
 
         if (!$this->order) {
             $this->order = $this->_checkoutSession->getLastRealOrder();
@@ -126,14 +130,15 @@ class Redirect extends \Magento\Framework\App\Action\Action {
      * capture payment from the customer
      * @return array
      */
-    private function getHostedPageParams() {
+    private function getHostedPageParams()
+    {
         $order = $this->getOrder();
         $billingAddress = $order->getBillingAddress();
         $cancelUrl = $this->createCancelUrl($order->getEntityId());
         $externalOrderNum = $this->createExternalPayment($order);
         $currencyCode = $this->storeManager->getStore()->getBaseCurrencyCode();
 
-        return array(
+        return [
             "transaction[amount]" => $order->getGrandTotal(),
             "transaction[currency]" => $currencyCode,
             "transaction[customer][email]" => $billingAddress->getEmail(),
@@ -146,7 +151,7 @@ class Redirect extends \Magento\Framework\App\Action\Action {
             "transaction[cancel_url]" => $this->_url->getUrl($cancelUrl),
             "transaction[external_order_num]" => $externalOrderNum,
             // "via" => "Magento",
-        );
+        ];
     }
 
     /**
@@ -154,9 +159,10 @@ class Redirect extends \Magento\Framework\App\Action\Action {
      * don't want to leave an order in limbo if the user clicks the cancel link
      * we have a specific endpoint that takes the order id and HMAC token and marks
      * the order as cancelled in the system
-     * @return string 
+     * @return string
      */
-    private function createCancelUrl($orderId) {
+    private function createCancelUrl($orderId)
+    {
         $secretKey = $this->config->getSecretKey();
 
         $cancelEndpoint = 'komoju/hostedpage/cancel?order_id=' . $orderId;
@@ -172,7 +178,8 @@ class Redirect extends \Magento\Framework\App\Action\Action {
      * the Magento admins have a better understanding of where the order is at
      * @return void
      */
-    private function markOrderAsPendingPayment() {
+    private function markOrderAsPendingPayment()
+    {
         $order = $this->getOrder();
 
         $order->setState(ORDER::STATE_PENDING_PAYMENT);
@@ -194,7 +201,8 @@ class Redirect extends \Magento\Framework\App\Action\Action {
      * @var \Magento\Sales\Model\Order $order
      * @return \Komoju\Payments\Model\ExternalPayment
      */
-    private function createExternalPayment($order) {
+    private function createExternalPayment($order)
+    {
         return $this->externalPayment->createExternalPayment($order)->getExternalPaymentId();
     }
 }

@@ -14,7 +14,8 @@ use Komoju\Payments\Gateway\Config\Config;
  * checkout page, to be used by the JS that gets run when the customer decides to
  * purchase with Komoju.
  */
-class ConfigProvider implements ConfigProviderInterface {
+class ConfigProvider implements ConfigProviderInterface
+{
     /**
      * This code is the constant used to ensure that the module is only
      * operating on itself, and not accidentally changing values in any other
@@ -54,13 +55,14 @@ class ConfigProvider implements ConfigProviderInterface {
 
     /**
      * Retrieve assoc array of checkout configuration. Because it stores the
-     * variables in the HTML, nothing that is considered sensitive should be 
+     * variables in the HTML, nothing that is considered sensitive should be
      * returned from this method, otherwise it will be available publicly. The
      * values can be found on the checkout page at:
      * window.checkoutConfig.payment['komoju_payments']
      * @return array
      */
-    public function getConfig() {
+    public function getConfig()
+    {
         $storeId = $this->session->getStoreId();
         $isActive = $this->config->isActive($storeId);
 
@@ -81,12 +83,13 @@ class ConfigProvider implements ConfigProviderInterface {
      * Returns an array of available payment methods based on what the store
      * owners have decided to allow for their store. The options list is being on
      * the server instead of in the JS to ensure we can properly translate the
-     * options. If the store is set up to display text in Japanese we want to 
+     * options. If the store is set up to display text in Japanese we want to
      * make sure that the payments are also translated, which is not possible if
      * the options are generated in the JS code.
      * @return array
      */
-    private function createPaymentMethodOptions() {
+    private function createPaymentMethodOptions()
+    {
         $paymentMethodOptions = [];
         if ($this->config->areCreditCardPaymentsEnabled()) {
             $paymentMethodOptions['credit_card'] = __('Credit Card');

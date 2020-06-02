@@ -8,7 +8,8 @@ use Magento\Framework\App\Config\ScopeConfigInterface;
  * This class provides a programmatic interface between the rest of the module
  * and the options set for the module in the admin panel.
  */
-class Config extends \Magento\Payment\Gateway\Config\Config {
+class Config extends \Magento\Payment\Gateway\Config\Config
+{
 
     private $urlInterface;
 
@@ -47,7 +48,8 @@ class Config extends \Magento\Payment\Gateway\Config\Config {
      * @param int|null $storeId
      * @return string
      */
-    public function getTitle($storeId = null) {
+    public function getTitle($storeId = null)
+    {
         return $this->getValue('title', $storeId);
     }
 
@@ -57,7 +59,8 @@ class Config extends \Magento\Payment\Gateway\Config\Config {
      * @param int|null $storeId
      * @return bool
      */
-    public function areCreditCardPaymentsEnabled($storeId = null) {
+    public function areCreditCardPaymentsEnabled($storeId = null)
+    {
         return (bool) $this->getValue('enable_credit_card_payments', $storeId);
     }
 
@@ -67,7 +70,8 @@ class Config extends \Magento\Payment\Gateway\Config\Config {
      * @param int|null $storeId
      * @return bool
      */
-    public function areKonbiniPaymentsEnabled($storeId = null) {
+    public function areKonbiniPaymentsEnabled($storeId = null)
+    {
         return (bool) $this->getValue('enable_konbini_payments', $storeId);
     }
 
@@ -77,7 +81,8 @@ class Config extends \Magento\Payment\Gateway\Config\Config {
      * @param int|null $storeId
      * @return string
      */
-    public function getMerchantId($storeId = null) {
+    public function getMerchantId($storeId = null)
+    {
         return $this->getValue('merchant_id', $storeId);
     }
 
@@ -87,7 +92,8 @@ class Config extends \Magento\Payment\Gateway\Config\Config {
      * @param int|null $storeId
      * @return string
      */
-    public function getSecretKey($storeId = null) {
+    public function getSecretKey($storeId = null)
+    {
         return $this->getValue('secret_key', $storeId);
     }
 
@@ -97,7 +103,8 @@ class Config extends \Magento\Payment\Gateway\Config\Config {
      * @param int|null $storeId
      * @return string
      */
-    public function getWebhookSecretToken($storeId = null) {
+    public function getWebhookSecretToken($storeId = null)
+    {
         return $this->getValue('webhook_secret_token', $storeId);
     }
 
@@ -108,7 +115,8 @@ class Config extends \Magento\Payment\Gateway\Config\Config {
      * constant.
      * @return string
      */
-    public function getRedirectUrl() {
+    public function getRedirectUrl()
+    {
         return $this->urlInterface->getUrl('komoju/hostedpage/redirect');
     }
 }

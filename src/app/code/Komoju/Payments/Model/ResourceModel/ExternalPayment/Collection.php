@@ -9,14 +9,14 @@ use Magento\Framework\Exception\NoSuchEntityException;
  */
 class Collection extends \Magento\Framework\Model\ResourceModel\Db\Collection\AbstractCollection
 {
-	/**
-	 * Defines the resource models the collection relates to.
-	 *
-	 * @return void
-	 */
-	protected function _construct()
-	{
-		$this->_init('Komoju\Payments\Model\ExternalPayment', 'Komoju\Payments\Model\ResourceModel\ExternalPayment');
+    /**
+     * Defines the resource models the collection relates to.
+     *
+     * @return void
+     */
+    protected function _construct()
+    {
+        $this->_init('Komoju\Payments\Model\ExternalPayment', 'Komoju\Payments\Model\ResourceModel\ExternalPayment');
     }
 
     /**
@@ -27,7 +27,8 @@ class Collection extends \Magento\Framework\Model\ResourceModel\Db\Collection\Ab
      * @return Komoju\Payments\Model\ExternalPayment
      * @throws NoSuchEntityException Thrown iff there's no matching record
      */
-    public function getRecordForExternalOrderNum($externalOrderNum) {
+    public function getRecordForExternalOrderNum($externalOrderNum)
+    {
         $collection = $this
             ->addFieldToFilter('external_payment_id', ['eq' => $externalOrderNum]);
 

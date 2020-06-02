@@ -18,7 +18,8 @@ use Magento\Framework\Controller\ResultFactory;
  * the cancel URL, which is being used to ensure that the request hasn't been
  * tampered with.
  */
-class Cancel extends \Magento\Framework\App\Action\Action {
+class Cancel extends \Magento\Framework\App\Action\Action
+{
 
     const HMAC_PARAM_KEY = 'hmac';
 
@@ -63,9 +64,10 @@ class Cancel extends \Magento\Framework\App\Action\Action {
         return parent::__construct($context);
     }
     
-    public function execute() {
+    public function execute()
+    {
         if (!$this->isHmacValid()) {
-            $this->logger->info('HMAC param does not match expected value, exiting.');    
+            $this->logger->info('HMAC param does not match expected value, exiting.');
             $result = $this->_resultFactory->create(ResultFactory::TYPE_RAW);
             $result->setHttpResponseCode(401);
             $result->setContents('hmac parameter is not valid');
@@ -76,7 +78,7 @@ class Cancel extends \Magento\Framework\App\Action\Action {
         $orderId = $this->getRequest()->getParam('order_id');
         $order = $this->getOrder($orderId);
         
-        if ($this->orderCanBeCancelled($order)) {    
+        if ($this->orderCanBeCancelled($order)) {
             $this->logger->info('Cancelling order for order id: ' . $orderId);
     
             $order->setState(Order::STATE_CANCELED);
@@ -100,7 +102,8 @@ class Cancel extends \Magento\Framework\App\Action\Action {
      * @var int $orderId
      * @return \Magento\Sales\Model\Order
      */
-    private function getOrder($orderId) {
+    private function getOrder($orderId)
+    {
         return $this->orderRepository->get($orderId);
     }
 
@@ -111,7 +114,8 @@ class Cancel extends \Magento\Framework\App\Action\Action {
      * been modified
      * @return bool
      */
-    private function isHmacValid() {
+    private function isHmacValid()
+    {
         $requestParams = $this->getRequest()->getParams();
         $hmacParam = rtrim($requestParams['hmac'], "/");
         unset($requestParams[self::HMAC_PARAM_KEY]);
@@ -126,12 +130,13 @@ class Cancel extends \Magento\Framework\App\Action\Action {
 
     /**
      * Checks to see if the order can be cancelled. Magento has it's own inbuilt
-     * methods for this, but they don't quite match what we consider to be 
+     * methods for this, but they don't quite match what we consider to be
      * "cancellable" as we deviate from the typical order flow since we need to
      * redirect users to an external page to capture payment
      * @return bool
      */
-    private function orderCanBeCancelled($order) {
+    private function orderCanBeCancelled($order)
+    {
         return ($order->getState() == Order::STATE_CANCELED || $order->getState() == Order::STATE_PENDING_PAYMENT);
     }
 }
