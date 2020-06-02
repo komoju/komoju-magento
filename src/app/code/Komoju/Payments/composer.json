@@ -1,10 +1,6 @@
-
 {
     "name": "komoju/payments",
     "description": "Integrates with Komoju to provide payment solutions for Magento",
-    "require": {
-        "magento/module-checkout": "*"
-    },
     "type": "magento2-module",
     "version": "0.0.1",
     "license": [],
@@ -13,5 +9,8 @@
         "psr-4": {
             "Komoju\\Payments\\": ""
         }
+    },
+    "require-dev": {
+        "magento/magento-coding-standard": "^5.0"
     }
 }
