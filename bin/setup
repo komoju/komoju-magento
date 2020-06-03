@@ -49,6 +49,12 @@ echo "Forcing reinstall of composer deps to ensure perms & reqs..."
 bin/clinotty composer global require hirak/prestissimo
 bin/clinotty composer install
 
+echo "Globally installing eslint"
+# v7.1.0 was the version I initially used when linting, so I decided to pin it
+# to that. There's no other special reason, and no reason this can't be bumped
+# whenever we want.
+bin/clinotty npm install -g eslint@7.1.0
+
 bin/clinotty bin/magento setup:install \
   --db-host=db \
   --db-name=magento \
