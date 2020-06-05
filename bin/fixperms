@@ -5,6 +5,10 @@ if [ -z "$1" ]; then
   bin/clinotty find var vendor pub/static pub/media app/etc -type f -exec chmod u+w {} \;
   bin/clinotty find var vendor pub/static pub/media app/etc -type d -exec chmod u+w {} \;
   bin/clinotty chmod u+x bin/magento
+  bin/clinotty chmod u+x -R vendor/bin
+
+  # updating perms for CodeSniffer directly, since the vendor/bin symlinking is wonky
+  bin/clinotty chmod u+x -R vendor/squizlabs/php_codesniffer/bin/
 else
   bin/clinotty find $1 -type f -exec chmod u+w {} \;
   bin/clinotty find $1 -type d -exec chmod u+w {} \;
