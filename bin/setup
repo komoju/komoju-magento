@@ -9,9 +9,11 @@ sed -e 's/5f5929ef9f2ec4ca048a2add261d22c92807630f/ce31e720d60451784b9fdb3769e43
 docker-compose -f docker-compose.yml up -d
 sleep 1 #Ensure containers are started...
 
-echo "Copying all files from host to container..."
-rm -rf src/vendor #Clear for step below
-bin/copytocontainer --all
+# echo "Copying all files from host to container..."
+# rm -rf src/vendor #Clear for step below
+# bin/copytocontainer --all
+bin/fixowns
+bin/fixperms
 
 bin/clinotty chmod u+x bin/magento
 
@@ -48,12 +50,6 @@ fi
 echo "Forcing reinstall of composer deps to ensure perms & reqs..."
 bin/clinotty composer global require hirak/prestissimo
 bin/clinotty composer install
-
-echo "Globally installing eslint"
-# v7.1.0 was the version I initially used when linting, so I decided to pin it
-# to that. There's no other special reason, and no reason this can't be bumped
-# whenever we want.
-bin/clinotty npm install -g eslint@7.1.0
 
 bin/clinotty bin/magento setup:install \
   --db-host=db \
@@ -96,8 +92,11 @@ bin/clinotty bin/magento setup:config:set --no-interaction --session-save=redis 
 echo "Clearing the cache for good measure..."
 bin/clinotty bin/magento cache:flush
 
-echo "Generating SSL certificate..."
-bin/setup-ssl $BASE_URL
+echo "Restarting containers to allow changes to take affect"
+bin/restart
+
+echo "Enabling Komoju Payments module"
+bin/clinotty bin/magento setup:upgrade
 
 echo "Docker development environment setup complete."
 echo "You may now access your Magento instance at https://${BASE_URL}/"
