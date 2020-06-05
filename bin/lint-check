@@ -1,2 +1,7 @@
 #!/bin/bash
+
+# lint the PHP code
 bin/cli vendor/bin/phpcs --standard=Magento2 --ignore=vendor app/code/Komoju/ 
+
+# lint the JS code
+bin/cli eslint -c .eslintrc app/code/Komoju/
