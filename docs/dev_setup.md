@@ -66,7 +66,7 @@ Let that run (it can take a while). Once done the magento website will be availa
 
 ## Set up the magento store
 
-To set up the store to be able to test changes to the plugin you will to have some items for sale and to configure the plugin to correctly communicate with Komoju. To do this you will first need to log into the admin page.
+To set up the store to be able to test changes to the plugin you will need to have some items for sale as well configuring the plugin to correctly communicate with Komoju. To do this you will first need to log into the admin page.
 
 ### Logging into the admin page
 
