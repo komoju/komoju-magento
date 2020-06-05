@@ -7,7 +7,7 @@ define(
     function (
         $,
         Component,
-        fullScreenLoader,
+        fullScreenLoader
     ) {
     "use strict";
     return Component.extend({
@@ -19,50 +19,59 @@ define(
         },
 
         afterPlaceOrder: function() {
+            var redirectUrl = this.redirectUrl() + "?payment_method=" + this.paymentMethod;
+
             fullScreenLoader.startLoader();
             $.mage.redirect(
-                `${this.redirectUrl()}?payment_method=${this.paymentMethod}`
+                redirectUrl
             );
         },
 
         getConfig: function() {
-            let code = this.getCode();
+            var code = this.getCode();
             
             return window.checkoutConfig.payment[code];
         },
 
         getAvailablePaymentMethods: function() {
-            let config = this.getConfig();
+            var config = this.getConfig();
+
             return config.available_payment_methods;
         },
 
         shouldShowCreditCardOption: function() {
-            let config = this.getConfig();
+            var config = this.getConfig();
+
             return config.enable_credit_card_payments;
         },
 
         shouldShowKonbiniOption: function() {
-            let config = this.getConfig();
+            var config = this.getConfig();
+
             return config.enable_konbini_payments;
         },
 
         redirectUrl: function () {
-            let config = this.getConfig();
+            var config = this.getConfig();
+
             return config.redirect_url;
         },
 
         getEnabledPaymentTypes: function() {
-            let options = [];
-
-            const availablePaymentMethods = this.getAvailablePaymentMethods();
+            var options = [];
+            var option;
+            var availablePaymentMethods = this.getAvailablePaymentMethods();
             
-            for (let option in availablePaymentMethods) {
-                options.push({
-                    value: option,
-                    displayText: availablePaymentMethods[option]
-                });
+            for (option in availablePaymentMethods) {
+                if (Object.prototype.hasOwnProperty.call(availablePaymentMethods, option)) {
+                    options.push({
+                        value: option,
+                        displayText: availablePaymentMethods[option]
+                    });
+                }
+                
             }
-
+            
             return options;
         }
     });

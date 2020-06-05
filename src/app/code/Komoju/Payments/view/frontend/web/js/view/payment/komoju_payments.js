@@ -7,7 +7,7 @@ define(
         Component,
         rendererList
     ) {
-    "useStrict";
+    "use strict";
     rendererList.push({
         type: "komoju_payments",
         component: "Komoju_Payments/js/view/payment/method-renderer/form",
