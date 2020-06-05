@@ -37,23 +37,22 @@ For example if the site was going to be run from https://degicaexample.au.ngrok.
 
 ## Run Docker
 
-Before running Docker make sure to commit or stash any working changes.
-
-### Downloading Magento
-
-Before you can build the Docker containers you first need to pull down the magento source code:
-
-```
-$ bin/download
-```
-
-This will download the tar archive and then extract it into the app.
+**NOTE:** You only need to run the following commands once. After everything is set up you can use `bin/start` and `bin/stop` to start and stop the Magent dev environment.
 
 ### Building the docker environment
 
-Once the app has been extracted you can create the docker environment with the following command:
+You can create the docker environment with the following command:
 
+```bash
+$ docker-compose build --build-arg MAGENTO_VERSION=$MAGENTO_VERSION
+# $MAGENTO_VERSION is the version of Magento you wish to use. For example,
+# if you wanted to use 2.3.4 then you would run:
+# docker-compose build --build-arg MAGENTO_VERSION=2.3.4
 ```
+
+Once the docker container is built, run the setup command to configure Magento.
+
+```bash
 $ bin/setup $NGROK_DOMAIN
 ```
 
@@ -71,15 +70,15 @@ To set up the store to be able to test changes to the plugin you will to have so
 
 ### Logging into the admin page
 
-Every time you create the development environment the admin url will be slight different. To find out what the URL is for your instance you can run the following command:
+Every time you create the development environment the admin url will be slightly different. To find out what the URL is for your instance you can run the following command:
 
-```
+```bash
 $ bin/magento info:adminuri
 
 Admin URI: /admin_1y2j6j
 ```
 
-Going to this page you will be prompted for admin credentials, which you can find in [the setup script](../bin/setup:52) (look for the `--admin-user` and `admin-password` flags, these are the credentials needed).
+Going to this page you will be prompted for admin credentials, which you can find in [the setup script](../bin/setup:51) (look for the `--admin-user` and `admin-password` flags, these are the credentials needed).
 
 ### Adding items to the store
 
