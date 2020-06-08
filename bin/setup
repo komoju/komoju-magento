@@ -45,6 +45,7 @@ if [ -n "$PUBLIC_KEY" ] && [ -n "$PRIVATE_KEY" ]; then
 fi
 
 echo "Forcing reinstall of composer deps to ensure perms & reqs..."
+bin/clinotty composer clearcache
 bin/clinotty composer global require hirak/prestissimo
 bin/clinotty composer install
 
