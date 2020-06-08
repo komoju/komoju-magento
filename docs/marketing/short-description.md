@@ -1,0 +1,1 @@
+Built for developers, KOMOJU is the easiest way to integrate Japanese payments into your Magento store.
