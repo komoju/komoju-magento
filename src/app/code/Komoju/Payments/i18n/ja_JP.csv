@@ -6,15 +6,14 @@ Konbini,コンビニ
 "Received payment authorization for type: %1. Payment deadline is: %2","タイプの支払い承認を受け取りました: %1. お支払い期限は: %2"
 "Payment was not received before expiry time","有効期限が切れる前に支払いが受領されなかった"
 "Received cancellation notice from Komoju","Komojuからキャンセルのお知らせを受け取りました"
-"Payment failed","支払いが失敗しました"
 "Order has been fully refunded.","注文は全額返金されました"
 "Refund for order created. Amount: %1 %2","作成した注文の払い戻し。量: %1 %2"
 "Unknown event type: %1","不明なイベントタイプ: %1"
 "Komoju External Order ID: %1 %2","Komoju 外部注文ID: %1 %2"
 "Payment Type","払いの種類"
 "Place Order","注文する"
-Komoju,Komoju
-"Allows payments by Komoju, dedicated to Japanese online and offline payment gateways.","日本のオンラインおよびオフライン決済ゲートウェイに特化した、Komojuによる決済を可能にします。"
+KOMOJU,KOMOJU
+"Accept Japanese payments with KOMOJU","KOMOJUで日本の支払いを受け入れる"
 "Enable this Solution","このソリューションを有効にする"
 "This plugin can only work if the store's base currency is one of: JPY","このプラグインは、ストアの基本通貨が次のいずれかである場合にのみ機能します: JPY"
 "API Settings","API設定"
