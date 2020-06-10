@@ -8,7 +8,7 @@
                 <active>0</active>
                 <order_status>pending_payment</order_status>
                 <currency>JPY</currency>
-                <title>Komoju</title>
+                <title>コンビニ・クレジットカード決済 - KOMOJU</title>
                 <enable_credit_card_payments>1</enable_credit_card_payments>
                 <enable_konbini_payments>1</enable_konbini_payments>
                 <merchant_id />

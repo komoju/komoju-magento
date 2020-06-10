@@ -6,15 +6,14 @@ Konbini,Konbini
 "Received payment authorization for type: %1. Payment deadline is: %2","Received payment authorization for type: %1. Payment deadline is: %2"
 "Payment was not received before expiry time","Payment was not received before expiry time"
 "Received cancellation notice from Komoju","Received cancellation notice from Komoju"
-"Payment failed","Payment failed"
 "Order has been fully refunded.","Order has been fully refunded."
 "Refund for order created. Amount: %1 %2","Refund for order created. Amount: %1 %2"
 "Unknown event type: %1","Unknown event type: %1"
 "Komoju External Order ID: %1 %2","Komoju External Order ID: %1 %2"
 "Payment Type","Payment Type"
 "Place Order","Place Order"
-Komoju,Komoju
-"Allows payments by Komoju, dedicated to Japanese online and offline payment gateways.","Allows payments by Komoju, dedicated to Japanese online and offline payment gateways."
+KOMOJU,KOMOJU
+"Accept Japanese payments with KOMOJU","Accept Japanese payments with KOMOJU"
 "Enable this Solution","Enable this Solution"
 "This plugin can only work if the store's base currency is one of: JPY","This plugin can only work if the store's base currency is one of: JPY"
 "API Settings","API Settings"
