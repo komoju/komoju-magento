@@ -20,6 +20,7 @@ KOMOJU,KOMOJU
 "Komoju merchant ID","Komoju merchant ID"
 "Secret Key from Komoju","Secret Key from Komoju"
 "Webhook Secret Token","Webhook Secret Token"
+"The webhook URL will be at /komoju/hostedpage/webhook of this site","The webhook URL will be at /komoju/hostedpage/webhook of this site"
 "Payment Methods","Payment Methods"
 "Allow credit card payments","Allow credit card payments"
 "Allow konbini payments","Allow konbini payments"

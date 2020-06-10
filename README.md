@@ -41,7 +41,7 @@ Once the plugin has been installed you will need to configure it. Go to the stor
 
 ### Configuring the Komoju webhook 
 
-To ensure that the Magento plugin works correctly you will need to set up a webhook from your Komoju dashboard to the wordpress instance. To do this you will need to go to your [Webhook page on the Komoju dashboard](https://komoju.com/admin/webhooks) and click "New Webhook". If you don't know what the webhook URL should be you can check the admin page for this plugin on your wordpress instance to see the default address. The secret can be anything you want (as long as you remember it), but you must make sure the following events are ticked:
+To ensure that the Magento plugin works correctly you will need to set up a webhook from your Komoju dashboard to the wordpress instance. To do this you will need to go to your [Webhook page on the Komoju dashboard](https://komoju.com/admin/webhooks) and click "New Webhook". The Webhook URL is at `/komoju/hostedpage/webhook` of your Magento website. If your Magento was `https://magento.komoju.com` then your Webhook URL would be `https://magento.komoju.com/komoju/hostedpage/webhook`. The Secret can be anything you want (as long as you remember it), but you must make sure the following events are ticked:
 
 - payment.authorized
 - payment.captured
