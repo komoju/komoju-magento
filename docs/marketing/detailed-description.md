@@ -11,4 +11,4 @@ A KOMOJU account is required to use this extension. If you do not have a KOMOJU 
 - Allow your customers to pay with the methods you prefer best: Credit Card or Konbini
 - Can test the extension with test credentials before accepting customer payments
 - Simple checkout workflow
-- PCI Compliant; We do the hard work of keeping your user's data secure so you don't need to worry.
+- PCI Compliant; We do the hard work of keeping your users' data secure so you don't need to worry.
