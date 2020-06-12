@@ -1,7 +1,7 @@
 "Credit Card","クレジットカード"
 Konbini,コンビニ
 "Komoju Payments JSON Decoding Failure. Error: %1","Komoju Payments JSONデコードの失敗. エラー: %1"
-"Store currency code: %1 is not in the list of allowable currency codes for Komoju","店舗通貨コード: %1 Komojuで使用できる通貨コードのリストにない
+"Store currency code: %1 is not in the list of allowable currency codes for Komoju","店舗通貨コード: %1 Komojuで使用できる通貨コードのリストにない"
 "Payment successfully received in the amount of: %1 %2","次の金額の支払いを受け取りました: %1 %2"
 "Received payment authorization for type: %1. Payment deadline is: %2","タイプの支払い承認を受け取りました: %1. お支払い期限は: %2"
 "Payment was not received before expiry time","有効期限が切れる前に支払いが受領されなかった"
