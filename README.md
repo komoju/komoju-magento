@@ -43,8 +43,8 @@ Once the plugin has been installed you will need to configure it. Go to the stor
 
 When configuring the "API Settings" section of the plugin use the following values:
 
-"Komoju merchant ID" in the plugin is "Merchant UUID" in the Merchant Settings dashboard.
-"Secret Key from Komoju" in the plugin is "Secret Key" in the Merchant Settings dashboard.
+"Merchant UUID" in the plugin is "Merchant UUID" in the Merchant Settings dashboard.
+"Secret Key" in the plugin is "Secret Key" in the Merchant Settings dashboard.
 
 ### Configuring the KOMOJU webhook 
 
