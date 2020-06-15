@@ -100,7 +100,7 @@ class WebhookEventProcessor
             $this->order->setState(Order::STATE_CANCELED);
             $this->order->setStatus(Order::STATE_CANCELED);
             
-            $statusHistoryComment = $this->prependExternalOrderNum(__('Received cancellation notice from Komoju'));
+            $statusHistoryComment = $this->prependExternalOrderNum(__('Received cancellation notice from KOMOJU'));
             $this->order->addStatusHistoryComment($statusHistoryComment);
             $this->order->save();
         } elseif ($this->webhookEvent->eventType() == 'payment.refunded') {
@@ -177,6 +177,6 @@ class WebhookEventProcessor
      */
     private function prependExternalOrderNum($str)
     {
-        return __('Komoju External Order ID: %1 %2', $this->webhookEvent->externalOrderNum(), $str);
+        return __('KOMOJU External Order ID: %1 %2', $this->webhookEvent->externalOrderNum(), $str);
     }
 }

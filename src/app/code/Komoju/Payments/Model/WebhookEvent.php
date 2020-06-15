@@ -27,7 +27,7 @@ class WebhookEvent
         $this->requestJson = json_decode($requestBody, true);
 
         if (! empty(json_last_error())) {
-            $errorMsg = (__("Komoju Payments JSON Decoding Failure. Error: %1", json_last_error_msg()));
+            $errorMsg = (__("KOMOJU Payments JSON Decoding Failure. Error: %1", json_last_error_msg()));
             
             throw new Komoju\Payments\Exception\InvalidJsonException($errorMsg);
         }
