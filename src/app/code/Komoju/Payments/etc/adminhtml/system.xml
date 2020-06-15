@@ -19,16 +19,16 @@
                     <label>API Settings</label>
                     <frontend_model>Magento\Config\Block\System\Config\Form\Fieldset</frontend_model>
                     <field id="merchant_id" translate="label" type="text" showInDefault="1" showInWebsite="1" showInStore="1">
-                        <label>Komoju merchant ID</label>
+                        <label>Merchant UUID</label>
                         <config_path>payment/komoju_payments/merchant_id</config_path>
                     </field>
                     <field id="secret_key" translate="label" type="obscure" showInDefault="1" showInWebsite="1" showInStore="1">
-                        <label>Secret Key from Komoju</label>
+                        <label>Secret Key</label>
                         <config_path>payment/komoju_payments/secret_key</config_path>
                         <backend_model>Magento\Config\Model\Config\Backend\Encrypted</backend_model>
                     </field>
                     <field id="webhook_secret_token" translate="label comment" type="obscure" showInDefault="1" showInWebsite="1" showInStore="1">
-                        <label>Webhook Secret Token</label>
+                        <label>Webhook Secret</label>
                         <comment>The webhook URL will be at /komoju/hostedpage/webhook of this site</comment> 
                         <config_path>payment/komoju_payments/webhook_secret_token</config_path>
                         <backend_model>Magento\Config\Model\Config\Backend\Encrypted</backend_model>
