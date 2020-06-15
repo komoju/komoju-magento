@@ -19,7 +19,7 @@ The Magento frontend uses [KnockoutJs](https://knockoutjs.com/) to create data b
 To generate dictionaries to allow the plugin to work for multiple languages run the following command at the root level of the project. You will need to have the docker containers running:
 
 ```bash
-$ bin/magento i18n:collect-phrases -o /var/www/html/app/code/Komoju/Payments/i18n/en_US.csv app/code/Komoju/Payments/
+$ bin/generate-translations
 ```
 
 This command will update the i18n/en_US.csv file in the project. This file can be copied to additional languages and updated with the correct translations.
