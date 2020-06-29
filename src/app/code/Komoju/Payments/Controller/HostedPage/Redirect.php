@@ -149,7 +149,7 @@ class Redirect extends \Magento\Framework\App\Action\Action
             "transaction[return_url]" => $this->_url->getUrl('checkout/onepage/success'),
             "transaction[cancel_url]" => $this->_url->getUrl($cancelUrl),
             "transaction[external_order_num]" => $externalOrderNum,
-            // "via" => "Magento",
+            "via" => "magento",
         ];
     }
 
