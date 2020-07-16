@@ -1,7 +1,5 @@
 # KOMOJU Magento Plugin
 
-- link to the support email for any concerns or questions
-
 This plugin allows for Magento store owners to accept payments through Komoju. Currently the plugin supports the following currencies:
 
 - JPY
@@ -70,7 +68,3 @@ Go back to the plugin config section in your Magento instance, and enter the web
 ## Contact Us
 
 If you have any questions or concerns you can contact our support team at  support@degica.com.
-
-## Development
-
-To get started working on this module, check out the [dev setup guide](./docs/dev_setup.md)
