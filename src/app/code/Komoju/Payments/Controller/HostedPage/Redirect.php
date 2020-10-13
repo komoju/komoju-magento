@@ -64,7 +64,7 @@ class Redirect extends \Magento\Framework\App\Action\Action
 
         return parent::__construct($context);
     }
-    
+
     public function execute()
     {
         $hostedPageUrl = $this->createHostedPageUrl();
@@ -144,7 +144,7 @@ class Redirect extends \Magento\Framework\App\Action\Action
             "transaction[customer][given_name]" => $billingAddress->getFirstname(),
             "transaction[customer][family_name]" => $billingAddress->getLastname(),
             "transaction[customer][phone]" => $billingAddress->getTelephone(),
-            "transaction[tax]" => $order->getTaxAmount(),
+            "transaction[tax]" => 0,
             "timestamp" => time(),
             "transaction[return_url]" => $this->_url->getUrl('checkout/onepage/success'),
             "transaction[cancel_url]" => $this->_url->getUrl($cancelUrl),
