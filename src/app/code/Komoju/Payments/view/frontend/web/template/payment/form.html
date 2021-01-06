@@ -27,21 +27,23 @@
 
         <div class="fieldset">
             <div class="field _required">
-                <label data-bind="attr: {for: getCode() + '_payment_type'}" class="label">
-                    <!-- ko i18n: 'Payment Type'--><!-- /ko -->
-                </label>
+              <label class="label">
+                  <!-- ko i18n: 'Payment Type'--><!-- /ko -->
+              </label>
 
-                <div class="control">
-                    <select name="payment[payment_type]"
-                            class="select"
-                            data-bind="
-                                attr: {id: getCode() + '_payment_type'},
-                                options: getEnabledPaymentTypes(),
-                                optionsValue: 'value',
-                                optionsText: 'displayText',
-                                value: paymentMethod">
-                    </select>
+              <div class="control" data-bind="foreach: { data: getEnabledPaymentTypes(), as: 'method' }">
+                <div class="field choice">
+                  <input type="radio"
+                         name="payment[payment_type]"
+                         class="radio"
+                         data-bind="value: method.value,
+                                    checked: $parent.komojuMethod,
+                                    attr: {id: 'komoju_' + method.value}" />
+                    <label class="label" data-bind="attr: {'for': 'komoju_' + method.value}">
+                      <span data-bind="text: method.displayText"></span>
+                  </label>
                 </div>
+              </div>
             </div>
         </div>
 
