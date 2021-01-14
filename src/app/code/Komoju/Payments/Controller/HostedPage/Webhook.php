@@ -29,7 +29,7 @@ class Webhook extends \Magento\Framework\App\Action\Action implements HttpPostAc
      * @var \Magento\Framework\Controller\ResultFactory
      */
     protected $_resultFactory;
-    
+
     /**
      * @var \Magento\Sales\Api\OrderRepositoryInterface
      */
@@ -92,7 +92,7 @@ class Webhook extends \Magento\Framework\App\Action\Action implements HttpPostAc
 
         return parent::__construct($context);
     }
-    
+
     public function execute()
     {
         if (!$this->isHmacValid()) {
@@ -108,13 +108,13 @@ class Webhook extends \Magento\Framework\App\Action\Action implements HttpPostAc
 
         $requestBody = $this->getRequest()->getContent();
         $webhookEvent = new WebhookEvent($requestBody);
-        
+
         $this->logger->info('event type: ' . $webhookEvent->eventType());
 
         $externalOrderNum = $webhookEvent->externalOrderNum();
         try {
             $order = $this->getOrder($externalOrderNum);
-            
+
             $webhookEventProcessor = new WebhookEventProcessor(
                 $this->creditmemoFactory,
                 $this->creditmemoService,
@@ -130,7 +130,7 @@ class Webhook extends \Magento\Framework\App\Action\Action implements HttpPostAc
             $message = 'No matching records found for external_order_num: ' . $externalOrderNum . '. Ignoring event';
             $this->logger->info($message);
         }
-        
+
         $result = $this->_resultFactory->create(ResultFactory::TYPE_JSON);
         $result->setHttpResponseCode(200);
         $result->setData('');
@@ -190,9 +190,9 @@ class Webhook extends \Magento\Framework\App\Action\Action implements HttpPostAc
         $hmacHeader = $this->getRequest()->getHeader('x-komoju-signature');
         $webhookSecretToken = $this->config->getWebhookSecretToken();
         $reqBody = $this->getRequest()->getContent();
-        
+
         $calculatedHmac = hash_hmac('sha256', $reqBody, $webhookSecretToken);
-        
+
         return hash_equals($hmacHeader, $calculatedHmac);
     }
 }
