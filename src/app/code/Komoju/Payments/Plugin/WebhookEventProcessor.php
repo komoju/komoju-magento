@@ -78,7 +78,7 @@ class WebhookEventProcessor
             $this->order->setTotalPaid($paymentAmount + $currentTotalPaid);
             $this->order->setState(Order::STATE_PROCESSING);
             $this->order->setStatus(Order::STATE_PROCESSING);
-            
+
             $statusHistoryComment = $this->prependExternalOrderNum(__('Payment successfully received in the amount of: %1 %2', $paymentAmount, $this->webhookEvent->currency()));
             $this->order->addStatusHistoryComment($statusHistoryComment);
 
@@ -97,18 +97,17 @@ class WebhookEventProcessor
 
             $this->order->save();
         } elseif ($this->webhookEvent->eventType() == 'payment.cancelled') {
-            $this->order->setState(Order::STATE_CANCELED);
-            $this->order->setStatus(Order::STATE_CANCELED);
-            
+            $this->order->cancel();
+
             $statusHistoryComment = $this->prependExternalOrderNum(__('Received cancellation notice from KOMOJU'));
             $this->order->addStatusHistoryComment($statusHistoryComment);
             $this->order->save();
         } elseif ($this->webhookEvent->eventType() == 'payment.refunded') {
             $refundedAmount = $this->webhookEvent->amountRefunded();
             $refundCurrency = $this->webhookEvent->currency();
-            
+
             $statusHistoryComment = $this->prependExternalOrderNum(__('Order has been fully refunded.'));
-            
+
             $this->order->setState(Order::STATE_COMPLETE);
             $this->order->setStatus(Order::STATE_COMPLETE);
             $this->order->addStatusHistoryComment($statusHistoryComment);
@@ -122,7 +121,7 @@ class WebhookEventProcessor
 
             $refunds = $this->webhookEvent->getRefunds();
             $refundsToProcess = [];
-            
+
             foreach ($refunds as $refund) {
                 $refundId = $refund['id'];
                 $komojuRefundCollection = $this->komojuRefundFactory->create()->getCollection();
@@ -153,7 +152,7 @@ class WebhookEventProcessor
 
                 $this->order->addStatusHistoryComment($statusHistoryComment);
             }
-            
+
             // $baseTotalNotRefunded = $invoice->getBaseGrandTotal() - $invoice->getBaseTotalRefunded();
             // $baseToOrderRate = $order->getBaseToOrderRate();
             // $creditmemo->setBaseSubtotal($baseTotalNotRefunded);
