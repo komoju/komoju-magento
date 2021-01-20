@@ -4,60 +4,51 @@
  * See COPYING.txt for license details.
  */
 -->
-<div class="payment-method" data-bind="css: {'_active': (getCode() == isChecked())}">
-    <div class="payment-method-title field choice">
-        <input type="radio"
-               name="payment[method]"
-               class="radio"
-               data-bind="attr: {'id': getCode()}, value: getCode(), checked: isChecked, click: selectPaymentMethod, visible: isRadioButtonVisible()"/>
-        <label class="label" data-bind="attr: {'for': getCode()}">
-            <span data-bind="text: getTitle()"></span>
-        </label>
-    </div>
+<!-- ko foreach: { data: getEnabledPaymentTypes(), as: 'method' } -->
+  <div class="payment-method"
+      data-bind="
+      css: {'_active': (($parent.komojuMethod() == method.value) && ($parent.getCode() == $parent.isChecked()))},
+      attr: { id: method.value + '-node' }
+      ">
+      <div class="payment-method-title field choice">
+          <input type="radio"
+                 name="payment[method]"
+                 class="radio"
+                 data-bind="
+                 attr: {'id': method.value},
+                 value: method.value,
+                 checked: $parent.komojuMethod,
+                 click: $parent.selectPaymentMethod.bind($parent),
+                 visible: $parent.isRadioButtonVisible()
+                 "/>
+          <label class="label" data-bind="attr: {'for': method.value}">
+              <span data-bind="text: method.displayText"></span>
+          </label>
+      </div>
+  </div>
+<!--/ko-->
 
-    <div class="payment-method-content">
-        <!-- ko foreach: getRegion('messages') -->
+<div class="payment-method-content komoju_payment_billing">
+    <!-- ko foreach: getRegion('messages') -->
+    <!-- ko template: getTemplate() --><!-- /ko -->
+    <!--/ko-->
+
+    <div class="payment-method-billing-address">
+        <!-- ko foreach: $parent.getRegion(getBillingAddressFormName()) -->
         <!-- ko template: getTemplate() --><!-- /ko -->
         <!--/ko-->
-        <div class="payment-method-billing-address">
-            <!-- ko foreach: $parent.getRegion(getBillingAddressFormName()) -->
-            <!-- ko template: getTemplate() --><!-- /ko -->
-            <!--/ko-->
-        </div>
+    </div>
 
-        <div class="fieldset">
-            <div class="field _required">
-              <label class="label">
-                  <!-- ko i18n: 'Payment Type'--><!-- /ko -->
-              </label>
-
-              <div class="control" data-bind="foreach: { data: getEnabledPaymentTypes(), as: 'method' }">
-                <div class="field choice">
-                  <input type="radio"
-                         name="payment[payment_type]"
-                         class="radio"
-                         data-bind="value: method.value,
-                                    checked: $parent.komojuMethod,
-                                    attr: {id: 'komoju_' + method.value}" />
-                    <label class="label" data-bind="attr: {'for': 'komoju_' + method.value}">
-                      <span data-bind="text: method.displayText"></span>
-                  </label>
-                </div>
-              </div>
-            </div>
-        </div>
-
-        <div class="actions-toolbar" style="margin-top: 40px">
-            <div class="primary">
-                <button class="action primary checkout"
-                        type="submit"
-                        data-bind="
-                        click: placeOrder,
-                        attr: {title: $t('Place Order')}
-                        ">
-                    <span data-bind="i18n: 'Place Order'"></span>
-                </button>
-            </div>
+    <div class="actions-toolbar" style="margin-top: 40px">
+        <div class="primary">
+            <button class="action primary checkout"
+                    type="submit"
+                    data-bind="
+                    click: placeOrder,
+                    attr: {title: $t('Place Order')}
+                    ">
+                <span data-bind="i18n: 'Place Order'"></span>
+            </button>
         </div>
     </div>
 </div>
