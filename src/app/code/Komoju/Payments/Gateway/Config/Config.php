@@ -23,10 +23,12 @@ class Config extends \Magento\Payment\Gateway\Config\Config
     public function __construct(
         ScopeConfigInterface $scopeConfig,
         \Magento\Framework\UrlInterface $urlInterface,
+        \Magento\Framework\Locale\Resolver $locale,
         $methodCode = null,
         $pathPattern = self::DEFAULT_PATH_PATTERN
     ) {
         $this->urlInterface = $urlInterface;
+        $this->locale = $locale;
         parent::__construct($scopeConfig, $methodCode, $pathPattern);
     }
 
@@ -51,28 +53,6 @@ class Config extends \Magento\Payment\Gateway\Config\Config
     public function getTitle($storeId = null)
     {
         return $this->getValue('title', $storeId);
-    }
-
-    /**
-     * Returns the value of the "Allow credit card payments" field on the admin
-     * page.
-     * @param int|null $storeId
-     * @return bool
-     */
-    public function areCreditCardPaymentsEnabled($storeId = null)
-    {
-        return (bool) $this->getValue('enable_credit_card_payments', $storeId);
-    }
-
-    /**
-     * Returns the value of the "Allow konbini payments" field on the admin
-     * page.
-     * @param int|null $storeId
-     * @return bool
-     */
-    public function areKonbiniPaymentsEnabled($storeId = null)
-    {
-        return (bool) $this->getValue('enable_konbini_payments', $storeId);
     }
 
     /**
@@ -118,5 +98,22 @@ class Config extends \Magento\Payment\Gateway\Config\Config
     public function getRedirectUrl()
     {
         return $this->urlInterface->getUrl('komoju/hostedpage/redirect');
+    }
+
+    /**
+     * Gets the store locale and compares it to acceptable komoju locales
+     * @return string (store locale or default locale)
+     */
+
+    public function getKomojuLocale()
+    {
+      $defaultLocale = 'en';
+      $komojuLocales = array('en','ja');
+      $storeLocale = substr($this->locale->getLocale(), 0, 2);
+      if (in_array($storeLocale, $komojuLocales)) {
+        return $storeLocale;
+      } else {
+        return $defaultLocale;
+      }
     }
 }
