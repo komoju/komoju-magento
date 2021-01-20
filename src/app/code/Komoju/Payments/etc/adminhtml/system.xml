@@ -29,26 +29,12 @@
                     </field>
                     <field id="webhook_secret_token" translate="label comment" type="obscure" showInDefault="1" showInWebsite="1" showInStore="1">
                         <label>Webhook Secret</label>
-                        <comment>The webhook URL will be at /komoju/hostedpage/webhook of this site</comment> 
+                        <comment>The webhook URL will be at /komoju/hostedpage/webhook of this site</comment>
                         <config_path>payment/komoju_payments/webhook_secret_token</config_path>
                         <backend_model>Magento\Config\Model\Config\Backend\Encrypted</backend_model>
                     </field>
                 </group>
-                <group id="komoju_supported_methods" translate="label" showInDefault="1" showInWebsite="1" showInStore="1" sortOrder="4">
-                    <label>Payment Methods</label>
-                    <frontend_model>Magento\Config\Block\System\Config\Form\Fieldset</frontend_model>
-                    <field id="enable_credit_card_payments" translate="label" type="select" showInDefault="1" showInWebsite="1">
-                        <label>Allow credit card payments</label>
-                        <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
-                        <config_path>payment/komoju_payments/enable_credit_card_payments</config_path>
-                    </field>
-                    <field id="enable_konbini_payments" translate="label" type="select" showInDefault="1" showInWebsite="1">
-                        <label>Allow konbini payments</label>
-                        <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
-                        <config_path>payment/komoju_payments/enable_konbini_payments</config_path>
-                    </field>
-                </group>
-                <group id="komoju_checkout_page_settings" translate="label" showInDefault="1" showInWebsite="1" showInStore="1" sortOrder="5">
+                <group id="komoju_checkout_page_settings" translate="label" showInDefault="1" showInWebsite="1" showInStore="1" sortOrder="4">
                     <label>Checkout Settings</label>
                     <frontend_model>Magento\Config\Block\System\Config\Form\Fieldset</frontend_model>
                     <field id="title" translate="label" type="text" showInDefault="1" showInWebsite="1" showInStore="1">
