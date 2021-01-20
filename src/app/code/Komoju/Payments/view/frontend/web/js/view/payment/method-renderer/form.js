@@ -3,23 +3,31 @@ define(
         "jquery",
         "Magento_Checkout/js/view/payment/default",
         "Magento_Checkout/js/model/full-screen-loader",
+        "Magento_Checkout/js/action/select-payment-method",
+        "Magento_Checkout/js/checkout-data",
+        "ko",
+        "Magento_Ui/js/model/messageList",
     ],
     function (
         $,
         Component,
-        fullScreenLoader
+        fullScreenLoader,
+        selectPaymentMethodAction,
+        checkoutData,
+        ko,
+        messageList,
     ) {
     "use strict";
     return Component.extend({
         defaults: {
             template: "Komoju_Payments/payment/form",
             active: true,
-            paymentMethod: '',
             redirectAfterPlaceOrder: false,
+            komojuMethod: ko.observable('')
         },
 
         afterPlaceOrder: function() {
-            var redirectUrl = this.redirectUrl() + "?payment_method=" + this.paymentMethod;
+            var redirectUrl = this.redirectUrl() + "?payment_method=" + this.komojuMethod();
 
             fullScreenLoader.startLoader();
             $.mage.redirect(
@@ -27,9 +35,29 @@ define(
             );
         },
 
+        getData: function() {
+          return {
+              'method': this.getCode(),
+              'additional_data': null
+          };
+        },
+
+        selectPaymentMethod: function () {
+            this.moveBillingForm();
+            selectPaymentMethodAction(this.getData());
+            checkoutData.setSelectedPaymentMethod(this.getCode());
+            return true;
+        },
+
+        moveBillingForm: function () {
+            var billingForm = document.querySelector('.komoju_payment_billing');
+            var currentNode = document.querySelector(`#${this.komojuMethod()}-node`);
+            currentNode.appendChild(billingForm);
+        },
+
         getConfig: function() {
             var code = this.getCode();
-            
+
             return window.checkoutConfig.payment[code];
         },
 
@@ -37,18 +65,6 @@ define(
             var config = this.getConfig();
 
             return config.available_payment_methods;
-        },
-
-        shouldShowCreditCardOption: function() {
-            var config = this.getConfig();
-
-            return config.enable_credit_card_payments;
-        },
-
-        shouldShowKonbiniOption: function() {
-            var config = this.getConfig();
-
-            return config.enable_konbini_payments;
         },
 
         redirectUrl: function () {
@@ -61,17 +77,20 @@ define(
             var options = [];
             var option;
             var availablePaymentMethods = this.getAvailablePaymentMethods();
-            
+
             for (option in availablePaymentMethods) {
-                if (Object.prototype.hasOwnProperty.call(availablePaymentMethods, option)) {
-                    options.push({
-                        value: option,
-                        displayText: availablePaymentMethods[option]
-                    });
-                }
-                
+              if (Object.prototype.hasOwnProperty.call(availablePaymentMethods, option)) {
+                  options.push({
+                      value: option,
+                      displayText: availablePaymentMethods[option],
+                  });
+              }
             }
-            
+
+            if (options.length === 0) {
+              messageList.addErrorMessage({message: "Error loading Komoju payment methods. Please refresh the page and try again."});
+            }
+
             return options;
         }
     });
