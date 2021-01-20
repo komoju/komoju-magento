@@ -2,6 +2,8 @@
 
 namespace Komoju\Payments\Controller\HostedPage;
 
+require_once dirname(__FILE__) . '/../../komoju-php/lib/komoju.php';
+
 use Magento\Framework\App\ObjectManager;
 use Magento\Sales\Model\Order;
 
@@ -15,7 +17,6 @@ use Komoju\Payments\Controller\HostedPage\Cancel;
  */
 class Redirect extends \Magento\Framework\App\Action\Action
 {
-
     /**
      * @var \Magento\Framework\Controller\Result\RedirectFactory
      */
@@ -67,43 +68,70 @@ class Redirect extends \Magento\Framework\App\Action\Action
 
     public function execute()
     {
-        $hostedPageUrl = $this->createHostedPageUrl();
-
-        $this->markOrderAsPendingPayment();
-
-        $this->logger->info('redirecting user to hosted page at: ' . $hostedPageUrl);
-
         $resultRedirect = $this->_resultRedirectFactory->create();
-        $resultRedirect->setUrl($hostedPageUrl);
+
+        try {
+            $hostedPageUrl = $this->createHostedPageUrl();
+            $this->markOrderAsPendingPayment();
+            $this->logger->info('redirecting user to hosted page at: ' . $hostedPageUrl);
+            $resultRedirect->setUrl($hostedPageUrl);
+        } catch(\KomojuExceptionBadServer | \KomojuExceptionBadJson $exception) {
+            // Restore the items to the cart and redirect to the checkout payment page again
+            // if there's an error communicating with Komoju
+            $logMessage = 'Error redirecting to Komoju session: ' . $exception->getMessage();
+            $this->logger->info($logMessage);
+            $this->processFailedOrder();
+            $checkoutUrl = $this->_url->getUrl('checkout', ['_fragment' => 'payment']);
+            $resultRedirect->setUrl($checkoutUrl);
+        }
 
         return $resultRedirect;
     }
 
     /**
-     * Constructs the Hosted Page URL as per the docs:
-     * https://docs.komoju.com/en/hosted_page/overview/#creating_a_payment.
-     * @return string The Hosted Page Url
+     * Calls the KomojuApi to create a session with the relevant payment details
+     * and returns the Komoju session's URL
+     * @return string the Komoju session URL
      */
+
     private function createHostedPageUrl()
     {
-        $hostedPageParams = $this->getHostedPageParams();
         $paymentMethod = $this->getRequest()->getParam('payment_method');
-        $merchantId = $this->config->getMerchantId();
         $secretKey = $this->config->getSecretKey();
-        $komojuEndpoint = '/ja/api/'.$merchantId. '/transactions/';
+        $order = $this->getOrder();
+        $billingAddress = $order->getBillingAddress();
+        $externalOrderNum = $this->createExternalPayment($order);
+        $currencyCode = $this->storeManager->getStore()->getBaseCurrencyCode();
+        $client = new \KomojuApi($secretKey);
+        $returnUrl = $this->createReturnUrl($order->getEntityId());
 
-        $qsParams = [];
-        foreach ($hostedPageParams as $key => $val) {
-            $qsParams[] = urlencode($key) . '=' . urlencode($val);
-        }
-        sort($qsParams);
-        $queryString = implode('&', $qsParams);
+        $komojuSession = $client->createSession([
+          'return_url' => $returnUrl,
+          'default_locale' => $this->config->getKomojuLocale(),
+          'payment_types' => [$paymentMethod],
+          'payment_data' => [
+              'amount' => $order->getGrandTotal(),
+              'currency' => $currencyCode,
+              'external_order_num' => $externalOrderNum,
+          ],
+        ]);
 
-        $url = $komojuEndpoint.$paymentMethod.'/new'. '?' .$queryString;
-        $hmac = hash_hmac('sha256', $url, $secretKey);
-        $queryString .= '&hmac='.$hmac;
+        return $komojuSession->session_url;
+    }
 
-        return 'https://komoju.com/'.$komojuEndpoint.$paymentMethod.'/new'. '?' . $queryString;
+    /**
+     * If a failed order can be cancelled: this restores stock to the product,
+     * adds the products back to cart, and cancels the original failed order
+     */
+
+    private function processFailedOrder()
+    {
+      $order = $this->getOrder();
+      if($order->canCancel()) {
+        $this->_checkoutSession->restoreQuote();
+        $order->registerCancellation();
+        $order->save();
+      }
     }
 
     /**
@@ -124,50 +152,21 @@ class Redirect extends \Magento\Framework\App\Action\Action
         return $this->order;
     }
 
-    /**
-     * Creates the necessary parameters to pass to the hosted page API to get
-     * capture payment from the customer
-     * @return array
-     */
-    private function getHostedPageParams()
-    {
-        $order = $this->getOrder();
-        $billingAddress = $order->getBillingAddress();
-        $cancelUrl = $this->createCancelUrl($order->getEntityId());
-        $externalOrderNum = $this->createExternalPayment($order);
-        $currencyCode = $this->storeManager->getStore()->getBaseCurrencyCode();
-
-        return [
-            "transaction[amount]" => $order->getGrandTotal(),
-            "transaction[currency]" => $currencyCode,
-            "transaction[customer][email]" => $billingAddress->getEmail(),
-            "transaction[customer][given_name]" => $billingAddress->getFirstname(),
-            "transaction[customer][family_name]" => $billingAddress->getLastname(),
-            "transaction[customer][phone]" => $billingAddress->getTelephone(),
-            "transaction[tax]" => 0,
-            "timestamp" => time(),
-            "transaction[return_url]" => $this->_url->getUrl('checkout/onepage/success'),
-            "transaction[cancel_url]" => $this->_url->getUrl($cancelUrl),
-            "transaction[external_order_num]" => $externalOrderNum,
-            "via" => "magento",
-        ];
-    }
 
     /**
-     * Creates the cancel url for the cancel endpoint in this plugin. Because we
-     * don't want to leave an order in limbo if the user clicks the cancel link
+     * Creates the return url for the PostSessionRedirect endpoint in this plugin. Because we
+     * don't want to leave an order in limbo if the user does not complete the session,s
      * we have a specific endpoint that takes the order id and HMAC token and marks
      * the order as cancelled in the system
-     * @return string
+     * @return String
      */
-    private function createCancelUrl($orderId)
+    private function createReturnUrl($orderId)
     {
         $secretKey = $this->config->getSecretKey();
-
-        $cancelEndpoint = 'komoju/hostedpage/cancel?order_id=' . $orderId;
-        $hmac = hash_hmac('sha256', $cancelEndpoint, $secretKey);
-
-        return $cancelEndpoint .= '&' . Cancel::HMAC_PARAM_KEY .'='.$hmac;
+        $endpoint = 'komoju/hostedpage/postsessionredirect?order_id=' . $orderId;
+        $hmac = hash_hmac('sha256', $endpoint, $secretKey);
+        $returnUrl = $this->_url->getUrl($endpoint .= '&hmac='.$hmac);
+        return $returnUrl;
     }
 
     /**
