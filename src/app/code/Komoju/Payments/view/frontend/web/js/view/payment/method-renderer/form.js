@@ -7,6 +7,7 @@ define(
         "Magento_Checkout/js/checkout-data",
         "ko",
         "Magento_Ui/js/model/messageList",
+        "mage/translate"
     ],
     function (
         $,
@@ -16,6 +17,7 @@ define(
         checkoutData,
         ko,
         messageList,
+        $t
     ) {
     "use strict";
     return Component.extend({
@@ -88,7 +90,7 @@ define(
             }
 
             if (options.length === 0) {
-              messageList.addErrorMessage({message: "Error loading Komoju payment methods. Please refresh the page and try again."});
+              messageList.addErrorMessage({message: $t("Encountered an issue communicating with KOMOJU. Please wait a moment and try again.")});
             }
 
             return options;

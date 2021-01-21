@@ -24,3 +24,4 @@ KOMOJU,KOMOJU
 "Payment Methods","お支払い方法"
 "Checkout Settings","決済設定"
 Title,題名
+"Encountered an issue communicating with KOMOJU. Please wait a moment and try again.","KOMOJUを読み込みませんでした。しばらく待ってから再実行してください。"
