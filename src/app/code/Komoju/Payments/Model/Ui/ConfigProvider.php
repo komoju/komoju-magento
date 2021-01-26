@@ -2,6 +2,8 @@
 
 namespace Komoju\Payments\Model\Ui;
 
+require_once dirname(__FILE__) . '/../../komoju-php/lib/komoju.php';
+
 use Magento\Framework\App\ObjectManager;
 use Magento\Checkout\Model\ConfigProviderInterface;
 use Magento\Framework\Session\SessionManagerInterface;
@@ -22,7 +24,7 @@ class ConfigProvider implements ConfigProviderInterface
      * plugin. It's passed around via the di.xml files.
      */
     const CODE = 'komoju_payments';
-    
+
     // when this array updates make sure to update the comment at system.xml:14
     const ALLOWABLE_CURRENCY_CODES = ['JPY'];
 
@@ -37,6 +39,11 @@ class ConfigProvider implements ConfigProviderInterface
     private $session;
 
     /**
+     * @var \Psr\Log\LoggerInterface
+     */
+    private $logger;
+
+    /**
      * Constructor
      *
      * @param Config $config
@@ -46,11 +53,13 @@ class ConfigProvider implements ConfigProviderInterface
     public function __construct(
         Config $config,
         SessionManagerInterface $session,
-        ScopeConfigInterface $scopeConfig
+        ScopeConfigInterface $scopeConfig,
+        \Psr\Log\LoggerInterface $logger = null
     ) {
         $this->config = $config;
         $this->session = $session;
         $this->scopeConfig = $scopeConfig;
+        $this->logger = $logger ?: ObjectManager::getInstance()->get(\Psr\Log\LoggerInterface::class);
     }
 
     /**
@@ -74,6 +83,7 @@ class ConfigProvider implements ConfigProviderInterface
                     'available_payment_methods' => $this->createPaymentMethodOptions(),
                     'merchant_id'  => $this->config->getMerchantId(),
                     'redirect_url' => $this->config->getRedirectUrl(),
+                    'show_title' => $this->config->showTitle()
                 ]
             ]
         ];
@@ -90,15 +100,22 @@ class ConfigProvider implements ConfigProviderInterface
      */
     private function createPaymentMethodOptions()
     {
-        $paymentMethodOptions = [];
-        if ($this->config->areCreditCardPaymentsEnabled()) {
-            $paymentMethodOptions['credit_card'] = __('Credit Card');
+        try {
+            $paymentMethodOptions = [];
+            $secretKey = $this->config->getSecretKey();
+            $komojuApi = new \KomojuApi($secretKey);
+            $locale = $this->config->getKomojuLocale();
+
+            $methods = $komojuApi->paymentMethods();
+            foreach ($methods as $method) {
+              $paymentMethodOptions[$method->type_slug] = $method->{"name_{$locale}"};
+            }
+            return $paymentMethodOptions;
+        } catch (\KomojuExceptionBadServer | \KomojuExceptionBadJson $exception) {
+            $message = 'Error retrieving payment methods from Komoju: ' . $exception->getMessage();
+            $this->logger->info($message);
+            return [];
         }
 
-        if ($this->config->areKonbiniPaymentsEnabled()) {
-            $paymentMethodOptions['konbini'] = __('Konbini');
-        }
-
-        return $paymentMethodOptions;
     }
 }

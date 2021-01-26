@@ -22,7 +22,9 @@ KOMOJU,KOMOJU
 "Webhook Secret","Webhookシークレット"
 "The webhook URL will be at /komoju/hostedpage/webhook of this site","webhook URLは、このサイトの/ komoju / hostedpage / webhookにあります"
 "Payment Methods","お支払い方法"
-"Allow credit card payments","クレジットカード決済を許可する"
-"Allow konbini payments","コンビニ支払いを許可する"
 "Checkout Settings","決済設定"
 Title,題名
+"This plugin can only work if the store's base currency is one of: JPY","このプラグインは、ストアの基本通貨が日本円の場合にのみ動作します。"
+"Encountered an issue communicating with KOMOJU. Please wait a moment and try again.","KOMOJUとの通信に問題が発生しました。しばらく待ってから再実行してください。"
+"Show Title at Checkout","チェックアウトでタイトルを表示"
+"Display the title above the payment methods on the checkout page","チェックアウトページの支払い方法の上にタイトルを表示"

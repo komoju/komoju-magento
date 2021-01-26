@@ -22,7 +22,9 @@ KOMOJU,KOMOJU
 "Webhook Secret","Webhook Secret"
 "The webhook URL will be at /komoju/hostedpage/webhook of this site","The webhook URL will be at /komoju/hostedpage/webhook of this site"
 "Payment Methods","Payment Methods"
-"Allow credit card payments","Allow credit card payments"
-"Allow konbini payments","Allow konbini payments"
 "Checkout Settings","Checkout Settings"
 Title,Title
+"This plugin can only work if the store's base currency is one of: JPY","This plugin can only work if the store's base currency is one of: JPY"
+"Encountered an issue communicating with KOMOJU. Please wait a moment and try again.","Encountered an issue communicating with KOMOJU. Please wait a moment and try again."
+”Show Title at Checkout”,"Show Title at Checkout"
+"Display the title above the payment methods on the checkout page","Display the title above the payment methods on the checkout page"
