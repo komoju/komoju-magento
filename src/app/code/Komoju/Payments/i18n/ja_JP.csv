@@ -27,4 +27,4 @@ Title,題名
 "This plugin can only work if the store's base currency is one of: JPY","This plugin can only work if the store's base currency is one of: JPY"
 "Encountered an issue communicating with KOMOJU. Please wait a moment and try again.","KOMOJUを読み込みませんでした。しばらく待ってから再実行してください。"
 "Show Title at Checkout","チェックアウトでタイトルを表示"
-"Display the title above the payment methods on the checkout page","チェックアウトページの支払い方法の上にタイトルを表示する"
+"Display the title above the payment methods on the checkout page","チェックアウトページの支払い方法の上にタイトルを表示"
