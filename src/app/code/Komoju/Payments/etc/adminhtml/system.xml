@@ -41,6 +41,12 @@
                         <label>Title</label>
                         <config_path>payment/komoju_payments/title</config_path>
                     </field>
+                    <field id="show_title" translate="label comment" type="select" showInDefault="1" showInWebsite="1" showInStore="1">
+                        <label>Show Title at Checkout</label>
+                        <comment>Display the title above the payment methods on the checkout page</comment>
+                        <config_path>payment/komoju_payments/show_title</config_path>
+                        <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    </field>
                 </group>
             </group>
         </section>

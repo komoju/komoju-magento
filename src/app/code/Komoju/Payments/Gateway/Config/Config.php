@@ -100,6 +100,16 @@ class Config extends \Magento\Payment\Gateway\Config\Config
         return $this->urlInterface->getUrl('komoju/hostedpage/redirect');
     }
 
+      /**
+     * Returns the value of "Show Title on Checkout Screen" on the field on the
+     * admin page
+     * @return boolean
+     */
+    public function showTitle($storeId = null)
+    {
+        return (bool) $this->getValue('show_title', $storeId);
+    }
+
     /**
      * Gets the store locale and compares it to acceptable komoju locales
      * @return string (store locale or default locale)

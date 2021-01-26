@@ -75,6 +75,18 @@ define(
             return config.redirect_url;
         },
 
+        getTitle() {
+            var config = this.getConfig();
+
+            return config.title;
+        },
+
+        showTitle() {
+            var config = this.getConfig();
+
+            return config.show_title;
+        },
+
         getEnabledPaymentTypes: function() {
             var options = [];
             var option;

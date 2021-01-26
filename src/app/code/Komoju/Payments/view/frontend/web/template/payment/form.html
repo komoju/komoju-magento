@@ -4,6 +4,9 @@
  * See COPYING.txt for license details.
  */
 -->
+<!-- ko if: showTitle() -->
+  <h3 data-bind="text: getTitle()"></h3>
+<!-- /ko -->
 <!-- ko foreach: { data: getEnabledPaymentTypes(), as: 'method' } -->
   <div class="payment-method"
       data-bind="

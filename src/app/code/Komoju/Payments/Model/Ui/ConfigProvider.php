@@ -83,6 +83,7 @@ class ConfigProvider implements ConfigProviderInterface
                     'available_payment_methods' => $this->createPaymentMethodOptions(),
                     'merchant_id'  => $this->config->getMerchantId(),
                     'redirect_url' => $this->config->getRedirectUrl(),
+                    'show_title' => $this->config->showTitle()
                 ]
             ]
         ];

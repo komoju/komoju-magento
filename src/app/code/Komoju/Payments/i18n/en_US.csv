@@ -24,4 +24,7 @@ KOMOJU,KOMOJU
 "Payment Methods","Payment Methods"
 "Checkout Settings","Checkout Settings"
 Title,Title
+"This plugin can only work if the store's base currency is one of: JPY","This plugin can only work if the store's base currency is one of: JPY"
 "Encountered an issue communicating with KOMOJU. Please wait a moment and try again.","Encountered an issue communicating with KOMOJU. Please wait a moment and try again."
+”Show Title at Checkout”,"Show Title at Checkout"
+"Display the title above the payment methods on the checkout page","Display the title above the payment methods on the checkout page"
