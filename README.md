@@ -1,13 +1,8 @@
 # KOMOJU Magento Plugin
 
-This plugin allows for Magento store owners to accept payments through Komoju. Currently the plugin supports the following currencies:
+This plugin allows for Magento store owners to accept payments with [Komoju payment methods](https://en.komoju.com/payment-methods). Currently the plugin supports the following currencies:
 
 - JPY
-
-And the following payment methods:
-
-- Credit Card (クレジットカード)
-- Convenience Store (コンビニ)
 
 ## Installation instructions
 
@@ -44,7 +39,7 @@ When configuring the "API Settings" section of the plugin use the following valu
 "Merchant UUID" in the plugin is "Merchant UUID" in the Merchant Settings dashboard.
 "Secret Key" in the plugin is "Secret Key" in the Merchant Settings dashboard.
 
-### Configuring the KOMOJU webhook 
+### Configuring the KOMOJU webhook
 
 To ensure that the Magento plugin works correctly you will need to set up a webhook from your KOMOJU dashboard to the wordpress instance. To do this you will need to go to your [Webhook page on the KOMOJU dashboard](https://komoju.com/admin/webhooks) and click "New Webhook". The Webhook URL is at `/komoju/hostedpage/webhook` of your Magento website:
 
