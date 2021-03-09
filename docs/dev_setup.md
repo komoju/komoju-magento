@@ -96,5 +96,4 @@ Once inside the admin page, click the "Catalog" option on the left menu and then
 4. Update with the relevant Komoju account details
 
 ## Lint
-You can run `bin/lint-check` to show linting errors (PHP Codesniffer using Magento standards) and JS linting errors.
-`bin/lint-autofix` can also be used to autocorrect some mistakes.
+See [Linting](linting.md) for php/js linting.
