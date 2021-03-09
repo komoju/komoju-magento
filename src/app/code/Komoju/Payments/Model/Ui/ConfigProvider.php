@@ -2,14 +2,14 @@
 
 namespace Komoju\Payments\Model\Ui;
 
-require_once dirname(__FILE__) . '/../../komoju-php/lib/komoju.php';
-
 use Magento\Framework\App\ObjectManager;
 use Magento\Checkout\Model\ConfigProviderInterface;
 use Magento\Framework\Session\SessionManagerInterface;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 
 use Komoju\Payments\Gateway\Config\Config;
+use Komoju\Payments\Exception\KomojuExceptionBadServer;
+use Komoju\Payments\Exception\InvalidJsonException;
 
 /**
  * The ConfigProvider class is responsible for passing config variables to the
@@ -44,6 +44,11 @@ class ConfigProvider implements ConfigProviderInterface
     private $logger;
 
     /**
+     * @var \Komoju\Payments\Api\KomojuApi
+     */
+    private $komojuApi;
+
+    /**
      * Constructor
      *
      * @param Config $config
@@ -54,12 +59,14 @@ class ConfigProvider implements ConfigProviderInterface
         Config $config,
         SessionManagerInterface $session,
         ScopeConfigInterface $scopeConfig,
-        \Psr\Log\LoggerInterface $logger = null
+        \Psr\Log\LoggerInterface $logger = null,
+        \Komoju\Payments\Api\KomojuApi $komojuApi
     ) {
         $this->config = $config;
         $this->session = $session;
         $this->scopeConfig = $scopeConfig;
         $this->logger = $logger ?: ObjectManager::getInstance()->get(\Psr\Log\LoggerInterface::class);
+        $this->komojuApi = $komojuApi;
     }
 
     /**
@@ -102,20 +109,17 @@ class ConfigProvider implements ConfigProviderInterface
     {
         try {
             $paymentMethodOptions = [];
-            $secretKey = $this->config->getSecretKey();
-            $komojuApi = new \KomojuApi($secretKey);
             $locale = $this->config->getKomojuLocale();
 
-            $methods = $komojuApi->paymentMethods();
+            $methods = $this->komojuApi->paymentMethods();
             foreach ($methods as $method) {
-              $paymentMethodOptions[$method->type_slug] = $method->{"name_{$locale}"};
+                $paymentMethodOptions[$method->type_slug] = $method->{"name_{$locale}"};
             }
             return $paymentMethodOptions;
-        } catch (\KomojuExceptionBadServer | \KomojuExceptionBadJson $exception) {
+        } catch (KomojuExceptionBadServer | InvalidJsonException $exception) {
             $message = 'Error retrieving payment methods from Komoju: ' . $exception->getMessage();
             $this->logger->info($message);
             return [];
         }
-
     }
 }
