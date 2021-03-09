@@ -2,12 +2,11 @@
 
 namespace Komoju\Payments\Controller\HostedPage;
 
-require_once dirname(__FILE__) . '/../../komoju-php/lib/komoju.php';
-
 use Magento\Framework\App\ObjectManager;
 use Magento\Sales\Model\Order;
 
-use Komoju\Payments\Controller\HostedPage\Cancel;
+use Komoju\Payments\Exception\KomojuExceptionBadServer;
+use Komoju\Payments\Exception\InvalidJsonException;
 
 /**
  * The Redirect endpoint is responsible for creating the Hosted Page URL
@@ -47,6 +46,11 @@ class Redirect extends \Magento\Framework\App\Action\Action
      */
     private $externalPayment;
 
+    /**
+     * @var \Komoju\Payments\Api\KomojuApi
+     */
+    private $komojuApi;
+
     public function __construct(
         \Magento\Framework\App\Action\Context $context,
         \Magento\Framework\Controller\Result\RedirectFactory $resultRedirectFactory,
@@ -54,7 +58,8 @@ class Redirect extends \Magento\Framework\App\Action\Action
         \Magento\Checkout\Model\Session $checkoutSession,
         \Komoju\Payments\Gateway\Config\Config $config,
         \Magento\Store\Model\StoreManagerInterface $storeManager,
-        \Psr\Log\LoggerInterface $logger = null
+        \Psr\Log\LoggerInterface $logger = null,
+        \Komoju\Payments\Api\KomojuApi $komojuApi
     ) {
         $this->logger = $logger ?: ObjectManager::getInstance()->get(\Psr\Log\LoggerInterface::class);
         $this->externalPayment = $externalPaymentFactory->create();
@@ -62,6 +67,7 @@ class Redirect extends \Magento\Framework\App\Action\Action
         $this->_checkoutSession = $checkoutSession;
         $this->config = $config;
         $this->storeManager = $storeManager;
+        $this->komojuApi = $komojuApi;
 
         return parent::__construct($context);
     }
@@ -75,7 +81,7 @@ class Redirect extends \Magento\Framework\App\Action\Action
             $this->markOrderAsPendingPayment();
             $this->logger->info('redirecting user to hosted page at: ' . $hostedPageUrl);
             $resultRedirect->setUrl($hostedPageUrl);
-        } catch(\KomojuExceptionBadServer | \KomojuExceptionBadJson $exception) {
+        } catch (KomojuExceptionBadServer | InvalidJsonException $exception) {
             // Restore the items to the cart and redirect to the checkout payment page again
             // if there's an error communicating with Komoju
             $logMessage = 'Error redirecting to Komoju session: ' . $exception->getMessage();
@@ -97,15 +103,13 @@ class Redirect extends \Magento\Framework\App\Action\Action
     private function createHostedPageUrl()
     {
         $paymentMethod = $this->getRequest()->getParam('payment_method');
-        $secretKey = $this->config->getSecretKey();
         $order = $this->getOrder();
         $billingAddress = $order->getBillingAddress();
         $externalOrderNum = $this->createExternalPayment($order);
         $currencyCode = $this->storeManager->getStore()->getBaseCurrencyCode();
-        $client = new \KomojuApi($secretKey);
         $returnUrl = $this->createReturnUrl($order->getEntityId());
 
-        $komojuSession = $client->createSession([
+        $komojuSession = $this->komojuApi->createSession([
           'return_url' => $returnUrl,
           'default_locale' => $this->config->getKomojuLocale(),
           'payment_types' => [$paymentMethod],
@@ -126,12 +130,12 @@ class Redirect extends \Magento\Framework\App\Action\Action
 
     private function processFailedOrder()
     {
-      $order = $this->getOrder();
-      if($order->canCancel()) {
-        $this->_checkoutSession->restoreQuote();
-        $order->registerCancellation();
-        $order->save();
-      }
+        $order = $this->getOrder();
+        if ($order->canCancel()) {
+            $this->_checkoutSession->restoreQuote();
+            $order->registerCancellation();
+            $order->save();
+        }
     }
 
     /**
@@ -152,10 +156,9 @@ class Redirect extends \Magento\Framework\App\Action\Action
         return $this->order;
     }
 
-
     /**
      * Creates the return url for the PostSessionRedirect endpoint in this plugin. Because we
-     * don't want to leave an order in limbo if the user does not complete the session,s
+     * don't want to leave an order in limbo if the user does not complete the session,
      * we have a specific endpoint that takes the order id and HMAC token and marks
      * the order as cancelled in the system
      * @return String
@@ -165,7 +168,8 @@ class Redirect extends \Magento\Framework\App\Action\Action
         $secretKey = $this->config->getSecretKey();
         $endpoint = 'komoju/hostedpage/postsessionredirect?order_id=' . $orderId;
         $hmac = hash_hmac('sha256', $endpoint, $secretKey);
-        $returnUrl = $this->_url->getUrl($endpoint .= '&hmac='.$hmac);
+        $returnUrl = $this->_url->getUrl($endpoint .= '&hmac_magento='.$hmac);
+        $returnUrl = $this->_url->getUrl($endpoint);
         return $returnUrl;
     }
 
