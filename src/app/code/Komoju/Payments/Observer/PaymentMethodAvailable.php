@@ -61,7 +61,12 @@ class PaymentMethodAvailable implements ObserverInterface
             if (in_array($baseCurrencyCode, $this->allowableCurrencyCodes)) {
                 $checkResult->setData('is_available', true);
             } else {
-                $this->logger->info(__('Store currency code: %1 is not in the list of allowable currency codes for KOMOJU', $baseCurrencyCode));
+                $this->logger->info(
+                    __(
+                        'Store currency code: %1 is not in the list of allowable currency codes for KOMOJU',
+                        $baseCurrencyCode
+                    )
+                );
                 $checkResult->setData('is_available', false);
             }
         }
