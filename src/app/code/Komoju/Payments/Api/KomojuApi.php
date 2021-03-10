@@ -83,7 +83,7 @@ class KomojuApi
         $url = $this->endpoint . $uri;
         $data_json = json_encode($payload);
         $options = [CURLOPT_POST => true,
-                    CURLOPT_HTTPHEADER => ['Content-Type: application/json'],
+                    CURLOPT_HTTPHEADER => ['Content-Type: application/json','Komoju-Via: magento'],
                     CURLOPT_RETURNTRANSFER => true,
                     CURLOPT_USERPWD => $this->config->getSecretKey() . ':'
                     ];
