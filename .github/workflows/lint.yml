@@ -14,13 +14,7 @@ jobs:
           php-version: 7.4
       - name: Setup dependencies
         run: |
-          which php
-          which composer
-          php -i
-          composer
           composer install
-          composer require --dev magento/magento-coding-standard
-          composer require --dev "squizlabs/php_codesniffer=*"
           vendor/bin/phpcs --config-set installed_paths ../../magento/magento-coding-standard/
       - name: Run lint
         run: vendor/bin/phpcs --standard=magento2 src/app
