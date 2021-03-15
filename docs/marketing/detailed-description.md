@@ -1,19 +1,27 @@
-Built for developers, [**KOMOJU**](https://komoju.com) is the easiest way to integrate Japanese payments into your Magento store.
+Install the KOMOJU payments plugin and start growing your business with our innovative payment solutions.
 
-The KOMOJU extension provides an easy way to accept Japanese payments for your Magento store. Credit Card payments only make up a small percentage of online payments in Japan, with KOMOJU you can accept payments in multiple ways, allowing your customers to pay in the way that suits them best.
+KOMOJU allows you to accept all major payment methods directly on your Magento store.
+We support:
+- Credit cards (Visa, Mastercard, American Express, JCB, Diners Club)
+- Bank transfer
+- Convenience store payments (konbini)
+- Smartphone payments (PayPay, LINE Pay, Merpay)
+- Pay-easy
+- Carrier billing (au, docomo, SoftBank)
+- E-money (BitCash, WebMoney, NET CASH)
 
-Note: Currently the extension only allows payments for stores with JPY as the base currency.
+## Why choose KOMOJU?
 
-## Account and Pricing
+KOMOJU has no sign up fees and no monthly fees - you pay per transaction only. Weekly payout option allows you to have your sales transferred in as little as 5 business days.
 
-A KOMOJU account is required to use this extension. If you do not have a KOMOJU account yet you will need to [sign up here](https://komoju.com/) for one before using the extension. See [this link](https://komoju.com/#pricing) for pricing details.
+## Simple sign-up and fast approval
 
-## Features
+Our plugin is easy to install, and takes it just a few steps to get KOMOJU connected to your store. Sign up for your KOMOJU account from our website and have your application approved in 2-3 business days.
 
-- Allow your customers to pay with the methods you prefer best: Credit Card or Konbini
-- Can test the extension with test credentials before accepting customer payments
-- Simple checkout workflow
-- PCI Compliant; We do the hard work of keeping your users' data secure so you don't need to worry.
+## High Security Standards
 
-## Security
-Upon checkout, customers are redirected to the [KOMOJU hosted page website](https://docs.komoju.com/en/hosted_page/overview/). The customer enters their payment information directly into our secure environment so that the web shop never comes into contact with the customers payment data. Once the payment process is complete, customers will be redirected back to your store. No customer data is ever stored on the Magento server.
+Our plugin is developed with security in mind. All cardholder data is processed on our servers, and fully compliant with PCI-DSS. Your customers will always have a secure way to complete their payments.
+
+## Fraud Prevention System
+
+Our in-house fraud prevention system can identify fraud transactions before they take place to prevent chargebacks and other fraud. Thanks to machine learning, our system adapts automatically and stops fraud in its tracks
