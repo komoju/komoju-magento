@@ -169,7 +169,6 @@ class Redirect extends \Magento\Framework\App\Action\Action
         $endpoint = 'komoju/hostedpage/postsessionredirect?order_id=' . $orderId;
         $hmac = hash_hmac('sha256', $endpoint, $secretKey);
         $returnUrl = $this->_url->getUrl($endpoint .= '&hmac_magento='.$hmac);
-        $returnUrl = $this->_url->getUrl($endpoint);
         return $returnUrl;
     }
 
