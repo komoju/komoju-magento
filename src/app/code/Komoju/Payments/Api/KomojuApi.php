@@ -1,5 +1,7 @@
 <?php
 
+/** Replace functionality with KomojuApi package once available **/
+
 namespace Komoju\Payments\Api;
 
 use Komoju\Payments\Exception\KomojuExceptionBadServer;
