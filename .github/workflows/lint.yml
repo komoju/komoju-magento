@@ -1,0 +1,28 @@
+name: lint
+
+on:
+  - push
+
+jobs:
+  php-cs-fixer:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 7.4
+      - name: Setup dependencies
+        run: |
+          composer install
+          vendor/bin/phpcs --config-set installed_paths ../../magento/magento-coding-standard/
+      - name: Run lint
+        run: vendor/bin/phpcs --standard=magento2 src/app
+  lint-js:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install modules
+        run: yarn
+      - name: Run ESLint
+        run: yarn eslint src/app/code/Komoju/

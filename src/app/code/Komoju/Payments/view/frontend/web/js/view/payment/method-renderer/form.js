@@ -53,7 +53,8 @@ define(
 
         moveBillingForm: function () {
             var billingForm = document.querySelector('.komoju_payment_billing');
-            var currentNode = document.querySelector(`#${this.komojuMethod()}-node`);
+            var currentNode = document.querySelector('#' + this.komojuMethod() + '-node');
+
             currentNode.appendChild(billingForm);
         },
 
@@ -75,13 +76,13 @@ define(
             return config.redirect_url;
         },
 
-        getTitle() {
+        getTitle: function () {
             var config = this.getConfig();
 
             return config.title;
         },
 
-        showTitle() {
+        showTitle: function () {
             var config = this.getConfig();
 
             return config.show_title;
@@ -102,7 +103,9 @@ define(
             }
 
             if (options.length === 0) {
-              messageList.addErrorMessage({message: $t("Encountered an issue communicating with KOMOJU. Please wait a moment and try again.")});
+              messageList.addErrorMessage(
+                {message: $t("Encountered an issue communicating with KOMOJU. Please wait a moment and try again.")}
+              );
             }
 
             return options;

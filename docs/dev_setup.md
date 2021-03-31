@@ -94,3 +94,6 @@ Once inside the admin page, click the "Catalog" option on the left menu and then
 2. Once on the Configuration page, there should be a "General" menu on the left, next to the main admin menu. Scroll down to the "Sales" section, expand it and click on "Payment Methods"
 3. Click "Configure" next to Komoju to configure the plugin.
 4. Update with the relevant Komoju account details
+
+## Lint
+See [Linting](linting.md) for php/js linting.

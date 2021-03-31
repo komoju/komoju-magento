@@ -9,7 +9,7 @@ namespace Komoju\Payments\Exception;
 class InvalidJsonException extends \Magento\Framework\Exception\LocalizedException
 {
     public $statusCode;
-    
+
     public function __construct($msg, $statusCode = 400)
     {
         $this->statusCode = $statusCode;

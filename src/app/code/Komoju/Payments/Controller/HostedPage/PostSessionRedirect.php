@@ -2,8 +2,6 @@
 
 namespace Komoju\Payments\Controller\HostedPage;
 
-require_once dirname(__FILE__) . '/../../komoju-php/lib/komoju.php';
-
 use Magento\Framework\App\ObjectManager;
 use Magento\Sales\Model\Order;
 use Magento\Framework\Controller\ResultFactory;
@@ -51,6 +49,10 @@ class PostSessionRedirect extends \Magento\Framework\App\Action\Action
      */
     private $orderRepository;
 
+    /**
+     * @var \Komoju\Payments\Api\KomojuApi
+     */
+    private $komojuApi;
 
     public function __construct(
         \Magento\Sales\Api\OrderRepositoryInterface $orderRepository,
@@ -58,56 +60,58 @@ class PostSessionRedirect extends \Magento\Framework\App\Action\Action
         \Magento\Framework\App\Action\Context $context,
         \Komoju\Payments\Gateway\Config\Config $config,
         \Psr\Log\LoggerInterface $logger = null,
-        \Magento\Checkout\Model\Session $checkoutSession
+        \Magento\Checkout\Model\Session $checkoutSession,
+        \Komoju\Payments\Api\KomojuApi $komojuApi
     ) {
         $this->logger = $logger ?: ObjectManager::getInstance()->get(\Psr\Log\LoggerInterface::class);
         $this->_resultFactory = $resultFactory;
         $this->config = $config;
         $this->orderRepository = $orderRepository;
         $this->_checkoutSession = $checkoutSession;
+        $this->komojuApi = $komojuApi;
 
         return parent::__construct($context);
     }
 
     public function execute()
     {
-      if (!$this->isHmacValid()) {
-        $this->logger->info('HMAC param does not match expected value, exiting.');
-        $result = $this->_resultFactory->create(ResultFactory::TYPE_RAW);
-        $result->setHttpResponseCode(401);
-        $result->setContents('hmac parameter is not valid');
+        if (!$this->isHmacValid()) {
+            $this->logger->info('HMAC param does not match expected value, exiting.');
+            $result = $this->_resultFactory->create(ResultFactory::TYPE_RAW);
+            $result->setHttpResponseCode(401);
+            $result->setContents('hmac parameter is not valid');
 
-        return $result;
-      };
+            return $result;
+        };
 
-      $resultRedirect = $this->_resultFactory->create(ResultFactory::TYPE_REDIRECT);
+        $resultRedirect = $this->_resultFactory->create(ResultFactory::TYPE_REDIRECT);
 
-      if ($this->isSessionCompleted()){
-        $successUrl = $this->_url->getUrl('checkout/onepage/success');
-        $resultRedirect->setUrl($successUrl);
-      } else {
-        $redirectUrl = $this->processFailedOrder();
-        $resultRedirect->setUrl($redirectUrl);
-      }
-      return $resultRedirect;
+        if ($this->isSessionCompleted()) {
+            $successUrl = $this->_url->getUrl('checkout/onepage/success');
+            $resultRedirect->setUrl($successUrl);
+        } else {
+            $redirectUrl = $this->processFailedOrder();
+            $resultRedirect->setUrl($redirectUrl);
+        }
+        return $resultRedirect;
     }
 
     /**
-    * If an order can be cancelled, cancel the order and restore the items to cart
-    * and return the checkout url. Otherwise return the home page url
-    * @return string
-    */
+     * If an order can be cancelled, cancel the order and restore the items to cart
+     * and return the checkout url. Otherwise return the home page url
+     * @return string
+     */
     private function processFailedOrder()
     {
-      $orderId = $this->getRequest()->getParam('order_id');
-      $order = $this->getOrder($orderId);
-      if($order->canCancel()) {
-        $this->_checkoutSession->restoreQuote();
-        $order->registerCancellation();
-        $order->save();
-        return $this->_url->getUrl('checkout', ['_fragment' => 'payment']);
-      }
-      return $this->_url->getUrl('/');
+        $orderId = $this->getRequest()->getParam('order_id');
+        $order = $this->getOrder($orderId);
+        if ($order->canCancel()) {
+            $this->_checkoutSession->restoreQuote();
+            $order->registerCancellation();
+            $order->save();
+            return $this->_url->getUrl('checkout', ['_fragment' => 'payment']);
+        }
+        return $this->_url->getUrl('/');
     }
 
     /**
@@ -126,10 +130,8 @@ class PostSessionRedirect extends \Magento\Framework\App\Action\Action
      */
     private function isSessionCompleted()
     {
-        $secretKey = $this->config->getSecretKey();
-        $komojuApi = new \KomojuApi($secretKey);
         $sessionId = $this->getRequest()->getParam('session_id');
-        $session = $komojuApi->session($sessionId);
+        $session = $this->komojuApi->session($sessionId);
         return $session->status == 'completed';
     }
 
@@ -143,13 +145,10 @@ class PostSessionRedirect extends \Magento\Framework\App\Action\Action
     private function isHmacValid()
     {
         $requestParams = $this->getRequest()->getParams();
-        $hmacParam = rtrim($requestParams['hmac'], "/");
-        unset($requestParams['hmac']);
-        unset($requestParams['session_id']);
+        $orderId = $requestParams['order_id'];
+        $hmacParam = rtrim($requestParams['hmac_magento'], "/");
         $secretKey = $this->config->getSecretKey();
-
-        $queryString = http_build_query($requestParams);
-        $urlForComp = 'komoju/hostedpage/postsessionredirect' . '?' . $queryString;
+        $urlForComp = 'komoju/hostedpage/postsessionredirect?order_id=' . $orderId;
         $calculatedHmac = hash_hmac('sha256', $urlForComp, $secretKey);
 
         return hash_equals($hmacParam, $calculatedHmac);

@@ -79,12 +79,24 @@ class WebhookEventProcessor
             $this->order->setState(Order::STATE_PROCESSING);
             $this->order->setStatus(Order::STATE_PROCESSING);
 
-            $statusHistoryComment = $this->prependExternalOrderNum(__('Payment successfully received in the amount of: %1 %2', $paymentAmount, $this->webhookEvent->currency()));
+            $statusHistoryComment = $this->prependExternalOrderNum(
+                __(
+                    'Payment successfully received in the amount of: %1 %2',
+                    $paymentAmount,
+                    $this->webhookEvent->currency()
+                )
+            );
             $this->order->addStatusHistoryComment($statusHistoryComment);
 
             $this->order->save();
         } elseif ($this->webhookEvent->eventType() == 'payment.authorized') {
-            $statusHistoryComment = $this->prependExternalOrderNum(__('Received payment authorization for type: %1. Payment deadline is: %2', $this->webhookEvent->paymentType(), $this->webhookEvent->paymentDeadline()));
+            $statusHistoryComment = $this->prependExternalOrderNum(
+                __(
+                    'Received payment authorization for type: %1. Payment deadline is: %2',
+                    $this->webhookEvent->paymentType(),
+                    $this->webhookEvent->paymentDeadline()
+                )
+            );
             $this->order->addStatusHistoryComment($statusHistoryComment);
 
             $this->order->save();
@@ -135,7 +147,9 @@ class WebhookEventProcessor
             foreach ($refundsToProcess as $refund) {
                 $refundId = $refund['id'];
                 $refundedAmount = $refund['amount'];
-                $statusHistoryComment = $this->prependExternalOrderNum(__('Refund for order created. Amount: %1 %2', $refundedAmount, $refundCurrency));
+                $statusHistoryComment = $this->prependExternalOrderNum(
+                    __('Refund for order created. Amount: %1 %2', $refundedAmount, $refundCurrency)
+                );
 
                 $creditmemo = $this->creditmemoFactory->createByOrder($this->order);
                 $creditmemo->setSubtotal($refundedAmount);
