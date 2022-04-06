@@ -51,6 +51,11 @@ class Redirect extends \Magento\Framework\App\Action\Action
      */
     private $komojuApi;
 
+    /**
+     * @var \Magento\Directory\Model\CountryFactory
+     */
+    private $_countryFactory;
+
     public function __construct(
         \Magento\Framework\App\Action\Context $context,
         \Magento\Framework\Controller\Result\RedirectFactory $resultRedirectFactory,
@@ -59,7 +64,8 @@ class Redirect extends \Magento\Framework\App\Action\Action
         \Komoju\Payments\Gateway\Config\Config $config,
         \Magento\Store\Model\StoreManagerInterface $storeManager,
         \Psr\Log\LoggerInterface $logger = null,
-        \Komoju\Payments\Api\KomojuApi $komojuApi
+        \Komoju\Payments\Api\KomojuApi $komojuApi,
+        \Magento\Directory\Model\CountryFactory $countryFactory
     ) {
         $this->logger = $logger ?: ObjectManager::getInstance()->get(\Psr\Log\LoggerInterface::class);
         $this->externalPayment = $externalPaymentFactory->create();
@@ -68,6 +74,7 @@ class Redirect extends \Magento\Framework\App\Action\Action
         $this->config = $config;
         $this->storeManager = $storeManager;
         $this->komojuApi = $komojuApi;
+        $this->_countryFactory = $countryFactory;
 
         return parent::__construct($context);
     }
@@ -109,6 +116,9 @@ class Redirect extends \Magento\Framework\App\Action\Action
         $currencyCode = $this->storeManager->getStore()->getBaseCurrencyCode();
         $returnUrl = $this->createReturnUrl($order->getEntityId());
 
+        $billing_address = $this->convertToAddressParameter($order->getBillingAddress());
+        $shipping_address = $this->convertToAddressParameter($order->getShippingAddress());
+
         $komojuSession = $this->komojuApi->createSession([
           'return_url' => $returnUrl,
           'default_locale' => $this->config->getKomojuLocale(),
@@ -117,10 +127,66 @@ class Redirect extends \Magento\Framework\App\Action\Action
               'amount' => $order->getGrandTotal(),
               'currency' => $currencyCode,
               'external_order_num' => $externalOrderNum,
+              'billing_address'    => $billing_address,
+              'shipping_address'   => $shipping_address,
           ],
         ]);
 
         return $komojuSession->session_url;
+    }
+
+    /**
+     * Convert Magento's street data to Sessions's street parameter format.
+     * @var string[]|null
+     * @return array
+     */
+    private function convertStreet($street)
+    {
+        $street1 = '';
+        $street2 = '';
+
+        if (is_array($street)) {
+            $street1 = $street[0];
+            switch (count($street)) {
+                case 2:
+                    $street2 = $street[1];
+                    break;
+                case 3:
+                    $street2 = trim(join(' ', [$street[1], $street[2]]));
+                    break;
+            }
+        }
+
+        return [$street1, $street2];
+    }
+
+    /**
+     * Convert Magento's address data to Sessions address parameter format.
+     * @var \Magento\Sales\Model\Order\Address|null
+     * @return array|null
+     */
+    private function convertToAddressParameter($address)
+    {
+        $param = null;
+
+        if ($address != null) {
+            $streets = $this->convertStreet($address->getStreet());
+
+            if ($address->getCompany()) {
+                $streets[1] .= ' ' . $address->getCompany();
+            }
+
+            $param = [
+                'zipcode'         => $address->getPostcode(),
+                'street_address1' => $streets[0],
+                'street_address2' => $streets[1],
+                'country'         => $this->_countryFactory->create()->loadByCode($address->getCountryId())->getName(),
+                'state'           => $address->getRegionCode(),
+                'city'            => $address->getCity(),
+            ];
+        }
+
+        return $param;
     }
 
     /**
