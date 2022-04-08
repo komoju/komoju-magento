@@ -181,9 +181,12 @@ class Redirect extends \Magento\Framework\App\Action\Action
                 'street_address1' => $streets[0],
                 'street_address2' => $streets[1],
                 'country'         => $this->_countryFactory->create()->loadByCode($address->getCountryId())->getName(),
-                'state'           => $address->getRegionCode(),
                 'city'            => $address->getCity(),
             ];
+
+            if ($address->getRegion()) {
+                $param['state'] = $address->getRegion();
+            }
         }
 
         return $param;
