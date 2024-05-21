@@ -6,23 +6,18 @@ namespace Komoju\Payments\Api;
 
 use Komoju\Payments\Exception\KomojuExceptionBadServer;
 use Komoju\Payments\Exception\InvalidJsonException;
+use Komoju\Payments\Gateway\Config\Config;
+use Magento\Framework\HTTP\Client\Curl;
+use Exception;
 
 class KomojuApi
 {
-    /**
-     * @var \Komoju\Payments\Gateway\Config\Config
-     */
-    private $config;
+    private Config $config;
+    private Curl $curl;
+    private string $endpoint;
 
-    /**
-     * @var \Magento\Framework\HTTP\Client\Curl
-     */
-    private $curl;
-
-    public function __construct(
-        \Komoju\Payments\Gateway\Config\Config $config,
-        \Magento\Framework\HTTP\Client\Curl $curl
-    ) {
+    public function __construct(Config $config, Curl $curl)
+    {
         $this->endpoint = 'https://komoju.com';
         $this->config = $config;
         $this->curl = $curl;
@@ -69,7 +64,7 @@ class KomojuApi
 
         $decoded = json_decode($body);
 
-        if (! empty(json_last_error())) {
+        if (!empty(json_last_error())) {
             $errorMsg = (__("KOMOJU Payments JSON Decoding Failure. Error: %1", json_last_error_msg()));
             throw new InvalidJsonException($errorMsg);
         }
@@ -108,7 +103,7 @@ class KomojuApi
 
         $decoded = json_decode($body);
 
-        if (! empty(json_last_error())) {
+        if (!empty(json_last_error())) {
             $errorMsg = (__("KOMOJU Payments JSON Decoding Failure. Error: %1", json_last_error_msg()));
             throw new InvalidJsonException($errorMsg);
         }
