@@ -6,7 +6,7 @@ use Magento\Checkout\Model\Session as CheckoutSession;
 use Magento\Framework\App\ObjectManager;
 use Magento\Framework\Event\ObserverInterface;
 use Magento\Framework\Event\Observer;
-use Magento\Framework\Session\SessionManager as CoreSession;
+use Magento\Framework\Session\SessionManager;
 use Magento\Sales\Model\Order;
 use Magento\Quote\Api\CartRepositoryInterface;
 use Psr\Log\LoggerInterface;
@@ -14,37 +14,35 @@ use Psr\Log\LoggerInterface;
 class RestoreQuoteFromSession implements ObserverInterface
 {
     protected $checkoutSession;
-    protected $coreSession;
+    protected $sessionManager;
     protected $quoteRepository;
     private $logger;
 
     public function __construct(
         CheckoutSession $checkoutSession,
-        CoreSession $coreSession,
+        SessionManager $sessionManager,
         CartRepositoryInterface $quoteRepository,
         LoggerInterface $logger = null
     ) {
         $this->checkoutSession = $checkoutSession;
-        $this->coreSession = $coreSession;
+        $this->sessionManager = $sessionManager;
         $this->quoteRepository = $quoteRepository;
-
         $this->logger = $logger ?: ObjectManager::getInstance()->get(LoggerInterface::class);
     }
 
     public function execute(Observer $observer)
     {
-        $this->logger->info('RestoreQuoteFromSession observer triggered');
-
         $quote = $this->checkoutSession->getQuote();
 
         if ($quote) {
-            $this->checkoutSession->restoreQuote();
-            $order = $quote->getOrder();
+            $order = $this->checkoutSession->getLastRealOrder();
 
-            // $this->logger->info('### Restoring quote data from session: ' . json_encode($order));
+            if ($order) {
+                $orderStatus = $order->getStatus();
 
-            if ($order && $order->getState() == Order::STATE_PENDING_PAYMENT) {
-                $this->quoteRepository->save($quote);
+                if ($orderStatus == ORDER::STATE_PENDING_PAYMENT) {
+                    $this->checkoutSession->restoreQuote();
+                }
             }
         }
     }
