@@ -79,10 +79,6 @@ class PostSessionRedirect extends Action
 
     private function processSuccessOrder()
     {
-        $orderId = $this->getRequest()->getParam('order_id');
-        $order = $this->getOrder($orderId);
-        $order->save();
-
         return $this->_url->getUrl('checkout/onepage/success');
     }
 
