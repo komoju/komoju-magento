@@ -57,7 +57,7 @@ class WebhookEvent
 
     /**
      * A getter to retrieve the external_order_num from the webhook event
-     * @return string
+     * @return string|null
      */
     public function externalOrderNum()
     {
