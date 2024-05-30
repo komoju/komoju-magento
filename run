@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+bin/composer require markshust/magento2-module-disabletwofactorauth
+bin/magento module:enable MarkShust_DisableTwoFactorAuth
+bin/magento setup:upgrade
+bin/restart

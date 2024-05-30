@@ -1,100 +1,55 @@
-#!/bin/bash
-BASE_URL=${1:-magento2.test}
+#!/usr/bin/env bash
+set -o errexit
+
+MEM_BYTES=$(docker info -f '{{.MemTotal}}')
+MEM_MB=$(( MEM_BYTES / 1000000 ))
+# When Docker Desktop is set to 6GB in the GUI, it is reported as 6227 MB
+(( MEM_MB < 6227 )) && echo "There must be at least 6GB of RAM allocated to Docker in order to continue." && exit
+
+DOMAIN=${1:-magento.test}
 
 bin/stop
 
-# fix for invalid google-shopping-api checksum contained in archive installs (temporary fix until nexcess archive is patched)
-sed -e 's/5f5929ef9f2ec4ca048a2add261d22c92807630f/ce31e720d60451784b9fdb3769e43e149f50d436/' src/composer.lock > composer.lock && mv composer.lock src/composer.lock
-
-docker-compose -f docker-compose.yml up -d
-sleep 1 #Ensure containers are started...
-
-bin/fixowns
-bin/fixperms
+bin/start --no-dev
+[ $? != 0 ] && echo "Failed to start Docker services" && exit
 
 bin/clinotty chmod u+x bin/magento
+rm -rf src && mkdir src
 
-if hash composer 2>/dev/null; then
-    PUBLIC_KEY="$(composer config -gl | grep '\[http-basic.repo.magento.com.username\]' | cut -c40-)"
-    PRIVATE_KEY="$(composer config -gl | grep '\[http-basic.repo.magento.com.password\]' | cut -c40-)"
-fi
+echo "Adding Magento modules to Composer allow-plugins directive..."
+bin/clinotty composer config --no-plugins allow-plugins.magento/magento-composer-installer true
+bin/clinotty composer config --no-plugins allow-plugins.magento/inventory-composer-installer true
+bin/clinotty composer config --no-plugins allow-plugins.laminas/laminas-dependency-plugin true
 
-if [ -z "$PUBLIC_KEY" ] || [ -z "$PRIVATE_KEY" ]; then
-    exec < /dev/tty
-    echo
-    echo
-    echo "    Authentication required (repo.magento.com, public_key and private_key):"
-    read -p "        Username: " PUBLIC_KEY
-    read -p "        Password: " PRIVATE_KEY
-    echo
-    if [ -n "$PUBLIC_KEY" ] && [ -n "$PRIVATE_KEY" ] && hash composer 2>/dev/null; then
-        read -p "    Add authentication information to host composer config? y/n: " ADD_AUTH
-        echo
-        if [[ $ADD_AUTH =~ ^[Yy]$ ]]; then
-            composer global config http-basic.repo.magento.com $PUBLIC_KEY $PRIVATE_KEY
-        fi
-        ADD_AUTH=''
-    fi
-    exec <&-
-fi
+echo "Running, Magento setup:install..."
+bin/setup-install "${DOMAIN}"
 
-if [ -n "$PUBLIC_KEY" ] && [ -n "$PRIVATE_KEY" ]; then
-    bin/clinotty composer config http-basic.repo.magento.com $PUBLIC_KEY $PRIVATE_KEY
-    PUBLIC_KEY=''
-    PRIVATE_KEY=''
-fi
-
-echo "Forcing reinstall of composer deps to ensure perms & reqs..."
-bin/clinotty composer clearcache
-bin/clinotty composer global require hirak/prestissimo
-bin/clinotty composer install
-
-bin/clinotty bin/magento setup:install \
-  --db-host=db \
-  --db-name=magento \
-  --db-user=magento \
-  --db-password=magento \
-  --base-url=https://$BASE_URL/ \
-  --admin-firstname=John \
-  --admin-lastname=Smith \
-  --admin-email=john.smith@gmail.com \
-  --admin-user=john.smith \
-  --admin-password=password123 \
-  --language=en_US \
-  --currency=JPY \
-  --timezone=Asia/Tokyo \
-  --amqp-host=rabbitmq \
-  --amqp-port=5672 \
-  --amqp-user=guest \
-  --amqp-password=guest \
-  --amqp-virtualhost=/ \
-  --use-rewrites=1
-
-echo "Turning on developer mode.."
-bin/clinotty bin/magento deploy:mode:set developer
-
-bin/clinotty bin/magento indexer:reindex
+echo "Copying files from container to host after install..."
+bin/copyfromcontainer --all
 
 echo "Forcing deploy of static content to speed up initial requests..."
 bin/clinotty bin/magento setup:static-content:deploy -f
 
-echo "Enabling Redis for cache..."
-bin/clinotty bin/magento setup:config:set --no-interaction --cache-backend=redis --cache-backend-redis-server=redis --cache-backend-redis-db=0
+echo "Re-indexing with Elasticsearch..."
+bin/clinotty bin/magento indexer:reindex
 
-echo "Enabling Redis for Full Page Cache..."
-bin/clinotty bin/magento setup:config:set --no-interaction  --page-cache=redis --page-cache-redis-server=redis --page-cache-redis-db=1
+echo "Setting basic URL and generating SSL certificate..."
+bin/setup-domain "${DOMAIN}"
 
-echo "Enabling Redis for session..."
-bin/clinotty bin/magento setup:config:set --no-interaction --session-save=redis --session-save-redis-host=redis --session-save-redis-log-level=4 --session-save-redis-db=2
+echo "Fixing owner and permissions..."
+bin/fixowns
+bin/fixperms
 
-echo "Clearing the cache for good measure..."
+echo "Clearing the cache to apply updates..."
 bin/clinotty bin/magento cache:flush
 
-echo "Restarting containers to allow changes to take affect"
-bin/restart
+echo "Installing cron, run 'bin/cron start' to enable..."
+bin/clinotty bin/magento cron:install
 
-echo "Enabling Komoju Payments module"
-bin/clinotty bin/magento setup:upgrade
+echo "Turning on developer mode..."
+bin/clinotty bin/magento deploy:mode:set developer
+
+cp -r .vscode src/
 
 echo "Docker development environment setup complete."
-echo "You may now access your Magento instance at https://${BASE_URL}/"
+echo "You may now access your Magento instance at https://${DOMAIN}/"

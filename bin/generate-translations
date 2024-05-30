@@ -1,3 +1,0 @@
-#!/bin/bash
-
-bin/magento i18n:collect-phrases -o /var/www/html/app/code/Komoju/Payments/i18n/en_US.csv app/code/Komoju/Payments/
