@@ -4,4 +4,4 @@
 src/*
 
 # Except for the src/app directory
-!src/app/
+!src/app/code/Komoju/
