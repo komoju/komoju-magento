@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+bin/download 2.4.7 commuity
+bin/setup magento.test
+bin/magento setup:upgrade
+bin/composer require markshust/magento2-module-disabletwofactorauth
+bin/magento module:enable MarkShust_DisableTwoFactorAuth
+bin/magento setup:upgrade
+bin/restart
