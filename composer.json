@@ -1,0 +1,6 @@
+{
+    "require-dev": {
+        "squizlabs/php_codesniffer": "*",
+        "magento/magento-coding-standard": "^6.0"
+    }
+}
