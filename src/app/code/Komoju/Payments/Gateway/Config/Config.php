@@ -3,18 +3,15 @@
 namespace Komoju\Payments\Gateway\Config;
 
 use Magento\Framework\App\Config\ScopeConfigInterface;
-use Magento\Framework\UrlInterface;
-use Magento\Framework\Locale\Resolver as LocaleResolver;
-use Magento\Payment\Gateway\Config\Config as PaymentConfig;
 
 /**
  * This class provides a programmatic interface between the rest of the module
  * and the options set for the module in the admin panel.
  */
-class Config extends PaymentConfig
+class Config extends \Magento\Payment\Gateway\Config\Config
 {
-    private UrlInterface $urlInterface;
-    private LocaleResolver $locale;
+
+    private $urlInterface;
 
     /**
      * Komoju config constructor
@@ -43,7 +40,7 @@ class Config extends PaymentConfig
      * @param int|null $storeId
      * @return bool
      */
-    public function isActive($storeId = null): bool
+    public function isActive($storeId = null)
     {
         return (bool) $this->getValue('active', $storeId);
     }

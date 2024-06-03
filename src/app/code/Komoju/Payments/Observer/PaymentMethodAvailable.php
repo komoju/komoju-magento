@@ -3,7 +3,6 @@ namespace Komoju\Payments\Observer;
 
 use Magento\Framework\Event\ObserverInterface;
 use Magento\Framework\App\ObjectManager;
-use Psr\Log\LoggerInterface;
 
 /**
  * The PaymentMethodAvailable observer is a class that gets executed when the
@@ -29,8 +28,6 @@ class PaymentMethodAvailable implements ObserverInterface
 
     /** @var string */
     private $methodCode;
-
-    private LoggerInterface $logger;
 
     /**
      * Class constructor. The methodCode and allowableCurrencyCodes are passed in
