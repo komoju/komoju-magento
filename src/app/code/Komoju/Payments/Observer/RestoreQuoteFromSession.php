@@ -12,12 +12,13 @@ use Magento\Quote\Api\CartRepositoryInterface;
 use Psr\Log\LoggerInterface;
 
 /**
- * Observer for restoring a customer's quote during the checkout process when the last order is in a pending payment state.
+ * Observer for restoring a customer's quote during the checkout,
+ * if the last order state is pending payment.
  *
- * This class is configured to listen to the `controller_action_postdispatch_checkout_index_index` event.
- * It checks if the last real order placed within the session is still pending payment.
+ * Configured to listen to `controller_action_postdispatch_checkout_index_index` event.
+ * It verifies if the last real order within the session is still pending payment.
  * If so, it restores the quote to the session.
- * This action allows customers to return to their cart and potentially complete the transaction without needing to re-enter their information.
+ * This allows customers to resume their cart and complete the transaction without re-entering info.
  * For more information, please check the events_and_observers.md file in docs folder.
  */
 class RestoreQuoteFromSession implements ObserverInterface
