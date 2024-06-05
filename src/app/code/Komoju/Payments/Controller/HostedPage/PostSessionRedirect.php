@@ -5,6 +5,14 @@ namespace Komoju\Payments\Controller\HostedPage;
 use Magento\Framework\App\ObjectManager;
 use Magento\Sales\Model\Order;
 use Magento\Framework\Controller\ResultFactory;
+use Magento\Framework\App\Action\Action;
+use Magento\Sales\Api\OrderRepositoryInterface;
+use Komoju\Payments\Gateway\Config\Config;
+use Psr\Log\LoggerInterface;
+use Magento\Checkout\Model\Session;
+use Komoju\Payments\Api\KomojuApi;
+use Magento\Framework\App\Action\Context;
+use Magento\Framework\Event\ManagerInterface;
 
 /**
  * The PostSessionRedirect endpoint serves as the return URL param for Komoju
@@ -17,51 +25,24 @@ use Magento\Framework\Controller\ResultFactory;
  * the PostSessionRedirect URL, which is being used to ensure that the request hasn't been
  * tampered with.
  */
-class PostSessionRedirect extends \Magento\Framework\App\Action\Action
+class PostSessionRedirect extends Action
 {
-    /**
-     * @var \Magento\Framework\Controller\ResultFactory
-     */
-    protected $_resultFactory;
-
-    /**
-     * @var \Psr\Log\LoggerInterface
-     */
-    private $logger;
-
-    /**
-     * @var \Magento\Checkout\Model\Session
-     */
-    protected $_checkoutSession;
-
-    /**
-     * @var \Komoju\Payments\Gateway\Config\Config
-     */
-    private $config;
-
-    /**
-     * @var \Magento\Sales\Model\Order|false
-     */
-    private $order = false;
-
-    /**
-     * @var \Magento\Sales\Api\OrderRepositoryInterface
-     */
-    private $orderRepository;
-
-    /**
-     * @var \Komoju\Payments\Api\KomojuApi
-     */
-    private $komojuApi;
+    protected ResultFactory $_resultFactory;
+    private LoggerInterface $logger;
+    protected Session $_checkoutSession;
+    private Config $config;
+    private OrderRepositoryInterface $orderRepository;
+    private KomojuApi $komojuApi;
+    private ManagerInterface $eventManager;
 
     public function __construct(
-        \Magento\Sales\Api\OrderRepositoryInterface $orderRepository,
-        \Magento\Framework\Controller\ResultFactory $resultFactory,
-        \Magento\Framework\App\Action\Context $context,
-        \Komoju\Payments\Gateway\Config\Config $config,
-        \Psr\Log\LoggerInterface $logger = null,
-        \Magento\Checkout\Model\Session $checkoutSession,
-        \Komoju\Payments\Api\KomojuApi $komojuApi
+        OrderRepositoryInterface $orderRepository,
+        ResultFactory $resultFactory,
+        Context $context,
+        Config $config,
+        LoggerInterface $logger = null,
+        Session $checkoutSession,
+        KomojuApi $komojuApi
     ) {
         $this->logger = $logger ?: ObjectManager::getInstance()->get(\Psr\Log\LoggerInterface::class);
         $this->_resultFactory = $resultFactory;
@@ -87,13 +68,18 @@ class PostSessionRedirect extends \Magento\Framework\App\Action\Action
         $resultRedirect = $this->_resultFactory->create(ResultFactory::TYPE_REDIRECT);
 
         if ($this->isSessionCompleted()) {
-            $successUrl = $this->_url->getUrl('checkout/onepage/success');
+            $successUrl = $this->processSuccessOrder();
             $resultRedirect->setUrl($successUrl);
         } else {
             $redirectUrl = $this->processFailedOrder();
             $resultRedirect->setUrl($redirectUrl);
         }
         return $resultRedirect;
+    }
+
+    private function processSuccessOrder()
+    {
+        return $this->_url->getUrl('checkout/onepage/success');
     }
 
     /**

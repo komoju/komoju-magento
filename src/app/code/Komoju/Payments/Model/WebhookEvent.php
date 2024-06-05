@@ -28,7 +28,6 @@ class WebhookEvent
 
         if (! empty(json_last_error())) {
             $errorMsg = (__("KOMOJU Payments JSON Decoding Failure. Error: %1", json_last_error_msg()));
-            
             throw new Komoju\Payments\Exception\InvalidJsonException($errorMsg);
         }
     }
@@ -58,11 +57,12 @@ class WebhookEvent
 
     /**
      * A getter to retrieve the external_order_num from the webhook event
-     * @return string
+     * @return string|null
      */
     public function externalOrderNum()
     {
-        return $this->data()['external_order_num'];
+        $data = $this->data();
+        return isset($data['external_order_num']) ? $data['external_order_num'] : null;
     }
 
     /**

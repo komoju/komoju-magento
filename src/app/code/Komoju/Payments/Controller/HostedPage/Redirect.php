@@ -55,6 +55,8 @@ class Redirect extends \Magento\Framework\App\Action\Action
      * @var \Magento\Directory\Model\CountryFactory
      */
     private $_countryFactory;
+    private $storeManager;
+    private $orderRepository;
 
     public function __construct(
         \Magento\Framework\App\Action\Context $context,
