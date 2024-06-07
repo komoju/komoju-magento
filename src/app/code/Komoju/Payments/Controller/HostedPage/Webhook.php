@@ -166,8 +166,8 @@ class Webhook extends \Magento\Framework\App\Action\Action implements HttpPostAc
      * If it can't find a matching Order then we're assuming that the order belongs
      * to a separate system and ignoring any events sent for it.
      * @var string $externalOrderNum
-     * @return Magento\Sales\Model\Order
-     * @throws Magento\Framework\Exception\NoSuchEntityException
+     * @return \Magento\Sales\Api\Data\OrderInterface
+     * @throws \Magento\Framework\Exception\NoSuchEntityException
      */
     private function getOrder($externalOrderNum)
     {

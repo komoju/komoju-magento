@@ -75,7 +75,10 @@ class WebhookEventProcessor
         if ($this->webhookEvent->eventType() == 'payment.captured') {
             $paymentAmount = $this->webhookEvent->amount();
             $currentTotalPaid = $this->order->getTotalPaid();
+            $baseTotalPaid = $this->order->getBaseTotalPaid();
+
             $this->order->setTotalPaid($paymentAmount + $currentTotalPaid);
+            $this->order->setBaseTotalPaid($paymentAmount + $baseTotalPaid);
             $this->order->setState(Order::STATE_PROCESSING);
             $this->order->setStatus(Order::STATE_PROCESSING);
 
@@ -115,9 +118,6 @@ class WebhookEventProcessor
             $this->order->addStatusHistoryComment($statusHistoryComment);
             $this->order->save();
         } elseif ($this->webhookEvent->eventType() == 'payment.refunded') {
-            $refundedAmount = $this->webhookEvent->amountRefunded();
-            $refundCurrency = $this->webhookEvent->currency();
-
             $statusHistoryComment = $this->prependExternalOrderNum(__('Order has been fully refunded.'));
 
             $this->order->setState(Order::STATE_COMPLETE);
@@ -125,11 +125,8 @@ class WebhookEventProcessor
             $this->order->addStatusHistoryComment($statusHistoryComment);
             $this->order->save();
         } elseif ($this->webhookEvent->eventType() == 'payment.refund.created') {
-            $grandTotal = $this->order->getBaseGrandTotal();
             $totalAmountRefunded = $this->webhookEvent->amountRefunded();
             $refundCurrency = $this->webhookEvent->currency();
-
-            $this->order->setTotalRefunded($totalAmountRefunded);
 
             $refunds = $this->webhookEvent->getRefunds();
             $refundsToProcess = [];
@@ -151,8 +148,14 @@ class WebhookEventProcessor
                     __('Refund for order created. Amount: %1 %2', $refundedAmount, $refundCurrency)
                 );
 
+                // Create a credit memo for the refund
                 $creditmemo = $this->creditmemoFactory->createByOrder($this->order);
+
+                $creditmemo->setShippingAmount(0);
                 $creditmemo->setSubtotal($refundedAmount);
+                $creditmemo->setGrandTotal($refundedAmount);
+                $creditmemo->setBaseGrandTotal($refundedAmount);
+
                 $creditmemo->addComment($statusHistoryComment);
                 $this->creditmemoService->refund($creditmemo, true);
 
@@ -173,6 +176,13 @@ class WebhookEventProcessor
             // $creditmemo->setSubtotal($baseTotalNotRefunded * $baseToOrderRate);
             // $creditmemo->setBaseGrandTotal($refundAmount);
             // $creditmemo->setGrandTotal($refundAmount * $baseToOrderRate);
+
+            $this->order->setTotalRefunded($totalAmountRefunded);
+
+            if ($this->order->getBaseGrandTotal() == $totalAmountRefunded) {
+                $this->order->setState(Order::STATE_COMPLETE);
+                $this->order->setStatus(Order::STATE_COMPLETE);
+            }
 
             $this->order->save();
         } else {
