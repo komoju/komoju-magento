@@ -125,7 +125,9 @@ class Redirect extends \Magento\Framework\App\Action\Action
           'return_url' => $returnUrl,
           'default_locale' => $this->config->getKomojuLocale(),
           'payment_types' => [$paymentMethod],
+          'email' => $order->getCustomerEmail(),
           'payment_data' => [
+              'name' => $order->getCustomerName(),
               'amount' => $order->getGrandTotal(),
               'currency' => $currencyCode,
               'external_order_num' => $externalOrderNum,
