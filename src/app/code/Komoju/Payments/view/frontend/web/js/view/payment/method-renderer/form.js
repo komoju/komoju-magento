@@ -7,7 +7,8 @@ define(
         "Magento_Checkout/js/checkout-data",
         "ko",
         "Magento_Ui/js/model/messageList",
-        "mage/translate"
+        "mage/translate",
+        "mage/url"
     ],
     function (
         $,
@@ -17,15 +18,55 @@ define(
         checkoutData,
         ko,
         messageList,
-        $t
+        $t,
+        url
     ) {
+    ko.bindingHandlers.safeJsonAttribute = {
+        update: function(element, valueAccessor) {
+            var data = ko.unwrap(valueAccessor());
+            var jsonString = JSON.stringify(data);
+
+            console.log('##JSON: ' + jsonString);
+
+            element.setAttribute('session', jsonString);
+        }
+    };
+
     "use strict";
     return Component.extend({
         defaults: {
             template: "Komoju_Payments/payment/form",
             active: true,
             redirectAfterPlaceOrder: false,
-            komojuMethod: ko.observable('')
+            komojuMethod: ko.observable(''),
+            komojuSession: ko.observable(''),
+            isDataLoaded: ko.observable(false)
+        },
+
+        initialize: function () {
+            this._super();
+            this.loadKomojuData();
+        },
+
+        loadKomojuData: function () {
+            const self = this;
+            self.isDataLoaded(false);
+
+            $.get(url.build('komoju/komojufield/komojusessiondata'))
+            .done(function (response) {
+                // const komojuHost = document.querySelector('komoju-host');
+                // console.log('##KOMOJU HOST: ' + komojuHost);
+
+                // if (komojuHost) {
+                //     console.log('##Setting SESSION: ' + JSON.stringify(this.komojuSession()));
+                //     const sessionData = JSON.stringify(this.komojuSession());
+                //     komojuHost.setAttribute('session', sessionData);
+                // }
+                // console.log('##RESPONSE: ' + response);
+
+                self.komojuSession(response.komojuSession);
+                self.isDataLoaded(true);
+            });
         },
 
         afterPlaceOrder: function() {
@@ -80,6 +121,10 @@ define(
             var config = this.getConfig();
 
             return config.title;
+        },
+
+        getSession: function () {
+            return JSON.stringify(this.komojuSession());
         },
 
         showTitle: function () {

@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en" style="overflow: hidden">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KOMOJU Fields</title>
+  <link rel="stylesheet" href="https://multipay.komoju.com/static/shared.css/static/shared.css">
+</head>
+<body>
+  <script type="module">
+    const searchParams = new URLSearchParams(window.location.search)
+    const secureTokenId = searchParams.get('secure_token_id')
+
+    window.parent.postMessage({ _komojuFields: true, secureTokenId }, '*');
+  </script>
+</body>
+</html>
