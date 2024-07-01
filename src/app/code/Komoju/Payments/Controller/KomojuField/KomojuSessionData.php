@@ -11,12 +11,11 @@ use Magento\Checkout\Model\Cart;
 use Komoju\Payments\Api\KomojuApi;
 use Komoju\Payments\Gateway\Config\Config;
 
-
 class KomojuSessionData extends Action
 {
-    protected $jsonResultFactory;
-    protected $quoteRepository;
-    protected $checkoutSession;
+    protected JsonFactory $jsonResultFactory;
+    protected QuoteRepository $quoteRepository;
+    protected CheckoutSession $checkoutSession;
     private KomojuApi $komojuApi;
     private Config $config;
     private Cart $cart;
@@ -47,7 +46,6 @@ class KomojuSessionData extends Action
         $customerEmail = $quote->getCustomerEmail();
         $paymentMethod = $this->getRequest()->getParam('payment_method');
 
-        // 세션 데이터 생성
         $komojuSession = $this->createKomojuSession(
             $paymentMethod,
             $totalAmount,

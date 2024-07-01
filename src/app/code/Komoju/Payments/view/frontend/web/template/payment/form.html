@@ -45,6 +45,14 @@
         payment-type="credit_card"
         publishable-key="pk_test_lgva3j8ims1p3nhk3ut1f88t">
     </komoju-fields>
+    <button class="action primary checkout"
+        type="submit"
+        data-bind="
+        click: placeOrder,
+        attr: {title: $t('Komoju Pay')}
+        ">
+    <span data-bind="i18n: 'Komoju Pay'"></span>
+    </button>
     <!-- /ko -->
 </div>
 
@@ -65,9 +73,9 @@
                     type="submit"
                     data-bind="
                     click: placeOrder,
-                    attr: {title: $t('MEOWMEOW')}
+                    attr: {title: $t('Place Order')}
                     ">
-                <span data-bind="i18n: 'MEOWMEOW'"></span>
+                <span data-bind="i18n: 'Place Order'"></span>
             </button>
         </div>
     </div>

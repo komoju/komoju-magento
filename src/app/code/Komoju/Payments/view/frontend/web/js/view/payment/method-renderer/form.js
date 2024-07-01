@@ -21,17 +21,6 @@ define(
         $t,
         url
     ) {
-    ko.bindingHandlers.safeJsonAttribute = {
-        update: function(element, valueAccessor) {
-            var data = ko.unwrap(valueAccessor());
-            var jsonString = JSON.stringify(data);
-
-            console.log('##JSON: ' + jsonString);
-
-            element.setAttribute('session', jsonString);
-        }
-    };
-
     "use strict";
     return Component.extend({
         defaults: {
@@ -54,15 +43,7 @@ define(
 
             $.get(url.build('komoju/komojufield/komojusessiondata'))
             .done(function (response) {
-                // const komojuHost = document.querySelector('komoju-host');
-                // console.log('##KOMOJU HOST: ' + komojuHost);
-
-                // if (komojuHost) {
-                //     console.log('##Setting SESSION: ' + JSON.stringify(this.komojuSession()));
-                //     const sessionData = JSON.stringify(this.komojuSession());
-                //     komojuHost.setAttribute('session', sessionData);
-                // }
-                // console.log('##RESPONSE: ' + response);
+                console.log('######## RESPONSE: ' + JSON.stringify(response));
 
                 self.komojuSession(response.komojuSession);
                 self.isDataLoaded(true);
@@ -70,12 +51,32 @@ define(
         },
 
         afterPlaceOrder: function() {
-            var redirectUrl = this.redirectUrl() + "?payment_method=" + this.komojuMethod();
+            const redirectUrl = this.redirectUrl() + "?payment_method=" + this.komojuMethod();
 
             fullScreenLoader.startLoader();
-            $.mage.redirect(
-                redirectUrl
-            );
+
+            const komojuField = document.querySelector(`komoju-fields[payment-type='credit_card']`);
+
+            if (komojuField && typeof komojuField.submit === 'function') {
+                console.log('KomojuField submit');
+
+                komojuField.submit().then(token => {
+                    console.log(`Token: ${JSON.stringify(token)}`);
+
+                    if (!token) {
+                        console.error('Failed to get token: ', JSON.stringify(redirectUrl));
+                        $.mage.redirect(
+                            redirectUrl
+                        );
+                        return;
+                    }
+
+                    this.sendToken(token);
+                });
+            }
+            // $.mage.redirect(
+            //     redirectUrl
+            // );
         },
 
         getData: function() {
@@ -83,6 +84,52 @@ define(
               'method': this.getCode(),
               'additional_data': null
           };
+        },
+
+        placeOrder: function (data, event) {
+            if (!this.validate()) {
+                return false;
+            }
+
+            const boundSuper = this._super.bind(this);
+
+            boundSuper(data, event);
+
+            console.log('##PLACE ORDER validate success');
+        },
+
+        sendToken: function (token) {
+            var serviceUrl = url.build('komoju/komojufield/processToken');
+            console.log('sendToken');
+
+            var data = {
+                'id': this.komojuSession().id,
+                'token': token
+            }
+
+            return $.ajax({
+                url: serviceUrl,
+                type: 'POST',
+                data: JSON.stringify(data),
+                contentType: 'application/json',
+                success: function (response) {
+                    console.log('Server responded with:', response);
+                    console.log('Server responded with:', JSON.stringify(response));
+
+                    if (response.success) {
+                        var redirectUrl = url.build('checkout/onepage/success');
+
+                        $.mage.redirect(
+                           redirectUrl
+                        );
+                    } else {
+                        messageList.addErrorMessage({ message: response.message });
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error('Failed to send token:', error);
+                }
+            });
         },
 
         selectPaymentMethod: function () {
@@ -139,18 +186,18 @@ define(
             var availablePaymentMethods = this.getAvailablePaymentMethods();
 
             for (option in availablePaymentMethods) {
-              if (Object.prototype.hasOwnProperty.call(availablePaymentMethods, option)) {
-                  options.push({
-                      value: option,
-                      displayText: availablePaymentMethods[option],
-                  });
-              }
+                if (Object.prototype.hasOwnProperty.call(availablePaymentMethods, option)) {
+                    options.push({
+                        value: option,
+                        displayText: availablePaymentMethods[option],
+                    });
+                }
             }
 
             if (options.length === 0) {
-              messageList.addErrorMessage(
+                messageList.addErrorMessage(
                 {message: $t("Encountered an issue communicating with KOMOJU. Please wait a moment and try again.")}
-              );
+                );
             }
 
             return options;
