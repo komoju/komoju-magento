@@ -140,7 +140,6 @@ define(
                 return;
             }
 
-            console.log(`sendToken: ${JSON.stringify(token)}`);
             const serviceUrl = url.build('komoju/komojufield/processToken');
 
             const data = {
@@ -153,9 +152,7 @@ define(
                 type: 'POST',
                 data: JSON.stringify(data),
                 contentType: 'application/json',
-                success: function (response) {
-                    console.log('Server responded with:', JSON.stringify(response));
-                },
+                success: function (response) { },
                 error: function (xhr, status, error) {
                     console.error('Failed to send token:', error);
                 }

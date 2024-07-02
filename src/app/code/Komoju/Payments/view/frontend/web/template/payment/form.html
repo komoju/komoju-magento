@@ -7,6 +7,8 @@
 <!-- ko if: showTitle() -->
   <h3 data-bind="text: getTitle()"></h3>
 <!-- /ko -->
+
+<!-- ko if: isDataLoaded() -->
 <!-- ko foreach: { data: getEnabledPaymentTypes(), as: 'method' } -->
 <div class="payment-method"
     data-bind="
@@ -41,6 +43,7 @@
     </div>
     <!-- /ko -->
 </div>
+<!--/ko-->
 <!--/ko-->
 
 <div class="payment-method-content komoju_payment_billing">

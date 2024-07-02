@@ -68,6 +68,7 @@ class KomojuSessionData extends Action
             'amount' => $totalAmount,
             'currency' => $currencyCode,
             'default_locale' => $this->config->getKomojuLocale(),
+            // 'payment_methods' => $this->komojuApi->paymentMethods(),
             'payment_types' => [$paymentMethod],
             'email' => $customerEmail,
             'metadata' => [
