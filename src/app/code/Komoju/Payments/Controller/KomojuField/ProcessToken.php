@@ -79,7 +79,6 @@ class ProcessToken extends Action
                 'amount' => $order->getGrandTotal(),
                 'currency' => $currencyCode,
                 'default_locale' => 'en',
-                'payment_types' => ['credit_card'],
                 'email' => $order->getCustomerEmail(),
                 'metadata' => ['note' => 'testing'],
                 'payment_data' => [
@@ -89,12 +88,13 @@ class ProcessToken extends Action
                     'external_order_num' => $externalPayment
                 ],
             ]);
+
             $data = $this->komojuApi->paySession($session->id, [
                 'customer_email' => $order->getCustomerEmail(),
                 'payment_details' => $tokenData->token->id
             ]);
 
-            return $result->setData(['success' => true, 'message' => 'Token processed successfully' . json_encode($data)]);
+            return $result->setData(['success' => true, 'message' => 'Token processed successfully', 'data' => $data]);
         }
 
         return $result->setData(['success' => false, 'message' => 'Invalid request']);

@@ -78,8 +78,16 @@ define(
             if (this.komojuToken) {
                 this.sendToken(this.komojuToken()).done(function(response) {
                     if (response.success) {
-                        var redirectUrl = url.build('checkout/onepage/success');
-                        $.mage.redirect(redirectUrl);
+                        let redirectUrl = url.build('checkout/onepage/success');
+
+                        if (response.data && response.data.redirect_url) {
+                            redirectUrl = response.data.redirect_url
+                        }
+                        $.mage.redirect(
+                            redirectUrl
+                        );
+                    } else {
+                        messageList.addErrorMessage({ message: response.message });
                     }
                 }).fail(function(error) {
                     console.error('Error during token submission:', error);
@@ -127,7 +135,7 @@ define(
                 return;
             }
 
-            console.log(`sendToken: ${token}`);
+            console.log(`sendToken: ${JSON.stringify(token)}`);
             const serviceUrl = url.build('komoju/komojufield/processToken');
 
             const data = {
@@ -142,16 +150,6 @@ define(
                 contentType: 'application/json',
                 success: function (response) {
                     console.log('Server responded with:', JSON.stringify(response));
-
-                    if (response.success) {
-                        const redirectUrl = url.build('checkout/onepage/success');
-
-                        $.mage.redirect(
-                           redirectUrl
-                        );
-                    } else {
-                        messageList.addErrorMessage({ message: response.message });
-                    }
                 },
                 error: function (xhr, status, error) {
                     console.error('Failed to send token:', error);
