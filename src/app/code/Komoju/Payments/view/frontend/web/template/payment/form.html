@@ -7,7 +7,6 @@
 <!-- ko if: showTitle() -->
   <h3 data-bind="text: getTitle()"></h3>
 <!-- /ko -->
-<h1 data-bind="text: isDataLoaded()"></h1>
 <!-- ko foreach: { data: getEnabledPaymentTypes(), as: 'method' } -->
 <div class="payment-method"
     data-bind="
@@ -29,32 +28,26 @@
             <span data-bind="text: method.displayText"></span>
         </label>
     </div>
+    <div data-bind="visible: $parent.komojuMethod() === method.value">
+        <komoju-fields
+            data-bind="attr: { 'session': $parent.getSession(), 'payment-type': method.value }"
+            token = ""
+            name="komoju_payment_token"
+            locale="ja"
+            komoju-api="https://komoju.com"
+            publishable-key="pk_test_lgva3j8ims1p3nhk3ut1f88t">
+        </komoju-fields>
+        <!-- <button class="action primary checkout"
+            type="submit"
+            data-bind="
+            click:  $parent.placeOrder,
+            attr: {title: $t('Komoju Pay')}
+            ">
+        <span data-bind="i18n: 'Komoju Pay'"></span>
+        </button> -->
+    </div>
 </div>
 <!--/ko-->
-
-<div>
-    <h1>OUTSIDE DATA</h1>
-    <!-- ko if: isDataLoaded() -->
-    <!-- data-bind="attr: { 'session': getSession(), 'session-id: komojuSession().id }" -->
-    <komoju-fields
-        data-bind="attr: { 'session': getSession() }"
-        token = ""
-        name="komoju_payment_token"
-        locale="ja"
-        komoju-api="https://komoju.com"
-        payment-type="credit_card"
-        publishable-key="pk_test_lgva3j8ims1p3nhk3ut1f88t">
-    </komoju-fields>
-    <button class="action primary checkout"
-        type="submit"
-        data-bind="
-        click: placeOrder,
-        attr: {title: $t('Komoju Pay')}
-        ">
-    <span data-bind="i18n: 'Komoju Pay'"></span>
-    </button>
-    <!-- /ko -->
-</div>
 
 <div class="payment-method-content komoju_payment_billing">
     <!-- ko foreach: getRegion('messages') -->

@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" layout="1column" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
     <head>
-        <script type="module" src="Komoju_Payments::js/fields.js"></script>
-        <!-- <script src="https://multipay.komoju.com/fields.js" src_type="url" type="module" /> -->
+        <!-- <script type="module" src="Komoju_Payments::js/fields.js"></script> -->
+        <script src="https://multipay.komoju.com/fields.js" src_type="url" type="module" />
         <!-- <script src="Komoju_Payments::/js/bundle.js" /> -->
     </head>
     <body>

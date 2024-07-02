@@ -29,7 +29,8 @@ define(
             redirectAfterPlaceOrder: false,
             komojuMethod: ko.observable(''),
             komojuSession: ko.observable(''),
-            isDataLoaded: ko.observable(false)
+            isDataLoaded: ko.observable(false),
+            komojuToken: ko.observable(''),
         },
 
         initialize: function () {
@@ -50,33 +51,45 @@ define(
             });
         },
 
-        afterPlaceOrder: function() {
-            const redirectUrl = this.redirectUrl() + "?payment_method=" + this.komojuMethod();
+        submitPayment: function () {
+            const komojuField = document.querySelector(`komoju-fields[payment-type='${this.komojuMethod()}']`);
 
-            fullScreenLoader.startLoader();
-
-            const komojuField = document.querySelector(`komoju-fields[payment-type='credit_card']`);
-
-            if (komojuField && typeof komojuField.submit === 'function') {
-                console.log('KomojuField submit');
-
-                komojuField.submit().then(token => {
-                    console.log(`Token: ${JSON.stringify(token)}`);
-
-                    if (!token) {
-                        console.error('Failed to get token: ', JSON.stringify(redirectUrl));
-                        $.mage.redirect(
-                            redirectUrl
-                        );
-                        return;
-                    }
-
-                    this.sendToken(token);
+            if (komojuField) {
+                return new Promise((resolve, reject) => {
+                    komojuField.addEventListener('komoju-invalid', reject);
+                    komojuField.submit().then(token => {
+                        komojuField.removeEventListener('komoju-invalid', reject);
+                        if (token) {
+                            resolve(token);
+                        } else {
+                            reject(new Error("Token not found"));
+                        }
+                    }).catch(error => {
+                        komojuField.removeEventListener('komoju-invalid', reject);
+                        reject(error);
+                    });
                 });
+            } else {
+                return Promise.reject(new Error("Komoju fields component not found"));
             }
-            // $.mage.redirect(
-            //     redirectUrl
-            // );
+        },
+
+        afterPlaceOrder: function() {
+            if (this.komojuToken) {
+                this.sendToken(this.komojuToken()).done(function(response) {
+                    if (response.success) {
+                        var redirectUrl = url.build('checkout/onepage/success');
+                        $.mage.redirect(redirectUrl);
+                    }
+                }).fail(function(error) {
+                    console.error('Error during token submission:', error);
+                    messageList.addErrorMessage({ message: $t("There was an error processing your payment. Please try again.") });
+                    fullScreenLoader.stopLoader();
+                });
+            } else {
+                console.error('No token available for submission.');
+                messageList.addErrorMessage({ message: $t("There was an error obtaining the payment token. Please try again.") });
+            }
         },
 
         getData: function() {
@@ -91,18 +104,33 @@ define(
                 return false;
             }
 
+            fullScreenLoader.startLoader();
+
             const boundSuper = this._super.bind(this);
 
-            boundSuper(data, event);
-
-            console.log('##PLACE ORDER validate success');
+            this.submitPayment().then(token => {
+                this.komojuToken(token);
+                boundSuper(data, event);
+            }).catch(error => {
+                console.error('Error during token submission:', error);
+                messageList.addErrorMessage({ message: $t("There was an error processing your payment. Please try again.") });
+                fullScreenLoader.stopLoader();
+            });
         },
 
         sendToken: function (token) {
-            var serviceUrl = url.build('komoju/komojufield/processToken');
-            console.log('sendToken');
+            if (!token) {
+                const redirectUrl = this.redirectUrl() + "?payment_method=" + this.komojuMethod();
+                $.mage.redirect(
+                    redirectUrl
+                );
+                return;
+            }
 
-            var data = {
+            console.log(`sendToken: ${token}`);
+            const serviceUrl = url.build('komoju/komojufield/processToken');
+
+            const data = {
                 'id': this.komojuSession().id,
                 'token': token
             }
@@ -113,11 +141,10 @@ define(
                 data: JSON.stringify(data),
                 contentType: 'application/json',
                 success: function (response) {
-                    console.log('Server responded with:', response);
                     console.log('Server responded with:', JSON.stringify(response));
 
                     if (response.success) {
-                        var redirectUrl = url.build('checkout/onepage/success');
+                        const redirectUrl = url.build('checkout/onepage/success');
 
                         $.mage.redirect(
                            redirectUrl
