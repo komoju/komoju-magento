@@ -28,6 +28,7 @@
             <span data-bind="text: method.displayText"></span>
         </label>
     </div>
+    <!-- ko if: $parent.komojuFieldEnabledMethods.includes(method.value) -->
     <div data-bind="visible: $parent.komojuMethod() === method.value">
         <komoju-fields
             data-bind="attr: { 'session': $parent.getSession(), 'payment-type': method.value }"
@@ -37,15 +38,8 @@
             komoju-api="https://komoju.com"
             publishable-key="pk_test_lgva3j8ims1p3nhk3ut1f88t">
         </komoju-fields>
-        <!-- <button class="action primary checkout"
-            type="submit"
-            data-bind="
-            click:  $parent.placeOrder,
-            attr: {title: $t('Komoju Pay')}
-            ">
-        <span data-bind="i18n: 'Komoju Pay'"></span>
-        </button> -->
     </div>
+    <!-- /ko -->
 </div>
 <!--/ko-->
 

@@ -31,6 +31,7 @@ define(
             komojuSession: ko.observable(''),
             isDataLoaded: ko.observable(false),
             komojuToken: ko.observable(''),
+            komojuFieldEnabledMethods: ['credit_card', 'konbini', 'bank_transfer']
         },
 
         initialize: function () {
@@ -44,10 +45,9 @@ define(
 
             $.get(url.build('komoju/komojufield/komojusessiondata'))
             .done(function (response) {
-                console.log('######## RESPONSE: ' + JSON.stringify(response));
-
                 self.komojuSession(response.komojuSession);
                 self.isDataLoaded(true);
+                self.komojuToken(null);
             });
         },
 
@@ -116,14 +116,19 @@ define(
 
             const boundSuper = this._super.bind(this);
 
-            this.submitPayment().then(token => {
-                this.komojuToken(token);
+            if (this.komojuFieldEnabledMethods.includes(this.komojuMethod())) {
+                this.submitPayment().then(token => {
+                    this.komojuToken(token);
+                    boundSuper(data, event);
+                }).catch(error => {
+                    console.error('Error during token submission:', error);
+                    messageList.addErrorMessage({ message: $t("There was an error processing your payment. Please try again.") });
+                    fullScreenLoader.stopLoader();
+                });
+            } else {
+                this.komojuToken(null);
                 boundSuper(data, event);
-            }).catch(error => {
-                console.error('Error during token submission:', error);
-                messageList.addErrorMessage({ message: $t("There was an error processing your payment. Please try again.") });
-                fullScreenLoader.stopLoader();
-            });
+            }
         },
 
         sendToken: function (token) {
