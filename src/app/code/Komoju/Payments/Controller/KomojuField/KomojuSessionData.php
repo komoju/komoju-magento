@@ -27,7 +27,7 @@ class KomojuSessionData extends Action
         CheckoutSession $checkoutSession,
         KomojuApi $komojuApi,
         Config $config,
-        Cart $cart,
+        Cart $cart
     ) {
         $this->jsonResultFactory = $jsonResultFactory;
         $this->quoteRepository = $quoteRepository;

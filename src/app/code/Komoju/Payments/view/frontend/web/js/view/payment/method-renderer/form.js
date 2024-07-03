@@ -40,7 +40,7 @@ define(
         },
 
         loadKomojuData: function () {
-            const self = this;
+            var self = this;
             self.isDataLoaded(false);
 
             $.get(url.build('komoju/komojufield/komojusessiondata'))
@@ -52,7 +52,7 @@ define(
         },
 
         submitPayment: function () {
-            const komojuField = document.querySelector(`komoju-fields[payment-type='${this.komojuMethod()}']`);
+            var komojuField = document.querySelector(`komoju-fields[payment-type='${this.komojuMethod()}']`);
 
             if (komojuField) {
                 return new Promise((resolve, reject) => {
@@ -114,7 +114,7 @@ define(
 
             fullScreenLoader.startLoader();
 
-            const boundSuper = this._super.bind(this);
+            var boundSuper = this._super.bind(this);
 
             if (this.komojuFieldEnabledMethods.includes(this.komojuMethod())) {
                 this.submitPayment().then(token => {
@@ -133,16 +133,16 @@ define(
 
         sendToken: function (token) {
             if (!token) {
-                const redirectUrl = this.redirectUrl() + "?payment_method=" + this.komojuMethod();
+                var redirectUrl = this.redirectUrl() + "?payment_method=" + this.komojuMethod();
                 $.mage.redirect(
                     redirectUrl
                 );
                 return;
             }
 
-            const serviceUrl = url.build('komoju/komojufield/processToken');
+            var serviceUrl = url.build('komoju/komojufield/processToken');
 
-            const data = {
+            var data = {
                 'id': this.komojuSession().id,
                 'token': token
             }

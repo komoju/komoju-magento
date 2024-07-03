@@ -131,7 +131,6 @@ class Webhook extends \Magento\Framework\App\Action\Action implements HttpPostAc
             $this->logger->info($message);
         }
 
-
         $result = $this->_resultFactory->create(ResultFactory::TYPE_JSON);
         $result->setHttpResponseCode(200);
         $result->setData('');
