@@ -121,17 +121,14 @@ define(
                 self.submitPayment().then(function (token) {
                     self.komojuToken(token);
                     boundSuper(data, event);
-                    self.afterPlaceOrder();
                 }).catch(function () {
                     var message = $t("There was an error processing your payment. Please try again.");
-
                     messageList.addErrorMessage({ message: message });
                     fullScreenLoader.stopLoader();
                 });
             } else {
                 self.komojuToken(null);
                 boundSuper(data, event);
-                self.afterPlaceOrder();
             }
         },
 
