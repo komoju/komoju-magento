@@ -10,6 +10,7 @@ use Magento\Checkout\Model\Session;
 use Magento\Sales\Model\Order;
 
 use Komoju\Payments\Api\KomojuApi;
+use Komoju\Payments\Gateway\Config\Config;
 use Komoju\Payments\Model\ExternalPaymentFactory;
 use Komoju\Payments\Model\ExternalPayment;
 
@@ -20,6 +21,7 @@ class ProcessToken extends Action
     protected JsonFactory $jsonResultFactory;
     protected KomojuApi $komojuApi;
     protected Session $checkoutSession;
+    protected Config $config;
     protected LoggerInterface $logger;
     protected Order $order;
     protected ExternalPaymentFactory $externalPaymentFactory;
@@ -32,12 +34,14 @@ class ProcessToken extends Action
         ExternalPaymentFactory $externalPaymentFactory,
         ExternalPayment $externalPayment,
         KomojuApi $komojuApi,
+        Config $config,
         LoggerInterface $logger
     ) {
         $this->jsonResultFactory = $jsonResultFactory;
         $this->checkoutSession = $checkoutSession;
         $this->externalPayment = $externalPaymentFactory->create();
         $this->komojuApi = $komojuApi;
+        $this->config = $config;
         $this->logger = $logger;
         parent::__construct($context);
     }
@@ -67,7 +71,7 @@ class ProcessToken extends Action
             $session = $this->komojuApi->createSession([
                 'amount' => $order->getGrandTotal(),
                 'currency' => $currencyCode,
-                'default_locale' => 'en',
+                'default_locale' => $this->config->getKomojuLocale(),
                 'email' => $order->getCustomerEmail(),
                 'metadata' => ['note' => 'testing'],
                 'payment_data' => [

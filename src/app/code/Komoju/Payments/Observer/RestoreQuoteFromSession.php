@@ -49,6 +49,9 @@ class RestoreQuoteFromSession implements ObserverInterface
 
             if ($order && $order->getStatus() == Order::STATE_PENDING_PAYMENT) {
                 $this->checkoutSession->restoreQuote();
+            } else {
+                $this->checkoutSession->clearQuote();
+                $this->checkoutSession->clearStorage();
             }
         }
     }

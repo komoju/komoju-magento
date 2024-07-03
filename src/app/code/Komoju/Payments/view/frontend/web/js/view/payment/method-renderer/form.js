@@ -79,25 +79,28 @@ define(
             var redirectUrl = url.build('checkout/onepage/success');
             var message = $t("There was an error obtaining the payment token. Please try again.");
 
-            if (self.komojuToken()) {
-                self.sendToken(self.komojuToken()).done(function(response) {
-                    if (response.success) {
-                        if (response.data && response.data.redirect_url) {
-                            redirectUrl = response.data.redirect_url;
-                        }
-                        $.mage.redirect(redirectUrl);
-                    } else {
-                        messageList.addErrorMessage({ message: response.message });
+            if (!self.komojuFieldEnabledMethods.includes(self.komojuMethod()) || !self.komojuToken()) {
+                redirectUrl = this.redirectUrl() + "?payment_method=" + this.komojuMethod();
+                $.mage.redirect(redirectUrl);
+                return;
+            }
+
+            self.sendToken(self.komojuToken()).done(function(response) {
+                if (response.success) {
+                    if (response.data && response.data.redirect_url) {
+                        redirectUrl = response.data.redirect_url;
                     }
-                }).fail(function() {
-                    message = $t("There was an error processing your payment. Please try again.");
-                    messageList.addErrorMessage({ message: message });
+                    $.mage.redirect(redirectUrl);
+                } else {
+                    messageList.addErrorMessage({ message: response.message });
                     fullScreenLoader.stopLoader();
-                });
-            } else {
+                }
+            }).fail(function(error) {
+                console.error('Error during token submission:', error);
+                message = $t("There was an error processing your payment. Please try again.");
                 messageList.addErrorMessage({ message: message });
                 fullScreenLoader.stopLoader();
-            }
+            });
         },
 
         getData: function() {
@@ -108,8 +111,9 @@ define(
         },
 
         placeOrder: function (data, event) {
-            var boundSuper = this._super.bind(this);
             var self = this;
+            var boundSuper = this._super.bind(this);
+            var message = $t("There was an error processing your payment. Please try again.");
 
             if (!this.validate()) {
                 return false;
@@ -117,20 +121,21 @@ define(
 
             fullScreenLoader.startLoader();
 
-            if (self.komojuFieldEnabledMethods.includes(self.komojuMethod())) {
-                self.submitPayment().then(function (token) {
-                    self.komojuToken(token);
-                    boundSuper(data, event);
-                }).catch(function () {
-                    var message = $t("There was an error processing your payment. Please try again.");
-
-                    messageList.addErrorMessage({ message: message });
-                    fullScreenLoader.stopLoader();
-                });
-            } else {
+            if (!self.komojuFieldEnabledMethods.includes(self.komojuMethod())) {
                 self.komojuToken(null);
                 boundSuper(data, event);
+                return;
             }
+
+            self.submitPayment().then(function (token) {
+                self.komojuToken(token);
+                boundSuper(data, event);
+            }).catch(function (error) {
+                console.error('Error during token submission:', JSON.stringify(error));
+
+                messageList.addErrorMessage({ message: message });
+                fullScreenLoader.stopLoader();
+            });
         },
 
         sendToken: function (token) {
@@ -194,6 +199,12 @@ define(
             var config = this.getConfig();
 
             return config.title;
+        },
+
+        getPublishableKey: function () {
+            var config = this.getConfig();
+
+            return config.publishable_key;
         },
 
         getSession: function () {

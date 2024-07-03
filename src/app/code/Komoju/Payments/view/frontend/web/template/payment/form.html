@@ -8,7 +8,6 @@
   <h3 data-bind="text: getTitle()"></h3>
 <!-- /ko -->
 
-<!-- ko if: isDataLoaded() -->
 <!-- ko foreach: { data: getEnabledPaymentTypes(), as: 'method' } -->
 <div class="payment-method"
     data-bind="
@@ -33,17 +32,18 @@
     <!-- ko if: $parent.komojuFieldEnabledMethods.includes(method.value) -->
     <div data-bind="visible: $parent.komojuMethod() === method.value">
         <komoju-fields
-            data-bind="attr: { 'session': $parent.getSession(), 'payment-type': method.value }"
+            data-bind="attr: { 'session': $parent.getSession(),
+                'payment-type': method.value,
+                'publishable-key': $parent.getPublishableKey(),
+                'locale': $parent.komojuSession().default_locale,
+            }"
             token = ""
             name="komoju_payment_token"
-            locale="ja"
-            komoju-api="https://komoju.com"
-            publishable-key="pk_test_lgva3j8ims1p3nhk3ut1f88t">
+            komoju-api="https://komoju.com">
         </komoju-fields>
     </div>
     <!-- /ko -->
 </div>
-<!--/ko-->
 <!--/ko-->
 
 <div class="payment-method-content komoju_payment_billing">
