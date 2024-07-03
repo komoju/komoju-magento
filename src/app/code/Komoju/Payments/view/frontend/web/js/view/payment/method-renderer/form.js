@@ -123,6 +123,7 @@ define(
                     boundSuper(data, event);
                 }).catch(function () {
                     var message = $t("There was an error processing your payment. Please try again.");
+
                     messageList.addErrorMessage({ message: message });
                     fullScreenLoader.stopLoader();
                 });
