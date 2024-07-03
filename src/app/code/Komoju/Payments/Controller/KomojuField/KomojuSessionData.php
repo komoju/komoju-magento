@@ -89,7 +89,8 @@ class KomojuSessionData extends Action
         ];
     }
 
-    public function getKomojuSessionData() {
+    public function getKomojuSessionData()
+    {
         $paymentMethod = $this->getRequest()->getParam('payment_method');
         $order = $this->getOrder();
         $billingAddress = $order->getBillingAddress();
