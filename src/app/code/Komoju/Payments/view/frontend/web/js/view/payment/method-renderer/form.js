@@ -201,6 +201,12 @@ define(
             return config.title;
         },
 
+        getLocale: function() {
+            var config = this.getConfig();
+
+            return config.locale;
+        },
+
         getPublishableKey: function () {
             var config = this.getConfig();
 

@@ -35,7 +35,7 @@
             data-bind="attr: { 'session': $parent.getSession(),
                 'payment-type': method.value,
                 'publishable-key': $parent.getPublishableKey(),
-                'locale': $parent.komojuSession().default_locale,
+                'locale': $parent.getLocale(),
             }"
             token = ""
             name="komoju_payment_token"
