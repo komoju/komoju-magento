@@ -63,10 +63,12 @@ class ProcessToken extends Action
 
             $currencyCode = $order->getOrderCurrencyCode();
             $externalPayment = $this->createExternalPayment($order);
+            $returnUrl = $this->_url->getUrl('checkout/onepage/success');
 
             $session = $this->komojuApi->createSession([
                 'amount' => $order->getGrandTotal(),
                 'currency' => $currencyCode,
+                'return_url' => $returnUrl,
                 'default_locale' => $this->config->getKomojuLocale(),
                 'email' => $order->getCustomerEmail(),
                 'metadata' => ['note' => 'testing'],
