@@ -15,6 +15,7 @@ use Komoju\Payments\Model\ExternalPaymentFactory;
 use Komoju\Payments\Model\ExternalPayment;
 
 use Psr\Log\LoggerInterface;
+use Exception;
 
 class ProcessToken extends Action
 {
@@ -51,11 +52,7 @@ class ProcessToken extends Action
         $result = $this->jsonResultFactory->create();
         $order = $this->getOrder();
 
-        if ($order) {
-            $this->logger->debug('Order Data' . json_encode($order->getEntityId()));
-            $externalPayment = $this->createExternalPayment($order);
-            $this->logger->info('ExternalPayment: ' . $externalPayment);
-        } else {
+        if (!$order) {
             $this->logger->debug('Executing KomojuSessionData controller' . 'No order found');
             return $result->setData(['success' => false, 'message' => 'No order found']);
         }
@@ -64,9 +61,8 @@ class ProcessToken extends Action
             $postData = $this->getRequest()->getContent();
             $tokenData = json_decode($postData);
 
-            // $this->logger->debug('Executing KomojuSessionData controller' . json_encode($tokenData));
-
             $currencyCode = $order->getOrderCurrencyCode();
+            $externalPayment = $this->createExternalPayment($order);
 
             $session = $this->komojuApi->createSession([
                 'amount' => $order->getGrandTotal(),
@@ -82,12 +78,16 @@ class ProcessToken extends Action
                 ],
             ]);
 
-            $data = $this->komojuApi->paySession($session->id, [
-                'customer_email' => $order->getCustomerEmail(),
-                'payment_details' => $tokenData->token->id
-            ]);
+            try {
+                $data = $this->komojuApi->paySession($session->id, [
+                    'payment_details' => (string) $tokenData->token->id
+                ]);
 
-            return $result->setData(['success' => true, 'message' => 'Token processed successfully', 'data' => $data]);
+                return $result->setData(['success' => true, 'message' => 'Token processed successfully', 'data' => $data]);
+            } catch (Exception $e) {
+                $data = ['redirect_url' => $session->session_url];
+                return $result->setData(['success' => true, 'message' => 'Cannot process token, redirect', 'data' => $data]);
+            }
         }
 
         return $result->setData(['success' => false, 'message' => 'Invalid request']);
