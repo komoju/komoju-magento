@@ -79,14 +79,23 @@ class ProcessToken extends Action
             ]);
 
             try {
-                $data = $this->komojuApi->paySession($session->id, [
-                    'payment_details' => (string) $tokenData->token->id
-                ]);
+                $data = $this->komojuApi->paySession(
+                    $session->id,
+                    ['payment_details' => (string) $tokenData->token->id]
+                );
 
-                return $result->setData(['success' => true, 'message' => 'Token processed successfully', 'data' => $data]);
+                return $result->setData([
+                    'success' => true,
+                    'message' => 'Token processed successfully',
+                    'data' => $data
+                ]);
             } catch (Exception $e) {
                 $data = ['redirect_url' => $session->session_url];
-                return $result->setData(['success' => true, 'message' => 'Cannot process token, redirect', 'data' => $data]);
+                return $result->setData([
+                    'success' => true,
+                    'message' => 'Cannot process token, redirect',
+                    'data' => $data
+                ]);
             }
         }
 
