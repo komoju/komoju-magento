@@ -51,7 +51,7 @@ For proper functioning, set up a webhook from your KOMOJU dashboard to your Mage
 
 For example, if your Magento URL is https://magento.komoju.com, then your Webhook URL would be https://magento.komoju.com/komoju/hostedpage/webhook.
 
-![KOMOJU Create New Webhook](./docs/screenshots/komoju_webhook_02.jpg "Set URL")
+![KOMOJU Set Webhook URL](./docs/screenshots/komoju_webhook_02.jpg "Set URL")
 
 And don't forget to choose a secret and ensure the following events are selected:
 
@@ -62,7 +62,7 @@ And don't forget to choose a secret and ensure the following events are selected
 - payment.refunded
 - payment.refund.created
 
-![KOMOJU Create Webhook Webhook](./docs/screenshots/komoju_webhook_03.jpg "Set Events")
+![KOMOJU Set Payment Events](./docs/screenshots/komoju_webhook_03.jpg "Set Events")
 
 After configuring, click "Create Webhook" to save your settings.
 
