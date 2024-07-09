@@ -81,6 +81,16 @@ class Config extends PaymentConfig
     }
 
     /**
+     * Returns the value of the "Publishable Key"
+     * @param int|null $storeId
+     * @return string
+     */
+    public function getPublishableKey($storeId = null)
+    {
+        return $this->getValue('publishable_key', $storeId);
+    }
+
+    /**
      * Returns the value of the "Webhook Secret Token" on the field on the admin
      * page.
      * @param int|null $storeId

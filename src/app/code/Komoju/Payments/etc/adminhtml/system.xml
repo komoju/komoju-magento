@@ -27,6 +27,11 @@
                         <config_path>payment/komoju_payments/secret_key</config_path>
                         <backend_model>Magento\Config\Model\Config\Backend\Encrypted</backend_model>
                     </field>
+                    <field id="publishable_key" translate="label" type="obscure" showInDefault="1" showInWebsite="1" showInStore="1">
+                        <label>Publishable Key</label>
+                        <config_path>payment/komoju_payments/publishable_key</config_path>
+                        <backend_model>Magento\Config\Model\Config\Backend\Encrypted</backend_model>
+                    </field>
                     <field id="webhook_secret_token" translate="label comment" type="obscure" showInDefault="1" showInWebsite="1" showInStore="1">
                         <label>Webhook Secret</label>
                         <comment>The webhook URL will be at /komoju/hostedpage/webhook of this site</comment>
