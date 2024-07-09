@@ -1,27 +1,25 @@
 # KOMOJU Magento Plugin
 
-This plugin allows for Magento store owners to accept payments with [Komoju payment methods](https://en.komoju.com/payment-methods). Currently the plugin supports the following currencies:
+This plugin allows for Magento store owners to accept payments with [Komoju payment methods](https://en.komoju.com/payment-methods). Currently, the plugin supports the following currency:
 
 - JPY
 
 ## Installation instructions
 
-**NOTE:** You will need a [KOMOJU account](https://komoju.com/) to be able to use the plugin.
+**NOTE:** A [KOMOJU account](https://komoju.com/) is required to use this plugin.
 
 ### Installing the module manually
 
-1. Download the module from [here](https://github.com/komoju/komoju-magento/archive/master.zip)
-2. Upload the folder to your magento server
-3. Unzip the folder to the /tmp directory
+1. Download the latest version of the module from the [release page](https://github.com/degica/komoju-magento/releases)
+2. Upload the downloaded file to your Magento server.
+3. Unzip the file directly into your $MAGENTO_INSTALL/app/code directory, where $MAGENTO_INSTALL is the directory where Magento is installed:
+
+```shell
+$ unzip komoju-magento-release.zip -d $MAGENTO_INSTALL/src/app/code
 ```
-$ unzip komoju-magento-master.zip "komoju-magento-master/src/app/code/*" -d /tmp
-```
-4. Copy the module code to your `$MAGENTO_INSTALL/app/code` folder, where MAGENTO_INSTALL is the directory where Magento is installed:
-```
-$ mv /tmp/komoju-magento-master/src/app/code/* $MAGENTO_INSTALL/app/code
-```
-5. Install the new module with the following commands:
-```
+
+4. Install the new module with the following commands:
+```shell
 $ php bin/magento setup:upgrade
 $ php bin/magento setup:di:compile
 $ php bin/magento cache:flush
@@ -30,22 +28,32 @@ $ php bin/magento setup:static-content:deploy
 
 ## Configuring the plugin
 
-Once the plugin has been installed you will need to configure it. Go to the store configuration in the admin section and navigate to the payment methods. Here you will be able to configure the KOMOJU plugin, with your KOMOJU account details. Your account details can be found on the [KOMOJU merchant settings page](https://komoju.com/admin/merchant_settings):
+After installation, configure the plugin in the store configuration under the admin section by navigating to the payment methods. Enter your KOMOJU account details as found on the [KOMOJU merchant settings page](https://komoju.com/admin/merchant_settings):
 
-![KOMOJU dashboard](./docs/screenshots/Komoju-merchant-settings.png "KOMOJU dashboard")
+![KOMOJU dashboard](./docs/screenshots/komoju_magento_setting.jpg "KOMOJU dashboard")
 
 When configuring the "API Settings" section of the plugin use the following values:
 
-"Merchant UUID" in the plugin is "Merchant UUID" in the Merchant Settings dashboard.
-"Secret Key" in the plugin is "Secret Key" in the Merchant Settings dashboard.
+Go to Stores > Sales > Payment Methods > Komoju > API Settings and fill out below
 
-### Configuring the KOMOJU webhook
+Merchant UUID: Your UUID
+Secret Key: Secret Key
+Publishable Key: Publishable Key
+Webhook Secret: **Wil Explain below**
 
-To ensure that the Magento plugin works correctly you will need to set up a webhook from your KOMOJU dashboard to the wordpress instance. To do this you will need to go to your [Webhook page on the KOMOJU dashboard](https://komoju.com/admin/webhooks) and click "New Webhook". The Webhook URL is at `/komoju/hostedpage/webhook` of your Magento website:
+![Magento Configuration](./docs/screenshots/magento_configuration.jpg "KOMOJU dashboard")
 
-![KOMOJU Create New Webhook](./docs/screenshots/Komoju-webhooks-page.png "Create a new Webhook")
+### Configuring the KOMOJU Webhook
 
-If your Magento was `https://magento.komoju.com` then your Webhook URL would be `https://magento.komoju.com/komoju/hostedpage/webhook`. The Secret can be anything you want (as long as you remember it), but you must make sure the following events are ticked:
+For proper functioning, set up a webhook from your KOMOJU dashboard to your Magento instance by visiting [Webhook page on the KOMOJU dashboard](https://komoju.com/admin/webhooks) and clicking "New Webhook". Use /komoju/hostedpage/webhook as your Webhook URL.
+
+![KOMOJU Create New Webhook](./docs/screenshots/komoju_webhook_01.jpg "Create a new Webhook")
+
+For example, if your Magento URL is https://magento.komoju.com, then your Webhook URL would be https://magento.komoju.com/komoju/hostedpage/webhook.
+
+![KOMOJU Create New Webhook](./docs/screenshots/komoju_webhook_02.jpg "Set URL")
+
+And don't forget to choose a secret and ensure the following events are selected:
 
 - payment.authorized
 - payment.captured
@@ -54,12 +62,12 @@ If your Magento was `https://magento.komoju.com` then your Webhook URL would be 
 - payment.refunded
 - payment.refund.created
 
-![KOMOJU Magento Webhook Example](./docs/screenshots/Komoju-create-webhook.png "An Example of how the webhook should be configured")
+![KOMOJU Create Webhook Webhook](./docs/screenshots/komoju_webhook_03.jpg "Set Events")
 
-Once everything is configured as above, then click "Create Webhook" to save the changes.
+After configuring, click "Create Webhook" to save your settings.
 
-Go back to the plugin config section in your Magento instance, and enter the webhook secret you just created into the "Webhook Secret Token" field.
+Back in your Magento plugin configuration, enter the webhook secret you created into the "Webhook Secret Token" field.
 
 ## Contact Us
 
-If you have any questions or concerns you can contact our support team at  support@degica.com.
+For questions or concerns, contact our support team at support@degica.com.
