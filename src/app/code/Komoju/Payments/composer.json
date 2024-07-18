@@ -2,7 +2,7 @@
     "name": "komoju/payments",
     "description": "Integrates with KOMOJU to provide payment solutions for Magento",
     "type": "magento2-module",
-    "version": "1.1.0",
+    "version": "1.2.0",
     "license": [],
     "autoload": {
         "files": [ "registration.php" ],
@@ -12,5 +12,8 @@
     },
     "require-dev": {
         "magento/magento-coding-standard": "^5.0"
+    },
+    "support": {
+        "email": "support@degica.com"
     }
 }
