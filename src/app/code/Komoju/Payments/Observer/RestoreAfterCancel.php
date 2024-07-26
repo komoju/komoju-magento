@@ -9,7 +9,6 @@ use Magento\Framework\Event\Observer;
 use Magento\Quote\Api\CartRepositoryInterface;
 use Psr\Log\LoggerInterface;
 
-
 class RestoreAfterCancel implements ObserverInterface
 {
     protected CheckoutSession $checkoutSession;
