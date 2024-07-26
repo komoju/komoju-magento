@@ -9,7 +9,8 @@ Konbini,Konbini
 "Order has been fully refunded.","Order has been fully refunded."
 "Refund for order created. Amount: %1 %2","Refund for order created. Amount: %1 %2"
 "Unknown event type: %1","Unknown event type: %1"
-"KOMOJU External Order ID: %1 %2","KOMOJU External Order ID: %1 %2"
+"KOMOJU - %1","KOOJU - %1",
+"External Order ID: %1 %2","External Order ID: %1 %2"
 "Payment Type","Payment Type"
 "Place Order","Place Order"
 KOMOJU,KOMOJU
@@ -28,3 +29,19 @@ Title,Title
 "Encountered an issue communicating with KOMOJU. Please wait a moment and try again.","Encountered an issue communicating with KOMOJU. Please wait a moment and try again."
 ”Show Title at Checkout”,"Show Title at Checkout"
 "Display the title above the payment methods on the checkout page","Display the title above the payment methods on the checkout page"
+
+payment_method,translation
+"credit_card","Credit Card"
+"paypay","PayPay"
+"linepay","Line Pay"
+"merpay","MerPay"
+"rakutenpay","Rakuten Pay"
+"paidy","Paidy"
+"konbini","Convenience Store Payment"
+"bank_transfer","Bank Transfer"
+"pay_easy","Pay easy"
+"web_money","Web Money"
+"bit_cash","Bit Cash"
+"net_cash","Net Cash"
+"alipay","Alipay"
+"aupay","au Pay"
