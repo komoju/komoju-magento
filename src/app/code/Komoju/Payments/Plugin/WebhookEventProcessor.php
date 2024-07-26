@@ -200,6 +200,13 @@ class WebhookEventProcessor
      */
     private function prependExternalOrderNum($str)
     {
-        return __('KOMOJU External Order ID: %1 %2', $this->webhookEvent->externalOrderNum(), $str);
+        return __('KOMOJU - %1', $this->getTranslatedPaymentMethod($this->webhookEvent->getPaymentMethod())) .
+            ' ' .
+            __('External Order ID: %1 %2', $this->webhookEvent->externalOrderNum(), $str);
+    }
+
+    private function getTranslatedPaymentMethod($paymentMethod)
+    {
+        return __($paymentMethod);
     }
 }

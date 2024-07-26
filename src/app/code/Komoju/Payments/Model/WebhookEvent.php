@@ -164,4 +164,9 @@ class WebhookEvent
     {
         return $this->data()['payment_deadline'];
     }
+
+    public function getPaymentMethod()
+    {
+        return $this->data()['payment_details']['type'];
+    }
 }
