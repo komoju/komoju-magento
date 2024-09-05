@@ -8,10 +8,21 @@ This document will guide you through setting up your machine to develop the modu
 2. Ensure Docker has enough resources to run properly (in the docker settings set the resources to about half for CPU, RAM and Swap)
 3. Have access to a [magento marketplace](https://marketplace.magento.com/) account
 
+## Quick Start
+
+1. Open your browser and ready for your access key https://commercemarketplace.adobe.com/customer/accessKeys/
+2. Open terminal, execute ./setup
+3. In the middle, please write your public key in `username`, your private key in `password`.
+4. You also need to type your machine's account password in the progress.
+5. When the setup process finishes, open https://magento.test
+
+Please check [Setup Magento Store](#setup-magento-store)
+
 ## Set up magento account
 
 Once you have a magento account, you can create an access key [here](https://marketplace.magento.com/customer/accessKeys/). Once you have the public and private key you need to place them in the `~/.composer/auth.json`:
-```
+
+```json
 {
   "http-basic": {
     "repo.magento.com": {
@@ -64,21 +75,15 @@ $ bin/setup degicaexample.au.ngrok.io
 
 Let that run (it can take a while). Once done the magento website will be available on the ngrok endpoint.
 
-## Set up the magento store
+## Setup magento store<a name="setup-magento-store"></a>
 
 To set up the store to be able to test changes to the plugin you will need to have some items for sale as well configuring the plugin to correctly communicate with Komoju. To do this you will first need to log into the admin page.
 
 ### Logging into the admin page
 
-Every time you create the development environment the admin url will be slightly different. To find out what the URL is for your instance you can run the following command:
+- Open: https://magento.test/admin
 
-```bash
-$ bin/magento info:adminuri
-
-Admin URI: /admin_1y2j6j
-```
-
-Going to this page you will be prompted for admin credentials, which you can find in [the setup script](../bin/setup:51) (look for the `--admin-user` and `admin-password` flags, these are the credentials needed).
+Going to this page you will be prompted for admin credentials, which you can find in [ENV file](../env/magento.env)
 
 ### Adding items to the store
 
