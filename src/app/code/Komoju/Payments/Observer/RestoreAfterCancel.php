@@ -31,7 +31,9 @@ class RestoreAfterCancel implements ObserverInterface
 
         if (!$lastRealQuoteId) {
             $quote = $observer->getEvent()->getQuote();
-            $quote->setIsActive(true);
+            if ($quote) {
+                $quote->setIsActive(true);
+            }
             return;
         }
 
