@@ -10,11 +10,12 @@ This document will guide you through setting up your machine to develop the modu
 
 ## Quick Start
 
-1. Open your browser and ready for your access key https://commercemarketplace.adobe.com/customer/accessKeys/
-2. Open terminal, execute ./setup
+1. Open your browser and ready for your access key. [Link](https://commercemarketplace.adobe.com/customer/accessKeys/)
+2. Open terminal, execute `./setup`
 3. In the middle, please write your public key in `username`, your private key in `password`.
 4. You also need to type your machine's account password in the progress.
 5. When the setup process finishes, open https://magento.test
+6. After setup process is done, you can run with `./run` via terminal.
 
 Please check [Setup Magento Store](#setup-magento-store)
 
@@ -81,9 +82,9 @@ To set up the store to be able to test changes to the plugin you will need to ha
 
 ### Logging into the admin page
 
-- Open: https://magento.test/admin
+- Open [the admin page](https://magento.test/admin)
 
-Going to this page you will be prompted for admin credentials, which you can find in [ENV file](../env/magento.env)
+Going to this page you will be prompted for admin credentials, which you can find in [ENV file](https://github.com/degica/komoju-magento/blob/master/env/magento.env)
 
 ### Adding items to the store
 
@@ -101,4 +102,4 @@ Once inside the admin page, click the "Catalog" option on the left menu and then
 4. Update with the relevant Komoju account details
 
 ## Lint
-See [Linting](linting.md) for php/js linting.
+See [Linting](./linting.md) for php/js linting.
