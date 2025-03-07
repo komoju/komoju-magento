@@ -1,3 +1,17 @@
-Install the KOMOJU extension and start growing your business with our innovative payment solutions. We work with financial institutions, payment networks, banks, and wallets so your business doesn't have to. KOMOJU helps thousands of businesses accept payments online. We are a technology company that builds financial products for the internet. We help businesses remove the complexity of payments processing and finance, by providing them with industry-leading payment products that stimulate growth and increase revenue.
+# KOMOJU-Magento プラグイン
 
-The [KOMOJU](https://en.komoju.com/) Japanese Payments extension provides an easy way to accept Japanese payments for your Magento store. During checkout your customer will be shown a hosted checkout page to enter their details, so you don't have to worry about storing credit card details or secret information. Note: Currently the extension only allows payments for stores with JPY as the base currency.
+[KOMOJU](https://komoju.com/) は、日本の決済方法を簡単に導入できる主要な決済ゲートウェイです。Magentoストアの運営者は、KOMOJUを利用することで、安全でローカライズされたチェックアウト体験を提供でき、機密な決済情報を直接取り扱う必要がありません。
+
+## 特長
+- 日本で人気の決済方法に対応
+- 安全な取引のためのホスト型チェックアウト
+- クレジットカード情報の保存不要
+- **JPY**（日本円）を基準通貨としてサポート
+
+## はじめに
+[KOMOJU](https://business.adobe.com/products/magento/magento-commerce.html) をMagentoストアに統合するには、ドキュメントに記載されているインストールおよび設定手順に従ってください。
+
+🔗 [GitHub リポジトリ](https://github.com/degica/komoju-magento)  
+🔗 [公式ウェブサイト](https://komoju.com/)
+
+ご不明な点がございましたら、[support@degica.com](mailto:support@degica.com) までお問い合わせください。
