@@ -49,6 +49,12 @@ nav:
     - Translations: developer_guide/translations.md
     - Documenting: developer_guide/documenting.md
 
+markdown_extensions:
+  - pymdownx.superfences
+  - pymdownx.highlight
+  - pymdownx.inlinehilite
+  - pymdownx.extra
+
 plugins:
   - i18n:
       reconfigure_material: true
