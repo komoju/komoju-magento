@@ -1,0 +1,92 @@
+site_name: KOMOJU-Magento Plugin Docs
+site_url: "https://tech.degica.com/komoju-magento/"
+repo_url: https://github.com/degica/komoju-magento
+repo_name: "degica/komoju-magento"
+
+theme:
+  name: material
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: "orange"
+      accent: "orange"
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: "orange"
+      accent: "orange"
+      toggle:
+        icon: material/brightness-4
+        name: Switch to system preference
+
+  features:
+    - search.suggest
+    - navigation.tabs
+    - navigation.top
+  font:
+    text: Roboto
+    code: Roboto Mono
+
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/degica/komoju-magento
+      name: GitHub
+
+nav:
+  - KOMOJU: 
+      - Overview: index.md
+      - Benefits: komoju/benefits.md
+      - Features: komoju/features.md
+  - User Guide: user_guide/getting_started.md
+  - Developer Guide:
+      - Setup & Environment:
+          - Dev Setup: developer_guide/setup/dev_setup.md
+      - Development Guidelines:
+          - Linting: developer_guide/development_guidelines/linting.md
+          - Translations: developer_guide/development_guidelines/translations.md
+          - Documentation Guide: developer_guide/development_guidelines/documenting.md
+      - Magento-Specific Development:
+          - Events & Observers: developer_guide/magento_core/events_and_observers.md
+
+markdown_extensions:
+  - pymdownx.superfences
+  - pymdownx.highlight
+  - pymdownx.inlinehilite
+  - pymdownx.extra
+
+plugins:
+  - i18n:
+      reconfigure_material: true
+      reconfigure_search: true
+      docs_structure: folder
+      languages:
+        - locale: en
+          name: English
+          default: true
+          site_name: KOMOJU for Magento Plugin Docs
+          build: true
+        - locale: ja
+          name: 日本語
+          site_name: KOMOJU for Magento プラグイン ドキュメント
+          build: true
+          nav_translations:
+            Home: ホーム
+            KOMOJU: KOMOJU
+            Overview: 概要
+            Benefits: メリット
+            Features: 機能
+            User Guide: ユーザーガイド
+            Developer Guide: 開発者ガイド
+            Setup & Environment: セットアップと環境構築
+            Dev Setup: 開発環境セットアップ
+            Development Guidelines: 開発ガイドライン
+            Linting: リントについて
+            Translations: 翻訳について
+            Documentation Guide: ドキュメント作成ガイド
+            Magento-Specific Development: Magentoの開発関連
+            Events & Observers: イベントとオブザーバー
+  - search

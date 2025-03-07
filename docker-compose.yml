@@ -23,6 +23,7 @@ services:
       - appdata:/var/www/html
       - sockdata:/sock
       - ssldata:/etc/nginx/certs
+      # - ./src/app/code:/var/www/html/app/code:cached
 
   phpfpm:
     image: markoshust/magento-php:8.3-fpm-2
