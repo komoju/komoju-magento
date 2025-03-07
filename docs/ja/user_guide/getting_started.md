@@ -38,7 +38,8 @@ Magentoストアを**KOMOJU**と連携し、日本の決済方法を簡単に導
 インストール後、Magentoの管理画面で設定を行います。
 
 1. **管理画面で以下のパスに移動**  
-   **Stores** > **Sales** > **Payment Methods** > **KOMOJU** > **API設定**  
+   **Stores** > **Sales** > **Payment Methods** > **KOMOJU** > **API設定**
+
 2. **[KOMOJUマーチャント設定ページ](https://komoju.com/admin/merchant_settings) にあるアカウント情報を入力**
 
 ![KOMOJU ダッシュボード](../assets/images/komoju_magento_setting.jpg "KOMOJU ダッシュボード")
@@ -56,25 +57,30 @@ Magentoストアを**KOMOJU**と連携し、日本の決済方法を簡単に導
 ## 📌 KOMOJU Webhookの設定
 
 1. **[KOMOJUダッシュボードのWebhookページ](https://komoju.com/merchant/webhooks) にアクセスし、**「新しいWebhookを作成」**をクリック**
-2. Webhookを設定します。例えば、MagentoのURLが `https://magento.komoju.com` の場合、Webhook URLは `https://magento.komoju.com/komoju/hostedpage/webhook` となります。
 
-*(`<your-magento-domain>` を実際のストアのドメインに置き換えてください。)*
+2. Webhookを設定します。
 
-![KOMOJU 新規Webhook作成](../assets/images/komoju_webhook_01.jpg "新しいWebhookの作成")
+    `<your-magento-domain>/komoju/hostedpage/webhook`
+
+    *(`<your-magento-domain>` を実際のストアのドメインに置き換えてください。)*
+
+    例えば、MagentoのURLが **https://magento.komoju.com** の場合、Webhook URLは **https://magento.komoju.com/komoju/hostedpage/webhook** となります。
+
+    ![KOMOJU 新規Webhook作成](../assets/images/komoju_webhook_01.jpg "新しいWebhookの作成")
 
 3. **シークレットを設定**し、以下のイベントを有効にします：
-- `payment.authorized`
-- `payment.captured`
-- `payment.expired`
-- `payment.cancelled`
-- `payment.refunded`
-- `payment.refund.created`
+    - `payment.authorized`
+    - `payment.captured`
+    - `payment.expired`
+    - `payment.cancelled`
+    - `payment.refunded`
+    - `payment.refund.created`
 
-![KOMOJU Webhook URL設定](../assets/images/komoju_webhook_02.jpg "URLの設定")
+    ![KOMOJU Webhook URL設定](../assets/images/komoju_webhook_02.jpg "URLの設定")
+    ![KOMOJU 支払いイベント設定](../assets/images/komoju_webhook_03.jpg "イベントの設定")
 
-![KOMOJU 支払いイベント設定](../assets/images/komoju_webhook_03.jpg "イベントの設定")
-
-4. **Webhookを作成**し、**Webhookシークレットをコピー**  
+4. **Webhookを作成**し、**Webhookシークレットをコピー**
+  
 5. **Magentoの管理画面で**「KOMOJU」 > 「API設定」 > 「Webhookシークレット」に入力
 
 ---
