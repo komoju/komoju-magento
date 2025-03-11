@@ -96,6 +96,36 @@ Once inside the admin page, click the "Catalog" option on the left menu and then
 - **Quantity:** Set to a large enough number you won't run out during testing (e.g., 1000)
 - **Stock Status:** Set to "In Stock"
 
+#### 📌 Setup Currency
+
+Make sure store currency is set as JPY
+
+  1. Set country as Japan in Store > Configuration > General. **Make sure allowed country includes Japan**
+    ![step1](../../assets/images/currency_step_1.png)
+
+  2. Set currency as JPY in Store > Configuration > Currency Setup. **Make sure allowed currency includes JPY**
+    ![step2](../../assets/images/currency_step_2.png)
+
+#### 📌 Step by step guide to add a product
+
+  1. Go to Catalog > Products. Click **Add Product**
+  ![step1](../../assets/images/add_items_step_1.png)
+  2. Fill out the form. `Product Name`, `SKU`, `Price`, `Quantity` and `Category` should not be empty. Optionally, you can add an image for the product.
+  ![step2](../../assets/images/add_items_step_2.png)
+  3. Go to Content > Pages. Click **Action** > **Select** > **Edit** next to **Home page** (or page you want to edit)
+  ![step3](../../assets/images/add_items_step_3.png)
+  4. Click **Edit with Page Builder**
+  ![step4](../../assets/images/add_items_step_4.png)
+  5. Add **Columns** or **Row** by drag and dropping. Also add **Product**. Click Cog icon for Product.
+  ![step5](../../assets/images/add_items_step_5.png)
+  6. Set Category (Same as you setup for the product to show)
+  ![step6](../../assets/images/add_items_step_6.png)
+  7. Close by clicking right-top `x` button. Click **Save**.
+  ![step7](../../assets/images/add_items_step_7.png)
+  8. **Important** Run `./index` in the terminal to refresh the page.
+  9. That's it! 
+  ![step8](../../assets/images/add_items_step_8.png)
+
 ## 📌 Configure the Plugin
 
 1. To configure the plugin, go to the admin page and click on "Stores" in the left menu, and then click on "Configuration" in the submenu.
