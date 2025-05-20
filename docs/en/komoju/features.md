@@ -6,7 +6,7 @@ KOMOJU has no sign up fees and no monthly fees - you pay [per transaction only](
   - Credit cards (Visa, Mastercard, American Express, JCB, Diners Club)
   - Bank transfer
   - Convenience store payments (konbini)
-  - Smartphone payments (PayPay, LINE Pay, Merpay)
+  - Smartphone payments (PayPay, Merpay)
   - Pay-easy
   - Carrier billing (au, docomo, SoftBank)
   - E-money (BitCash, WebMoney, NET CASH)
