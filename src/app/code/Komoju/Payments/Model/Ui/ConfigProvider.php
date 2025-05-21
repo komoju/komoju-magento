@@ -116,6 +116,9 @@ class ConfigProvider implements ConfigProviderInterface
 
             $methods = $this->komojuApi->paymentMethods();
             foreach ($methods as $method) {
+                if ($method->type_slug === 'linepay') {
+                    continue;
+                }
                 $paymentMethodOptions[$method->type_slug] = $method->{"name_{$locale}"};
             }
             return $paymentMethodOptions;
