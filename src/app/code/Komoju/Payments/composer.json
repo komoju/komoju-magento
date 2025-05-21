@@ -2,7 +2,7 @@
     "name": "komoju/payments",
     "description": "Integrates with KOMOJU to provide payment solutions for Magento",
     "type": "magento2-module",
-    "version": "1.2.1",
+    "version": "1.2.2",
     "license": [],
     "autoload": {
         "files": [ "registration.php" ],
