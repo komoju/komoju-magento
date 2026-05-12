@@ -4,18 +4,18 @@
 
 ## 📌 前提条件
 
-1. Dockerがローカルマシンにインストールされていること。
-2. Dockerが十分なリソースで実行できるように設定してください（CPU、RAM、Swapを設定の半分程度に割り当てるのがおすすめです）。
+1. DockerまたはPodmanがローカルマシンにインストールされていること。
+2. コンテナランタイムに十分なリソースを割り当ててください（最低4GBのRAM）。
 3. [Magento Marketplace](https://marketplace.magento.com/)のアカウントにアクセスできること。
 
 ## 📌 クイックスタート
 
-1. ブラウザでアクセスキーの準備をしてください。[リンクはこちら](https://commercemarketplace.adobe.com/customer/accessKeys/)
-2. ターミナルを開き、`./setup`を実行します。
-3. 途中で、公開鍵を`username`、秘密鍵を`password`として入力してください。
-4. 実行中にマシンのパスワード入力を求められる場合があります。
-5. セットアップが終了したら、[https://magento.test](https://magento.test) を開いてください。
-6. セットアップ後、ターミナルで`./run`を実行すれば開発環境が起動します。
+1. hostsファイルに`magento.test`を追加してください: `echo '127.0.0.1 magento.test' | sudo tee -a /etc/hosts`
+2. ブラウザでアクセスキーの準備をしてください。[リンクはこちら](https://commercemarketplace.adobe.com/customer/accessKeys/)
+3. ターミナルを開き、`./setup`を実行します。
+4. 途中で、公開鍵を`username`、秘密鍵を`password`として入力してください。
+5. セットアップが終了したら、[https://magento.test:8443](https://magento.test:8443) を開いてください。
+6. セットアップ後、`./run`で起動、`bin/stop`で停止できます。
 
 詳しくは [Magentoストアのセットアップ](#magentoストアのセットアップ) をご覧ください。
 
@@ -36,48 +36,26 @@ Magentoのアカウントを取得したら、[こちら](https://marketplace.ma
 
 ## 📌 Ngrokの設定
 
-Komojuは取引状況の更新をWebhookで通知するため、開発環境をインターネット上で公開する必要があります。そのための最も簡単な方法が[Ngrok](https://ngrok.com/)です。できれば固定のアドレスを使うことをおすすめします（Magentoの設定を毎回変更しなくて済みます）。
+Komojuは取引状況の更新をWebhookで通知するため、開発環境をインターネット上で公開する必要があります。そのための最も簡単な方法が[Ngrok](https://ngrok.com/)です。できれば固定のドメインを使うことをおすすめします（Magentoの設定を毎回変更しなくて済みます）。
 
-安定したアドレスを用意したら、以下のコマンドでNgrokを起動します。
-
-```bash
-$ ~/ngrok http 443 <Ngrokエンドポイント>
-```
-
-例えば、サイトが https://degicaexample.au.ngrok.io で動作する場合は、以下のようになります。
-
-```
-~/ngrok http 443 -region au --subdomain=degicaexample
-```
-
-## 📌 Dockerの実行
-
-**注意:** 以下のコマンドは初回のみ必要です。設定が完了した後は、`bin/start`と`bin/stop`を使用してMagento開発環境を起動・停止できます。
-
-### 📌 Docker環境のビルド
-
-以下のコマンドでDocker環境を作成します。
+安定したドメインを用意したら、以下のコマンドでNgrokを起動します。
 
 ```bash
-$ docker-compose build --build-arg MAGENTO_VERSION=$MAGENTO_VERSION
-# $MAGENTO_VERSION は使用したいMagentoのバージョンです。
-# 例として、2.3.4を使用する場合は以下のようになります:
-# docker-compose build --build-arg MAGENTO_VERSION=2.3.4
+$ ngrok http 8443 --domain=your-domain.ngrok-free.app
 ```
 
-Dockerコンテナのビルドが終わったら、以下のセットアップコマンドを実行してMagentoを構成します。
+## 📌 セットアップのカスタマイズ
+
+`./setup`スクリプトはMagentoのダウンロードと環境設定を行います。Magentoのバージョンやドメインは、トップレベルの`setup`スクリプトを編集することでカスタマイズできます。
+
+- **Magentoバージョン:** `bin/download`に渡すバージョンを変更します（例: `bin/download 2.4.7 community`）
+- **ドメイン:** `bin/setup`は第1引数としてドメインを受け取ります（デフォルトは`magento.test`）。Ngrokを使用する場合は、Ngrokドメインを指定してください:
 
 ```bash
-$ bin/setup $NGROK_DOMAIN
+$ bin/setup your-domain.ngrok-free.app
 ```
 
-ここで、`$NGROK_DOMAIN`は前の手順で設定したNgrokエンドポイント（https://部分を除く）です。例えば、https://degicaexample.au.ngrok.ioを使用する場合は、以下のようになります。
-
-```
-$ bin/setup degicaexample.au.ngrok.io
-```
-
-実行が完了すると、Magentoのウェブサイトは指定したNgrokエンドポイントで利用可能になります。
+**注意:** 初回セットアップ後は、`./run`（`bin/start`）と`bin/stop`で開発環境の起動・停止ができます。フルセットアップを再実行する必要はありません。
 
 ## 📌 Magentoストアのセットアップ
 
@@ -85,9 +63,9 @@ $ bin/setup degicaexample.au.ngrok.io
 
 ### 📌 管理画面へのログイン
 
-💡 注：このガイドでは、MagentoストアのURLは [https://magento.test](https://magento.test) と仮定しています。
+💡 注：このガイドでは、MagentoストアのURLは [https://magento.test:8443](https://magento.test:8443) と仮定しています。
 
-- [管理画面](https://magento.test/admin)を開きます。
+- [管理画面](https://magento.test:8443/admin)を開きます。
 
 ここで要求される管理者用の認証情報は[ENVファイル](https://github.com/degica/komoju-magento/blob/master/env/magento.env)に記載されています。
 
