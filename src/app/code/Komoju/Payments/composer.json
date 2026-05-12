@@ -11,7 +11,7 @@
         }
     },
     "require-dev": {
-        "magento/magento-coding-standard": "^40.0"
+        "magento/magento-coding-standard": "^6.0"
     },
     "support": {
         "email": "support@degica.com"
