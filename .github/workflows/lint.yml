@@ -19,6 +19,7 @@ jobs:
           php-version: 8.3
       - name: Setup dependencies
         run: |
+          composer config allow-plugins.dealerdirect/phpcodesniffer-composer-installer true
           composer install
           vendor/bin/phpcs --config-set installed_paths ../../magento/magento-coding-standard/
       - name: Run lint
