@@ -57,6 +57,18 @@ $ bin/setup your-domain.ngrok-free.app
 
 **注意:** 初回セットアップ後は、`./run`（`bin/start`）と`bin/stop`で開発環境の起動・停止ができます。フルセットアップを再実行する必要はありません。
 
+### 📌 二要素認証（2FA）
+
+`./setup`スクリプトは、[markshust/magento2-module-disabletwofactorauth](https://github.com/markshust/magento2-module-disabletwofactorauth)プラグインを使用して、開発環境のMagento 2FAモジュール（`Magento_TwoFactorAuth`および`Magento_AdminAdobeImsTwoFactorAuth`）を自動的に無効化します。
+
+管理画面ログイン時に2FAのプロンプトが表示される場合は、手動で無効化できます:
+
+```bash
+$ bin/magento module:disable Magento_AdminAdobeImsTwoFactorAuth Magento_TwoFactorAuth
+$ bin/magento setup:upgrade
+$ bin/magento cache:flush
+```
+
 ## 📌 Magentoストアのセットアップ
 
 プラグインの変更をテストするためには、商品を登録して販売可能にし、Komojuと正しく通信できるようプラグインを設定する必要があります。これにはまず管理画面にログインします。

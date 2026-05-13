@@ -55,6 +55,18 @@ $ bin/setup your-domain.ngrok-free.app
 
 **NOTE:** After initial setup, you can use `./run` (`bin/start`) and `bin/stop` to start and stop the dev environment without re-running the full setup.
 
+### 📌 Two-Factor Authentication (2FA)
+
+The `./setup` script automatically disables Magento's 2FA modules (`Magento_TwoFactorAuth` and `Magento_AdminAdobeImsTwoFactorAuth`) for the dev environment using the [markshust/magento2-module-disabletwofactorauth](https://github.com/markshust/magento2-module-disabletwofactorauth) plugin.
+
+If you encounter a 2FA prompt when logging into the admin panel, you can disable it manually:
+
+```bash
+$ bin/magento module:disable Magento_AdminAdobeImsTwoFactorAuth Magento_TwoFactorAuth
+$ bin/magento setup:upgrade
+$ bin/magento cache:flush
+```
+
 ## 📌 Setup Magento Store
 
 To set up the store to be able to test changes to the plugin you will need to have some items for sale as well as configuring the plugin to correctly communicate with Komoju. To do this you will first need to log into the admin page.

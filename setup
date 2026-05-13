@@ -6,5 +6,6 @@ bin/composer install
 bin/setup magento.test
 bin/composer require markshust/magento2-module-disabletwofactorauth
 bin/magento module:enable MarkShust_DisableTwoFactorAuth
+bin/magento module:disable Magento_AdminAdobeImsTwoFactorAuth Magento_TwoFactorAuth
 bin/clinotty bin/magento cache:flush
 bin/magento setup:upgrade
