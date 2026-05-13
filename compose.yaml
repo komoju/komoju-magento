@@ -42,7 +42,7 @@ services:
       --optimizer_use_condition_selectivity=1
       --optimizer_switch="rowid_filter=off"
     ports:
-      - "3306:3306"
+      - "3307:3306"
     env_file: env/db.env
     volumes:
       - dbdata:/var/lib/mysql
