@@ -6,11 +6,11 @@ This plugin allows for Magento store owners to accept payments with [Komoju paym
 
 ## Installation instructions
 
-**NOTE:** A [KOMOJU account](https://komoju.com/) is required to use this plugin.
+**NOTE:** A [KOMOJU account](https://en.komoju.com/) is required to use this plugin.
 
 ### Installing the module manually
 
-1. Download the latest version of the module from the [release page](https://github.com/degica/komoju-magento/releases)
+1. Download the latest version of the module from the [release page](https://github.com/komoju/komoju-magento/releases)
 2. Upload the downloaded file to your Magento server.
 3. Unzip the file directly into your $MAGENTO_INSTALL/app/code directory, where $MAGENTO_INSTALL is the directory where Magento is installed:
 
@@ -30,7 +30,7 @@ $ php bin/magento setup:static-content:deploy
 
 After installation, configure the plugin in the store configuration under the admin section by navigating to the payment methods. Enter your KOMOJU account details as found on the [KOMOJU merchant settings page](https://komoju.com/admin/merchant_settings):
 
-![KOMOJU dashboard](./docs/screenshots/komoju_magento_setting.jpg "KOMOJU dashboard")
+![KOMOJU dashboard](./docs/en/assets/images/komoju_magento_setting.jpg "KOMOJU dashboard")
 
 When configuring the "API Settings" section of the plugin use the following values:
 
@@ -41,17 +41,17 @@ Secret Key: Secret Key
 Publishable Key: Publishable Key
 Webhook Secret: **Wil Explain below**
 
-![Magento Configuration](./docs/screenshots/magento_configuration.jpg "KOMOJU dashboard")
+![Magento Configuration](./docs/en/assets/images/magento_configuration.jpg "KOMOJU dashboard")
 
 ### Configuring the KOMOJU Webhook
 
 For proper functioning, set up a webhook from your KOMOJU dashboard to your Magento instance by visiting [Webhook page on the KOMOJU dashboard](https://komoju.com/admin/webhooks) and clicking "New Webhook". Use /komoju/hostedpage/webhook as your Webhook URL.
 
-![KOMOJU Create New Webhook](./docs/screenshots/komoju_webhook_01.jpg "Create a new Webhook")
+![KOMOJU Create New Webhook](./docs/en/assets/images/komoju_webhook_01.jpg "Create a new Webhook")
 
 For example, if your Magento URL is https://magento.komoju.com, then your Webhook URL would be https://magento.komoju.com/komoju/hostedpage/webhook.
 
-![KOMOJU Set Webhook URL](./docs/screenshots/komoju_webhook_02.jpg "Set URL")
+![KOMOJU Set Webhook URL](./docs/en/assets/images/komoju_webhook_02.jpg "Set URL")
 
 And don't forget to choose a secret and ensure the following events are selected:
 
@@ -62,7 +62,7 @@ And don't forget to choose a secret and ensure the following events are selected
 - payment.refunded
 - payment.refund.created
 
-![KOMOJU Set Payment Events](./docs/screenshots/komoju_webhook_03.jpg "Set Events")
+![KOMOJU Set Payment Events](./docs/en/assets/images/komoju_webhook_03.jpg "Set Events")
 
 After configuring, click "Create Webhook" to save your settings.
 
