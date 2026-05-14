@@ -3,6 +3,7 @@
 bin/download 2.4.7 community
 bin/start --no-dev
 bin/composer install
+bin/clinotty rm -rf generated/code/* generated/metadata/*
 bin/setup magento.test
 bin/composer require markshust/magento2-module-disabletwofactorauth
 bin/magento module:enable MarkShust_DisableTwoFactorAuth
