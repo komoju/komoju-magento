@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+set -o errexit
 
 bin/download 2.4.7 community
 bin/start --no-dev

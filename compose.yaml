@@ -107,6 +107,7 @@ services:
 
   rabbitmq:
     image: markoshust/magento-rabbitmq:3.12-0
+    restart: unless-stopped
     ports:
       - "15672:15672"
       - "5672:5672"

@@ -49,7 +49,16 @@ bin/clinotty bin/magento cron:install
 echo "Turning on developer mode..."
 bin/clinotty bin/magento deploy:mode:set developer
 
+echo "Disabling 2FA for dev environment..."
+bin/clinotty bin/magento module:disable Magento_AdminAdobeImsTwoFactorAuth Magento_TwoFactorAuth
+bin/clinotty bin/magento setup:upgrade
+
+echo "Configuring admin URL for non-standard ports..."
+bin/clinotty bin/magento config:set admin/url/custom https://"${DOMAIN}":8443/
+bin/clinotty bin/magento config:set admin/url/use_custom 1 --lock-config
+bin/clinotty bin/magento cache:flush
+
 cp -r .vscode src/
 
 echo "Docker development environment setup complete."
-echo "You may now access your Magento instance at https://${DOMAIN}/"
+echo "You may now access your Magento instance at https://${DOMAIN}:8443/"
