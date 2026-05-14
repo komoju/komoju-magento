@@ -1,0 +1,48 @@
+#!/usr/bin/env bash
+set -o errexit
+
+DOMAIN=${1:-magento.test}
+ADMIN_USER=${2:-john.smith}
+ADMIN_PASS=${3:-Password123!}
+
+echo "Configuring store currency to JPY..."
+bin/clinotty mysql -h db -u magento -pmagento magento -e "
+UPDATE core_config_data SET value='JPY' WHERE path='currency/options/base';
+UPDATE core_config_data SET value='JPY' WHERE path='currency/options/default';
+UPDATE core_config_data SET value='JPY' WHERE path='currency/options/allow';
+"
+
+echo "Setting store country to Japan..."
+bin/clinotty bin/magento config:set general/country/default JP
+bin/clinotty bin/magento config:set general/country/allow JP
+
+echo "Getting admin API token..."
+TOKEN=$(curl -sk -X POST https://"${DOMAIN}":8443/rest/V1/integration/admin/token \
+  -H "Content-Type: application/json" \
+  -d "{\"username\":\"${ADMIN_USER}\",\"password\":\"${ADMIN_PASS}\"}" | tr -d '"')
+
+echo "Creating product 'go' (100 JPY, 1000 in stock)..."
+curl -sk -X POST https://"${DOMAIN}":8443/rest/V1/products \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer ${TOKEN}" \
+  -d '{
+    "product": {
+      "sku": "go",
+      "name": "go",
+      "price": 100,
+      "status": 1,
+      "visibility": 4,
+      "type_id": "simple",
+      "attribute_set_id": 4,
+      "extension_attributes": {
+        "stock_item": {
+          "qty": 1000,
+          "is_in_stock": true
+        }
+      }
+    }
+  }' > /dev/null
+
+bin/clinotty bin/magento cache:flush
+
+echo "Store setup complete: JPY currency, product 'go' (100 JPY, 1000 stock)."

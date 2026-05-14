@@ -62,6 +62,9 @@ bin/clinotty bin/magento config:set admin/url/custom https://"${DOMAIN}":8443/
 bin/clinotty bin/magento config:set admin/url/use_custom 1 --lock-config
 bin/clinotty bin/magento cache:flush
 
+echo "Setting up store with default product..."
+bin/setup-store "${DOMAIN}"
+
 cp -r .vscode src/
 
 echo "Docker development environment setup complete."
