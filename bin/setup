@@ -49,9 +49,13 @@ bin/clinotty bin/magento cron:install
 echo "Turning on developer mode..."
 bin/clinotty bin/magento deploy:mode:set developer
 
+echo "Enabling Komoju plugin..."
+bin/clinotty bin/magento module:enable Komoju_Payments
+
 echo "Disabling 2FA for dev environment..."
 bin/clinotty bin/magento module:disable Magento_AdminAdobeImsTwoFactorAuth Magento_TwoFactorAuth
 bin/clinotty bin/magento setup:upgrade
+bin/clinotty bin/magento setup:di:compile
 
 echo "Configuring admin URL for non-standard ports..."
 bin/clinotty bin/magento config:set admin/url/custom https://"${DOMAIN}":8443/
