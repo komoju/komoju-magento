@@ -68,6 +68,15 @@ After configuring, click "Create Webhook" to save your settings.
 
 Back in your Magento plugin configuration, enter the webhook secret you created into the "Webhook Secret Token" field.
 
+## Building the zip for Adobe Marketplace submission
+
+Adobe Marketplace requires `composer.json` and `registration.php` at the root of the archive. Zip from inside the extension directory, excluding `.DS_Store` and `composer.lock`:
+
+```shell
+cd src/app/code/Komoju/Payments
+zip -r ~/komoju-payments.zip . -x "*.DS_Store" "composer.lock"
+```
+
 ## Contact Us
 
 For questions or concerns, contact our support team at support@degica.com.

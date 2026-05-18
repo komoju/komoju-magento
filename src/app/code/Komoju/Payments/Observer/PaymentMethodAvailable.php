@@ -40,7 +40,7 @@ class PaymentMethodAvailable implements ObserverInterface
         \Magento\Store\Model\StoreManagerInterface $storeManager,
         $methodCode,
         $allowableCurrencyCodes,
-        \Psr\Log\LoggerInterface $logger = null
+        ?\Psr\Log\LoggerInterface $logger = null
     ) {
         $this->storeManager = $storeManager;
         $this->methodCode = $methodCode;

@@ -61,8 +61,8 @@ class ConfigProvider implements ConfigProviderInterface
         Config $config,
         SessionManagerInterface $session,
         ScopeConfigInterface $scopeConfig,
-        \Psr\Log\LoggerInterface $logger = null,
-        \Komoju\Payments\Api\KomojuApi $komojuApi
+        \Komoju\Payments\Api\KomojuApi $komojuApi,
+        ?\Psr\Log\LoggerInterface $logger = null
     ) {
         $this->config = $config;
         $this->session = $session;

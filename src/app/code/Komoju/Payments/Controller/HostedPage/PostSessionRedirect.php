@@ -40,9 +40,9 @@ class PostSessionRedirect extends Action
         ResultFactory $resultFactory,
         Context $context,
         Config $config,
-        LoggerInterface $logger = null,
         Session $checkoutSession,
-        KomojuApi $komojuApi
+        KomojuApi $komojuApi,
+        ?LoggerInterface $logger = null
     ) {
         $this->logger = $logger ?: ObjectManager::getInstance()->get(\Psr\Log\LoggerInterface::class);
         $this->_resultFactory = $resultFactory;
