@@ -4,18 +4,18 @@ This document will guide you through setting up your machine to develop the modu
 
 ## 📌 Prerequisites
 
-1. Have Docker installed on your local machine
-2. Ensure Docker has enough resources to run properly (in the docker settings set the resources to about half for CPU, RAM and Swap)
+1. Have Docker or Podman installed on your local machine
+2. Ensure your container runtime has enough resources to run properly (at least 4GB of RAM)
 3. Have access to a [magento marketplace](https://marketplace.magento.com/) account
 
 ## 📌 Quick Start
 
-1. Open your browser and ready for your access key. [Link](https://commercemarketplace.adobe.com/customer/accessKeys/)
-2. Open terminal, execute `./setup`
-3. In the middle, please write your public key in `username`, your private key in `password`.
-4. You also need to type your machine's account password in the progress.
-5. When the setup process finishes, open https://magento.test
-6. After setup process is done, you can run with `./run` via terminal.
+1. Add `magento.test` to your hosts file: `echo '127.0.0.1 magento.test' | sudo tee -a /etc/hosts`
+2. Open your browser and ready for your access key. [Link](https://commercemarketplace.adobe.com/customer/accessKeys/)
+3. Open terminal, execute `./setup`
+4. In the middle, please write your public key in `username`, your private key in `password`.
+5. When the setup process finishes, open https://magento.test:8443
+6. After setup process is done, you can start/stop with `./run` and `bin/stop` via terminal.
 
 Please check [Setup Magento Store](#setup-magento-store)
 
@@ -36,45 +36,36 @@ Once you have a Magento account, you can create an access key [here](https://mar
 
 ## 📌 Set up Ngrok
 
-Because Komoju uses webhooks to alert systems to updates to the transactions, the dev environment needs to be publicly accessible on the internet. [Ngrok](https://ngrok.com/) is the easiest solution for this. If possible it's best to pick a static address, so you won't have to manually change the address in Magento each time. Once you have a stable address to run it from start it with the following command:
+Because Komoju uses webhooks to alert systems to updates to the transactions, the dev environment needs to be publicly accessible on the internet. [Ngrok](https://ngrok.com/) is the easiest solution for this. If possible it's best to pick a static domain, so you won't have to manually change the address in Magento each time. Once you have a stable domain, start it with:
 
 ```bash
-$ ~/ngrok http 443 <ngrok endpoint>
+$ ngrok http 8443 --domain=your-domain.ngrok-free.app
 ```
 
-For example if the site was going to be run from https://degicaexample.au.ngrok.io then the ngrok command would look like:
-```
-~/ngrok http 443 -region au --subdomain=degicaexample
-```
+## 📌 Customizing the Setup
 
-## 📌 Run Docker
+The `./setup` script downloads Magento and configures the environment with sensible defaults. You can customize the Magento version and domain by editing the top-level `setup` script:
 
-**NOTE:** You only need to run the following commands once. After everything is set up you can use `bin/start` and `bin/stop` to start and stop the Magento dev environment.
-
-### 📌 Building the Docker Environment
-
-You can create the Docker environment with the following command:
+- **Magento version:** Change the version passed to `bin/download` (e.g., `bin/download 2.4.7 community`)
+- **Domain:** `bin/setup` accepts a domain as its first argument (defaults to `magento.test`). If you are using Ngrok, pass your Ngrok domain instead:
 
 ```bash
-$ docker-compose build --build-arg MAGENTO_VERSION=$MAGENTO_VERSION
-# $MAGENTO_VERSION is the version of Magento you wish to use. For example,
-# if you wanted to use 2.3.4 then you would run:
-# docker-compose build --build-arg MAGENTO_VERSION=2.3.4
+$ bin/setup your-domain.ngrok-free.app
 ```
 
-Once the docker container is built, run the setup command to configure Magento.
+**NOTE:** After initial setup, you can use `./run` (`bin/start`) and `bin/stop` to start and stop the dev environment without re-running the full setup.
+
+### 📌 Two-Factor Authentication (2FA)
+
+The `./setup` script automatically disables Magento's 2FA modules (`Magento_TwoFactorAuth` and `Magento_AdminAdobeImsTwoFactorAuth`) for the dev environment using the [markshust/magento2-module-disabletwofactorauth](https://github.com/markshust/magento2-module-disabletwofactorauth) plugin.
+
+If you encounter a 2FA prompt when logging into the admin panel, you can disable it manually:
 
 ```bash
-$ bin/setup $NGROK_DOMAIN
+$ bin/magento module:disable Magento_AdminAdobeImsTwoFactorAuth Magento_TwoFactorAuth
+$ bin/magento setup:upgrade
+$ bin/magento cache:flush
 ```
-
-Where `$NGROK_DOMAIN` is the ngrok endpoint (minus the https:// part) set up in a previous step. Using the example above for https://degicaexample.au.ngrok.io the command would be:
-
-```
-$ bin/setup degicaexample.au.ngrok.io
-```
-
-Let that run (it can take a while). Once done the Magento website will be available on the ngrok endpoint.
 
 ## 📌 Setup Magento Store
 
@@ -82,9 +73,9 @@ To set up the store to be able to test changes to the plugin you will need to ha
 
 ### 📌 Logging into the Admin Page
 
-💡 Note: For this guide, we assume your Magento store is accessible at [https://magento.test](https://magento.test).
+💡 Note: For this guide, we assume your Magento store is accessible at [https://magento.test:8443](https://magento.test:8443).
 
-- Open [the admin page](https://magento.test/admin)
+- Open [the admin page](https://magento.test:8443/admin)
 
 Going to this page you will be prompted for admin credentials, which you can find in [ENV file](https://github.com/degica/komoju-magento/blob/master/env/magento.env)
 

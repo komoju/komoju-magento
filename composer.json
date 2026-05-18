@@ -2,5 +2,14 @@
     "require-dev": {
         "squizlabs/php_codesniffer": "*",
         "magento/magento-coding-standard": "^6.0"
+    },
+    "config": {
+        "audit": {
+            "ignore": {
+                "PKSA-xwpn-zs9j-6wy5": "dev-only dependency (magento-coding-standard)",
+                "PKSA-sf9j-1gs7-xzvx": "dev-only dependency (magento-coding-standard)",
+                "PKSA-7h5p-prw9-w5nr": "dev-only dependency (magento-coding-standard)"
+            }
+        }
     }
 }

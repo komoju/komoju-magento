@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 set -o errexit
 
-MEM_BYTES=$(docker info -f '{{.MemTotal}}')
+MEM_BYTES=$(docker info -f '{{.MemTotal}}' 2>/dev/null || podman info -f '{{.Host.MemTotal}}' 2>/dev/null || echo 0)
 MEM_MB=$(( MEM_BYTES / 1000000 ))
 # When Docker Desktop is set to 6GB in the GUI, it is reported as 6227 MB
-(( MEM_MB < 6227 )) && echo "There must be at least 6GB of RAM allocated to Docker in order to continue." && exit
+(( MEM_MB < 3500 )) && echo "There must be at least 4GB of RAM allocated to Docker/Podman in order to continue." && exit
 
 DOMAIN=${1:-magento.test}
 
@@ -49,7 +49,23 @@ bin/clinotty bin/magento cron:install
 echo "Turning on developer mode..."
 bin/clinotty bin/magento deploy:mode:set developer
 
+echo "Enabling Komoju plugin..."
+bin/clinotty bin/magento module:enable Komoju_Payments
+
+echo "Disabling 2FA for dev environment..."
+bin/clinotty bin/magento module:disable Magento_AdminAdobeImsTwoFactorAuth Magento_TwoFactorAuth
+bin/clinotty bin/magento setup:upgrade
+bin/clinotty bin/magento setup:di:compile
+
+echo "Configuring admin URL for non-standard ports..."
+bin/clinotty bin/magento config:set admin/url/custom https://"${DOMAIN}":8443/
+bin/clinotty bin/magento config:set admin/url/use_custom 1 --lock-config
+bin/clinotty bin/magento cache:flush
+
+echo "Setting up store with default product..."
+bin/setup-store "${DOMAIN}"
+
 cp -r .vscode src/
 
 echo "Docker development environment setup complete."
-echo "You may now access your Magento instance at https://${DOMAIN}/"
+echo "You may now access your Magento instance at https://${DOMAIN}:8443/"

@@ -21,8 +21,8 @@ bin/clinotty bin/magento setup:install \
   --db-name="$MYSQL_DATABASE" \
   --db-user="$MYSQL_USER" \
   --db-password="$MYSQL_PASSWORD" \
-  --base-url=https://"$DOMAIN"/ \
-  --base-url-secure=https://"$DOMAIN"/ \
+  --base-url=http://"$DOMAIN":8080/ \
+  --base-url-secure=https://"$DOMAIN":8443/ \
   --backend-frontname="$MAGENTO_ADMIN_FRONTNAME" \
   --admin-firstname="$MAGENTO_ADMIN_FIRST_NAME" \
   --admin-lastname="$MAGENTO_ADMIN_LAST_NAME" \
