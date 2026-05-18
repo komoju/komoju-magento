@@ -79,7 +79,7 @@ class Webhook extends \Magento\Framework\App\Action\Action implements HttpPostAc
         \Komoju\Payments\Model\ExternalPaymentFactory $externalPaymentFactory,
         \Komoju\Payments\Model\RefundFactory $komojuRefundFactory,
         \Komoju\Payments\Gateway\Config\Config $config,
-        \Psr\Log\LoggerInterface $logger = null
+        ?\Psr\Log\LoggerInterface $logger = null
     ) {
         $this->logger = $logger ?: ObjectManager::getInstance()->get(\Psr\Log\LoggerInterface::class);
         $this->_resultFactory = $resultFactory;

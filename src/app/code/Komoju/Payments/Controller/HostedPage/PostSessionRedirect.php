@@ -40,7 +40,7 @@ class PostSessionRedirect extends Action
         ResultFactory $resultFactory,
         Context $context,
         Config $config,
-        LoggerInterface $logger = null,
+        ?LoggerInterface $logger = null,
         Session $checkoutSession,
         KomojuApi $komojuApi
     ) {

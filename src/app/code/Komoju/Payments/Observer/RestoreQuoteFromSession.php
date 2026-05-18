@@ -29,7 +29,7 @@ class RestoreQuoteFromSession implements ObserverInterface
     public function __construct(
         CheckoutSession $checkoutSession,
         CartRepositoryInterface $quoteRepository,
-        LoggerInterface $logger = null
+        ?LoggerInterface $logger = null
     ) {
         $this->checkoutSession = $checkoutSession;
         $this->quoteRepository = $quoteRepository;

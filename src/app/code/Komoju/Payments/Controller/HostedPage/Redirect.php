@@ -65,7 +65,7 @@ class Redirect extends \Magento\Framework\App\Action\Action
         \Magento\Checkout\Model\Session $checkoutSession,
         \Komoju\Payments\Gateway\Config\Config $config,
         \Magento\Store\Model\StoreManagerInterface $storeManager,
-        \Psr\Log\LoggerInterface $logger = null,
+        ?\Psr\Log\LoggerInterface $logger = null,
         \Komoju\Payments\Api\KomojuApi $komojuApi,
         \Magento\Directory\Model\CountryFactory $countryFactory
     ) {
