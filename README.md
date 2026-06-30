@@ -34,7 +34,7 @@ After installation, configure the plugin in the store configuration under the ad
 
 When configuring the "API Settings" section of the plugin use the following values:
 
-Go to Stores > Configuration > Sales > Payment Methods > KOMOJU > API Settings. Set **Enable this Solution** to **Yes**, then fill out below:
+Go to Stores > Configuration > Sales > Payment Methods, expand Additional Payment Solutions (or similar group) to find KOMOJU. Set **Enable this Solution** to **Yes**, then expand API Settings and fill out below:
 
 Merchant UUID: Your UUID
 Secret Key: Secret Key
