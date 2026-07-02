@@ -10,7 +10,7 @@ on:
 
 jobs:
   php-cs-fixer:
-    runs-on: [self-hosted, spot]
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - name: Setup PHP
@@ -26,7 +26,7 @@ jobs:
       - name: Run lint
         run: vendor/bin/phpcs --standard=magento2 src/app
   lint-js:
-    runs-on: [self-hosted, spot]
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - name: Install modules
