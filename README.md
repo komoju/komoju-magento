@@ -15,7 +15,7 @@ This plugin allows for Magento store owners to accept payments with [Komoju paym
 3. Unzip the file directly into your $MAGENTO_INSTALL/app/code directory, where $MAGENTO_INSTALL is the directory where Magento is installed:
 
 ```shell
-$ unzip komoju-magento-release.zip -d $MAGENTO_INSTALL/src/app/code
+$ unzip komoju-magento-release.zip -d $MAGENTO_INSTALL/app/code
 ```
 
 4. Install the new module with the following commands:
@@ -34,12 +34,12 @@ After installation, configure the plugin in the store configuration under the ad
 
 When configuring the "API Settings" section of the plugin use the following values:
 
-Go to Stores > Sales > Payment Methods > Komoju > API Settings and fill out below
+Go to Stores > Configuration > Sales > Payment Methods, expand Additional Payment Solutions (or similar group) to find KOMOJU. Set **Enable this Solution** to **Yes**, then expand API Settings and fill out below:
 
 Merchant UUID: Your UUID
 Secret Key: Secret Key
 Publishable Key: Publishable Key
-Webhook Secret: **Wil Explain below**
+Webhook Secret: **Will explain below**
 
 ![Magento Configuration](./docs/en/assets/images/magento_configuration.jpg "KOMOJU dashboard")
 
@@ -66,7 +66,8 @@ And don't forget to choose a secret and ensure the following events are selected
 
 After configuring, click "Create Webhook" to save your settings.
 
-Back in your Magento plugin configuration, enter the webhook secret you created into the "Webhook Secret Token" field.
+Back in your Magento plugin configuration, enter the webhook secret you created into the "Webhook Secret" field.
+
 
 ## Building the zip for Adobe Marketplace submission
 
